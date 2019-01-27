@@ -55,7 +55,7 @@ public class HarnessThePower extends Script {
 		
 		for(int i = 0; i < harness.length; i++){
 			
-					harness[i].setRotation(-(float)Tools.switchRampC2(1-rand[i],0.8f,0.2f,train.getHarnessState()),0,0);
+					harness[i].setRotation((float)Tools.switchRampC2(1-rand[i],1.5f,0.2f,train.getHarnessState()),0,0);
 		
 			
 		}
