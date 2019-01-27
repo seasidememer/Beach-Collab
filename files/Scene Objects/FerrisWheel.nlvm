@@ -13,8 +13,14 @@ public class FerrisWheel extends Script {
 	private final float g = 9.81f;
 	
 	private float wheelSpeed = 0.2f;
+	private float wheelMaxSpeed = 0.2f;
 	private float wheelAcceleration = 0.01f;
 	private float wheelRotation = 0;
+	
+	private float cycle = 0.0f;
+	private float maxTurn = (360.0f + 360.0f + 70.0f) / 180.0f * (float) Math.PI;
+	private float stop = 0.0f;
+	private float stopTime = 50.0f;
 	
 	public bool onInit() {									
 	
@@ -49,6 +55,43 @@ public class FerrisWheel extends Script {
 	public void onNextFrame(float tick) {
 		
 		wheelRotation += tick * wheelSpeed;
+		cycle += tick * wheelSpeed;
+		
+		if (cycle > maxTurn) {
+			
+			if (wheelSpeed > 0) {
+				
+				wheelSpeed -= wheelAcceleration * tick;
+				
+			} else {
+				
+				wheelSpeed = 0;
+				
+				stop += tick;
+				
+				if (stop > stopTime) {
+					
+					stop = 0;
+					cycle = 0;
+					
+					
+				}
+				
+			}
+			
+		} else {
+			
+			if (wheelSpeed < wheelMaxSpeed) {
+		
+				wheelSpeed += wheelAcceleration * tick;
+		
+			} else {
+			
+				wheelSpeed = wheelMaxSpeed;
+			
+			}
+			
+		}
 		
 		for (int i = 0; i < gondolas.length; i++) {
 			
