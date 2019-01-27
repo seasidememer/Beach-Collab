@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="pavillion.dae"/>
+    <materialpath name="brick">pavillion/mats/brick.nl2mat</materialpath>
+    <materialpath name="floor">pavillion/mats/floor.nl2mat</materialpath>
+    <materialpath name="glass">Glass.nl2mat</materialpath>
+    <materialpath name="gold">pavillion/mats/gold.nl2mat</materialpath>
+    <materialpath name="metal1">pavillion/mats/gold.nl2mat</materialpath>
+    <materialpath name="metal2">pavillion/mats/metal2.nl2mat</materialpath>
+    <materialpath name="shingles">pavillion/mats/shingles.nl2mat</materialpath>
+  </sceneobject>
+</root>
