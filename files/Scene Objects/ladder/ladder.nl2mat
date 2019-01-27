@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>Result = lerp(tex0.r, entity0, entity1);
+
+//Specular weakened by color contrast
+tmp0 = sub(entity1, entity0);
+tmp0 = dp3(tmp0, tmp0);
+tmp0 = sub(1, tmp0);
+Specular = lerp(tex0.r, 1, tmp0);</shadercore>
+      <transparency mode="opaque"/>
+      <custommaterial>
+        <diffuse r="0.501961" g="0.501961" b="0.501961"/>
+        <ambient r="0.501961" g="0.501961" b="0.501961"/>
+        <specular r="1" g="1" b="1"/>
+        <shininess exponent="88.6154"/>
+      </custommaterial>
+      <reflection bump="true" affectedbyspecular="true" fresnelconst="0.13" fresnelvar="0.45"/>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <map>ladder_ladder-material_color_info.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>ladder_ladder-material_normal.png</map>
+        <bump mode="normalgloss"/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <footstepsounds>
+      <footstepsound>intern:data/sounds/walk/metal1.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/metal2.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/metal3.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/metal4.wav</footstepsound>
+    </footstepsounds>
+  </material>
+</root>

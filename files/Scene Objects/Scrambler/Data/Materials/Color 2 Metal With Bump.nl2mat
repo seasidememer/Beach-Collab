@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>result = mul(tex0, entity2);</shadercore>
+      <custommaterial>
+        <diffuse r="1" g="1" b="1"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="1" g="1" b="1"/>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <reflection bump="true" fresnelconst="0" fresnelvar="0.4"/>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <materialtexture/>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <materialtexture/>
+        <bump mode="heightgloss" heightscale="2.2"/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <footstepsounds>
+      <footstepsound>intern:data/sounds/walk/metal1.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/metal2.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/metal3.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/metal4.wav</footstepsound>
+    </footstepsounds>
+  </material>
+</root>

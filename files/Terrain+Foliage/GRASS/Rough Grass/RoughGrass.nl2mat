@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <deformvertices>
+      <deformverticesplant frequency="0.5" dx="0.1" dy="0.1"/>
+    </deformvertices>
+    <renderpass>
+      <shadercore>Result = Mul(Tex0,Tex1);</shadercore>
+      <transparency mode="cutout"/>
+      <alphatest function="ge128"/>
+      <linearshading/>
+      <rgbgen mode="constlighting"/>
+      <texunit>
+        <map>RoughGrass.dds</map>
+        <fixzeroalpha/>
+        <fixalphatestedmipmaps/>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>Mottle.dds</map>
+        <tcgen mode="worldpos" sx="1" sy="0.5" sz="0" tx="0" ty="0.5" tz="0"/>
+        <tcmod mode="scale" scales="0.09" scalet="0.09"/>
+        <tcmod mode="rotate" degfrequency="0.5"/>
+        <tcmod mode="turb" spread="0.5" amplitude="0.3" phase="0" frequency="0.5"/>
+      </texunit>
+    </renderpass>
+    <option nonsolid="true"/>
+    <option alphashadow="true"/>
+  </material>
+</root>

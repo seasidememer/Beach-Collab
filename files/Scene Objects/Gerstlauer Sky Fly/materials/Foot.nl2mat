@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>Ambient = add(0.5,tex0);
+Result = Entity0;
+Specular = mad(Entity0,0.3,0.7);</shadercore>
+      <custommaterial>
+        <diffuse r="0.796079" g="0.796079" b="0.796079"/>
+        <ambient r="0.796079" g="0.796079" b="0.796079"/>
+        <specular r="0.188235" g="0.188235" b="0.188235"/>
+        <shininess exponent="12.4179"/>
+      </custommaterial>
+      <reflection affectedbyspecular="true" fresnelconst="0.1" fresnelvar="0.2"/>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <map>Foot-AO.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

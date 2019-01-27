@@ -1,0 +1,125 @@
+package Flatride;
+import com.nolimitscoaster.*;
+
+public class DrivenRotor extends Rotor{
+	public                 float                  minSpeed         = -3.14159f/180.f*30.f;
+	public                 float                  maxSpeed         = 3.14159f/180.f*30.f;
+	public                 float                  acc              = 3.14159f/180.f*10.f;
+	public                 float                  dec              = 3.14159f/180.f*10.f;
+	public                 float                  soundStopThres   = 0.5f;
+	public                 StaticSound            soundStop        = null;
+	
+	private                float                  targetSpeed      = 0;
+	
+	private                bool                   parking = false;
+	private                int                    parkDir = 1;
+	private                float                  parkD = 0;
+	private                float                  parkT = 0;
+	
+	public DrivenRotor(SceneObjectElement element){
+		super(element);
+	}
+	
+	public final bool moveToPosSmooth(float pos, float tick){
+		if(pos>PI){
+			pos-=2*PI;
+		}
+		if(pos<-PI){
+			pos+=2*PI;
+		}
+		
+		float dist = 0;
+		float curPos = getRotation();
+		if(curPos >= pos){
+			dist = curPos - pos;
+		}else{
+			dist = curPos + 2*PI - pos;
+		}
+		if(curSpeed == 0 && dist == 0){
+			return true;
+		}
+		if(parking){
+			if(dist <= parkD){
+				absRot = true;
+				parkT -= tick;
+				curSpeed = dec*parkT;
+				targetSpeed = 0;
+				float ease = easeStop(parkT, dec);
+				phi =  parkDir*(pos - ease);
+				if(parkT <= 0){
+					phi = pos;
+					curSpeed = 0;
+					targetSpeed = 0;					
+					parking = false;
+					absRot = false;
+					return true;
+				}
+			}
+		}else{
+			parkT = (float)Math.abs(curSpeed) / dec;
+			parkD = easeStop(parkT, dec);
+			if(curSpeed < 0)
+				parkDir = -1;
+			else
+				parkDir = 1;			
+			
+			if(parkD > 1.6f*PI){
+				setSpeed(parkDir*(dec*parkT - 0.2f*dec*parkT));
+			}
+			
+			if(parkD < dist){
+				parking = true;
+			}else{
+				parking = false;
+			}
+			
+		}
+		return false;
+	}
+	
+	public final void update(float tick){
+		if(curSpeed<targetSpeed){
+			curAcc = acc;
+			super.update(tick);
+			if(curSpeed>targetSpeed){
+				curSpeed=targetSpeed;
+				curAcc=0;
+			}
+			return;
+		}
+		if(curSpeed>targetSpeed){
+			curAcc = -dec;
+			super.update(tick);
+			if(curSpeed<targetSpeed){
+				curSpeed=targetSpeed;
+				curAcc=0;
+			}
+			return;
+		}
+		super.update(tick);
+	}
+	
+	public final void speed(float thespeed){
+		setSpeed(thespeed);
+	}
+	
+	private void setSpeed(float thespeed){
+		if(thespeed<minSpeed) thespeed=minSpeed;
+		if(thespeed>maxSpeed) thespeed=maxSpeed;
+		targetSpeed = thespeed;
+		if(soundStop!=null && thespeed==0){
+			if(Math.abs(curSpeed)>soundStopThres)
+				soundStop.play();
+			return;
+		}	
+	}
+		
+	public final float getSetSpeed(){
+		return targetSpeed;
+	}
+	
+	private static final float easeStop(float t, float a){
+		if(t < 0) return 0;
+		return 0.5f*a*t*t;
+	}
+}

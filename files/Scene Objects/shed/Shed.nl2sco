@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="shed.dae"/>
+    <usercolor>
+      <label>Copper</label>
+      <defaultcolor r="0.509804" g="0.223529" b="0.0509804"/>
+    </usercolor>
+    <usercolor>
+      <label></label>
+      <defaultcolor r="0.796079" g="0.796079" b="0.796079"/>
+    </usercolor>
+    <usercolor>
+      <label></label>
+      <defaultcolor r="0.921569" g="1" b="0.854902"/>
+    </usercolor>
+    <materialpath name="COPPER_REPLACE">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="GLASS_REPLACE">Glass.nl2mat</materialpath>
+    <materialpath name="WHITEMETAL_REPLACE">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="green_rough_planks_diff_1k">green_rough_planksBUMP.nl2mat</materialpath>
+    <materialpath name="internal">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
+    <materialpath name="wood_planks_old_0065_01_preview">wood_planks_oldBUMP.nl2mat</materialpath>
+  </sceneobject>
+</root>

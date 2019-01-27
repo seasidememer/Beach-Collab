@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="base:data/objects/Brown Stone Set/Brown_Stone_C.dae">
+      <lod path="base:data/objects/Brown Stone Set/Brown_Stone_C_LOD_1.dae" distance="10"/>
+      <clip distance="60"/>
+    </model>
+    <description>Brown stone type C</description>
+    <preview>base:data/objects/Brown Stone Set/preview_c.jpg</preview>
+    <param randomrotx="true"/>
+    <param randomrotvariationx="360"/>
+    <param randomroty="true"/>
+    <param randomrotvariationy="360"/>
+    <param randomrotz="true"/>
+    <param randomrotvariationz="360"/>
+    <param basescalex="0.5"/>
+    <param basescaley="0.5"/>
+    <param basescalez="0.5"/>
+    <param uniformrandomscale="true"/>
+    <param randomscalex="true"/>
+    <param randomscalevariationx="0.36"/>
+    <param randomscaley="true"/>
+    <param randomscalevariationy="0.36"/>
+    <param randomscalez="true"/>
+    <param randomscalevariationz="0.36"/>
+    <param lockonterrain="true"/>
+    <materialpath name="LOD">base:data/objects/Brown Stone Set/Brown_Stone.nl2mat</materialpath>
+    <materialpath name="Material">base:data/objects/Brown Stone Set/Brown_Stone.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Chair.dae">
+      <clip distance="50"/>
+    </model>
+    <param randomroty="true"/>
+    <param randomrotvariationy="360"/>
+    <param lockonterrain="true"/>
+    <param adjustterrainslope="true"/>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <materialpath name="__Snow_">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+  </sceneobject>
+</root>

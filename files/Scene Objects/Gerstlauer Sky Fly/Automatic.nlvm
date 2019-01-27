@@ -1,0 +1,12 @@
+import Flatride.*; public class Automatic extends AutoPrograms{public Automatic(){ //DO NOT DELETE THIS LINE
+
+//START WRITING THE PROGRAM FROM HERE
+newProgram();
+program.at(3.0f).setArm(0.42f);
+program.at(14.0f).setArm(1.0f);
+program.at(78.4f).setArm(0.2f);
+program.endAt(84.0f);
+endProgram();
+//UP TO HERE
+
+}} //DO NOT DELETE THIS LINE

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Switch Type A.dae"/>
+    <param baseoffsetz="-1.81"/>
+    <param baseroty="180"/>
+    <usercolor>
+      <label>Track</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <usercolor>
+      <label>Supports</label>
+      <defaultcolor r="0.117647" g="0.117647" b="0.117647"/>
+    </usercolor>
+    <usercolor>
+      <label>Detail</label>
+      <defaultcolor r="0.117647" g="0.117647" b="0.117647"/>
+    </usercolor>
+    <script>
+      <classpath>attach to special track scripts</classpath>
+      <class>AttachToSpecialTrackByName</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="Bolt_Head">Textures/Bolt Head.nl2mat</materialpath>
+    <materialpath name="Detail_">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
+    <materialpath name="LSM_Plate1">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="Rail_Friction_Strip">Textures/Friction Strip Texture.nl2mat</materialpath>
+    <materialpath name="Supports_">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="Track_Colour">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="__Shiny">intern:data/materials/Chrome.nl2mat</materialpath>
+  </sceneobject>
+</root>

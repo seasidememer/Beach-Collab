@@ -1,0 +1,689 @@
+package Config;
+
+import com.nolimitscoaster.Tools;
+import nlvm.util.Vector;
+
+/**
+ * Opens and parses simple configuration files for usage with scripts.
+ * Although it should not be remarkable slow it is recommended to get the configuration values at script intializing only and not in a per frame method for example.
+ * Note that this class does not generate errors, if a value is not present or even if the resource could not be loaded the values will be 0 or an empty string. This is because the config file is meant to be an optional source while the script itself that uses it has default values.
+ * @author Daniel H
+ * @version 1.1
+ */
+public final class Reader{
+	private static final char COMMENT       = '#';
+	private static final char SECTION_BEGIN = '[';
+	private static final char SECTION_END   = ']';
+
+	private Vector sections;
+	//private Vector data;
+	private bool fileRead;
+
+	private final static String removeTrailingSpaceTab(String strIn){
+		int length = strIn.length();
+		for(int i = length-1; i >= 0; --i){
+			if(strIn.charAt(i) != ' ' && strIn.charAt(i) != '\t'){
+				return strIn.substring(0, i+1);
+			}
+		}
+		return strIn;
+	}
+
+	private final static String removeLeadingSpaceTab(String strIn){
+		int length = strIn.length();
+		for(int i = 0; i < length; ++i){
+			if(strIn.charAt(i) != ' ' && strIn.charAt(i) != '\t'){
+				return strIn.substring(i);
+			}
+		}
+		return strIn;
+	}
+
+	private final static String removeWrappingSpaceTab(String strIn){
+		return removeLeadingSpaceTab(removeTrailingSpaceTab(strIn));
+	}
+
+	/**
+	 * Splits a String using a delimiter String returns a Vector.
+	 */
+	private final static Vector splitString(String strIn, String delim){
+		int length = strIn.length();
+		int lengthDelim = delim.length();
+		Vector vecOut = new Vector();
+
+		int posDelim = 0, start = 0, i = 0;
+		for(i = 0; i < length; ++i){
+			if(strIn.charAt(i) == delim.charAt(posDelim % lengthDelim)){
+				++posDelim;
+			}else{
+				if(posDelim / lengthDelim > 0){
+					int end = i - posDelim + posDelim % lengthDelim;
+					String string = strIn.substring(start, end);
+					if(string.length() > 0){
+						vecOut.addElement(string);
+					}
+					start = i;
+				}
+				posDelim = 0;
+			}
+		}
+
+		if(posDelim / lengthDelim > 0){
+			//adds the element also in the case that a multi character delimiter is used at the end of the string
+			int end = i - posDelim + posDelim % lengthDelim;
+			vecOut.addElement(strIn.substring(start, end));
+		}else{
+			vecOut.addElement(strIn.substring(start, length));
+		}
+
+		return vecOut;
+	}
+
+	/**
+	 * Splits a String using white space delimiters (tab, space) one time, returns a Vector of maximum dimension 2.
+	 */
+	private final static Vector splitStringSpaceTabOnce(String strIn){
+		int length = strIn.length();
+		Vector vecOut = new Vector();
+
+		int posDelim = 0, start = 0, i = 0;
+		for(i = 0; i < length; ++i){
+			if(strIn.charAt(i) == ' ' || strIn.charAt(i) == '\t'){
+				//splits only one time
+				if(vecOut.size() < 1){
+					++posDelim;
+				}
+			}else{
+				if(posDelim > 0){
+					int end = i - posDelim;
+					String string = strIn.substring(start, end);
+					if(string.length() > 0){
+						vecOut.addElement(string);
+					}
+					start = i;
+				}
+				posDelim = 0;
+			}
+		}
+
+		if(posDelim > 0){
+			//adds the element also in the case that a delimiter is used at the end of the string
+			int end = i - posDelim;
+			vecOut.addElement(strIn.substring(start, end));
+		}else{
+			vecOut.addElement(strIn.substring(start, length));
+		}
+
+		return vecOut;
+	}
+
+	/**
+	 * Parses the file into a data vector, returns true if operation was successfull otherwise false.
+	 */
+	private final bool parseDataFile(String strFile){
+		if(strFile == null)
+			return false;
+
+		Vector data = new Vector();
+		Vector strLines = splitString(strFile, "\n");
+		String sectionName = "";
+
+		for(int i = 0; i < strLines.size(); ++i){
+			String curLine = (String) strLines.elementAt(i);
+			curLine = removeLeadingSpaceTab(curLine);
+			int curLineLength = curLine.length();
+
+			//ignore empty lines
+			if(curLineLength == 0){
+				continue;
+			}
+
+			switch (curLine.charAt(0)){
+				case SECTION_BEGIN:
+					//store previous section
+					Vector section = new Vector(2);
+					section.addElement(sectionName);
+					section.addElement(data);
+					sections.addElement(section);
+					data = new Vector();
+
+					if(curLine.charAt(curLineLength - 1) == SECTION_END){
+						sectionName = curLine.substring(1, curLineLength - 1);
+					}else{
+						//treat it also as a section when the closing SECTION_END character is missing
+						sectionName = curLine.substring(1, curLineLength);
+					}
+
+				case COMMENT:
+					continue;
+
+				default:
+					Vector strColumns = splitStringSpaceTabOnce(curLine);
+					// String columns = (String) strColumns.elementAt(0);
+					if(strColumns.size() > 1){
+						data.addElement(strColumns);
+					}
+			}
+		}
+
+		Vector section = new Vector(2);
+		section.addElement(sectionName);
+		section.addElement(data);
+		sections.addElement(section);
+
+		return true;
+	}
+
+	private static final bool isdigit(char c){
+		return c >= '0' && c <= '9';
+	}
+
+	/**
+	 * A simple (slow and inaccurate) float parsing method. Does not support exponentional notation yet ("13.37e-42"), just cases like "42", "4.2", ".42", "42.", "00042")
+	 */
+	private static final float atof(char[] str)
+	{
+		float a = 0.0f;
+		int e = 0;
+		char c = ' ';
+		int i = 0;
+		int expSign = 1;
+		int length = str.length;
+
+		while(i < length){
+			c = str[i++];
+			if(isdigit(c)){
+				a = a*10.0f + (c - '0');
+			}else if(c == '-'){
+				if(i == 1){
+					expSign = -1;
+				}else{
+					continue;
+				}
+			}else if(c == '.'){
+				while(i < length){
+					c = str[i++];
+					if(isdigit(c)){
+						a = a*10.0f + (c - '0');
+						e = e-1;
+					}
+				}
+			}
+			while(e > 0){
+				a *= 10.0;
+				e--;
+			}
+			while(e < 0){
+				a *= 0.1;
+				e++;
+			}
+		}
+		a *= expSign;
+
+		return a;
+	}
+
+
+	/**
+	 * A integer parsing method.
+	 */
+	private static final int atoi(char[] str){
+		int length = str.length;
+		if(length == 0)
+			return 0;
+
+		int i;
+		for(i = length - 1; i >= 0; --i){
+			if(!isdigit(str[i])){
+				if(i > 0 && (str[i] != '+' || str[i] != '-')){
+					break;
+				}
+			}
+		}
+
+		if(i == -1)
+			return Integer.parseInt(new String(str));
+
+		return 0;
+	}
+
+	/**
+	 * Returns the name of a the section at the specified index or an empty string if the index is out of range.
+	 */
+	private final String getSectionNameAt(int index){
+		Vector dataEntry = (Vector) sections.elementAt(index);
+		return (String) dataEntry.elementAt(0);
+	}
+
+	/**
+	 * Returns the index of a the section at the specified name or -1 if no index with that name exists.
+	 */
+	private final int getSectionIndex(String section){
+		int size = sections.size();
+
+		for(int i = size - 1; i >= 0; --i){
+			if(getSectionNameAt(i).equals(section)){
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Returns true if the index is in [0, vec.length[.
+	 */
+	private final static bool indexInRange(int index, Vector vec){
+		if(index < 0 || index >= vec.size())
+			return false;
+
+		return true;
+	}
+
+	/**
+	 * Returns the data of a section at the specified index.
+	 */
+	private final Vector getSectionDataAt(int index){
+		if(! indexInRange(index, sections))
+			return null;
+
+		Vector dataEntry = (Vector) sections.elementAt(index);
+		return (Vector) dataEntry.elementAt(1);
+	}
+
+	/**
+	 * Returns the option index for a specified option name and section index.
+	 */
+	private final int getOptionIndex(String option, int sectionIndex){
+		Vector data = getSectionDataAt(sectionIndex);
+		int size = data.size();
+		String strOut = "";
+
+		for(int i = size - 1; i >= 0; --i){
+			Vector dataEntry = (Vector) data.elementAt(i);
+			String key = (String) dataEntry.elementAt(0);
+			strOut = (String) dataEntry.elementAt(1);
+			if(key.equals(option)){
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Returns true if the specified file resource could be read properly.
+	 */
+	public final bool isFileRead(){
+		return fileRead;
+	}
+
+	/**
+	 * Returns the number of sections.
+	 */
+	public final int getNumberOfSections(){
+		return sections.size();
+	}
+
+	/**
+	 * Returns the section name at the specified index.
+	 */
+	public final String getSectionAt(int index){
+		if(! indexInRange(index, sections))
+			return "";
+
+		return getSectionNameAt(index);
+	}
+
+
+	// getNumberOfOptions variations:
+
+	/**
+	 * Returns the number of option for a specified section index.
+	 */
+	public final int getNumberOfOptions(int sectionIndex){
+		if(! indexInRange(sectionIndex, sections))
+			return -1;
+
+		Vector data = (Vector) getSectionDataAt(sectionIndex);
+		return data.size();
+	}
+
+	/**
+	 * Returns the number of option for a specified section name.
+	 */
+	public final int getNumberOfOptions(String section){
+		return getNumberOfOptions(getSectionIndex(section));
+	}
+
+	/**
+	 * Returns the number of options for the default section.
+	 */
+	public final int getNumberOfOptions(){
+		return getNumberOfOptions(0);
+	}
+
+
+
+	// isOptionPresent variations:
+	/**
+	 * Returns true if the specified option name is present at the specified section index.
+	 */
+	public final bool isOptionPresent(int sectionIndex, String option){
+		if(! indexInRange(sectionIndex, sections))
+			return false;
+
+		Vector data = (Vector) getSectionDataAt(sectionIndex);
+
+		int size = data.size();
+		for(int i = size - 1; i >= 0; --i){
+			Vector dataEntry = (Vector) data.elementAt(i);
+			String key = (String) dataEntry.elementAt(0);
+			if(key.equals(option)){
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns true if the specified option name is present in the default section.
+	 */
+	public final bool isOptionPresent(String option){
+		return isOptionPresent(0, option);
+	}
+
+
+	// getOptionAt variations:
+	/**
+	 * Returns the option name at the specified section index and option index or an empty string if it is not present.
+	 */
+	public final String getOptionAt(int sectionIndex, int optionIndex){
+		if(! indexInRange(sectionIndex, sections))
+			return "";
+
+		Vector data = (Vector) getSectionDataAt(sectionIndex);
+
+		if(! indexInRange(optionIndex, data))
+			return "";
+
+		Vector dataEntry = (Vector) data.elementAt(optionIndex);
+
+		return (String) dataEntry.elementAt(0);
+	}
+
+	/**
+	 * Returns the option name at the specified section name and option index or an empty string if it is not present.
+	 */
+	public final String getOptionAt(String section, int optionIndex){
+		return getOptionAt(getSectionIndex(section), optionIndex);
+	}
+
+	/**
+	 * Returns the option name for the specified option index in the default section or an empty string if it is not present.
+	 */
+	public final String getOptionAt(int optionIndex){
+		return getOptionAt(0, optionIndex);
+	}
+
+
+	// getValueForOptionAsString variations:
+	/**
+	 * Returns the associated value of an option as a string or an empty string if the option is not present.
+	 */
+	public final String getValForOptionAsString(int sectionIndex, int optionIndex){
+		if(! indexInRange(sectionIndex, sections))
+			return "";
+
+		Vector data = getSectionDataAt(sectionIndex);
+
+		if(! indexInRange(optionIndex, data))
+			return "";
+
+		String strOut = "";
+
+		Vector dataEntry = (Vector) data.elementAt(optionIndex);
+		String key = (String) dataEntry.elementAt(0);
+		strOut = (String) dataEntry.elementAt(1);
+
+		return strOut;
+	}
+
+	/**
+	 * Returns the associated value of an option as a string or an empty string if the option is not present.
+	 */
+	public final String getValForOptionAsString(String section, int optionIndex){
+		return getValForOptionAsString(getSectionIndex(section), optionIndex);
+	}
+
+	/**
+	 * Returns the associated value of an option as a string or an empty string if the option is not present.
+	 */
+	public final String getValForOptionAsString(int sectionIndex, String option){
+		return getValForOptionAsString(sectionIndex, getOptionIndex(option, sectionIndex));
+	}
+
+	/**
+	 * Returns the associated value of an option as a string or an empty string if the option is not present.
+	 */
+	public final String getValForOptionAsString(String section, String option){
+		return getValForOptionAsString(getSectionIndex(section), option);
+	}
+
+	/**
+	 * Returns the associated value of an option as a string or an empty string if the option is not present.
+	 */
+	public final String getValForOptionAsString(int optionIndex){
+		return getValForOptionAsString(0, optionIndex);
+	}
+
+	/**
+	 * Returns the associated value of an option as a string or an empty string if the option is not present.
+	 */
+	public final String getValForOptionAsString(String option){
+		return getValForOptionAsString(0, option);
+	}
+
+
+	// getValueForOptionAsFloat variations:
+	/**
+	 * Returns the associated value of an option as a float or 0.0f if the option is not present or the value could not be parsed as a float.
+	 */
+	public final float getValForOptionAsFloat(int sectionIndex, int optionIndex){
+		String string = getValForOptionAsString(sectionIndex, optionIndex);
+		return atof(string.toCharArray());
+	}
+
+	/**
+	 * Returns the associated value of an option as a float or 0.0f if the option is not present or the value could not be parsed as a float.
+	 */
+	public final float getValForOptionAsFloat(String section, int optionIndex){
+		String string = getValForOptionAsString(section, optionIndex);
+		return atof(string.toCharArray());
+	}
+
+	/**
+	 * Returns the associated value of an option as a float or 0.0f if the option is not present or the value could not be parsed as a float.
+	 */
+	public final float getValForOptionAsFloat(int sectionIndex, String option){
+		String string = getValForOptionAsString(sectionIndex, option);
+		return atof(string.toCharArray());
+	}
+
+	/**
+	 * Returns the associated value of an option as a float or 0.0f if the option is not present or the value could not be parsed as a float.
+	 */
+	public final float getValForOptionAsFloat(String section, String option){
+		String string = getValForOptionAsString(getSectionIndex(section), option);
+		return atof(string.toCharArray());
+	}
+
+	/**
+	 * Returns the associated value of an option as a float or 0.0f if the option is not present or the value could not be parsed as a float.
+	 */
+	public final float getValForOptionAsFloat(int optionIndex){
+		String string = getValForOptionAsString(0, optionIndex);
+		return atof(string.toCharArray());
+	}
+
+	/**
+	 * Returns the associated value of an option as a float or 0.0f if the option is not present or the value could not be parsed as a float.
+	 */
+	public final float getValForOptionAsFloat(String option){
+		String string = getValForOptionAsString(0, option);
+		return atof(string.toCharArray());
+	}
+
+
+	// getValueForOptionAsInt variations:
+	/**
+	 * Returns the associated value of an option as an int or 0 if the option is not present or the value could not be parsed as an int.
+	 */
+	public final int getValForOptionAsInt(int sectionIndex, int optionIndex){
+		String string = getValForOptionAsString(sectionIndex, optionIndex);
+		return atoi(string.toCharArray());
+
+	}
+
+	/**
+	 * Returns the associated value of an option as an int or 0 if the option is not present or the value could not be parsed as an int.
+	 */
+	public final int getValForOptionAsInt(String section, int optionIndex){
+		String string = getValForOptionAsString(section, optionIndex);
+		return atoi(string.toCharArray());
+	}
+
+	/**
+	 * Returns the associated value of an option as an int or 0 if the option is not present or the value could not be parsed as an int.
+	 */
+	public final int getValForOptionAsInt(int sectionIndex, String option){
+		String string = getValForOptionAsString(sectionIndex, option);
+		return atoi(string.toCharArray());
+	}
+
+	/**
+	 * Returns the associated value of an option as an int or 0 if the option is not present or the value could not be parsed as an int.
+	 */
+	public final int getValForOptionAsInt(String section, String option){
+		String string = getValForOptionAsString(section, option);
+		return atoi(string.toCharArray());
+	}
+
+	/**
+	 * Returns the associated value of an option as an int or 0 if the option is not present or the value could not be parsed as an int.
+	 */
+	public final int getValForOptionAsInt(int optionIndex){
+		String string = getValForOptionAsString(0, optionIndex);
+		return atoi(string.toCharArray());
+	}
+
+	/**
+	 * Returns the associated value of an option as an int or 0 if the option is not present or the value could not be parsed as an int.
+	 */
+	public final int getValForOptionAsInt(String option){
+		String string = getValForOptionAsString(0, option);
+		return atoi(string.toCharArray());
+	}
+
+
+
+	// getValueForOptionAsVector variations:
+	/**
+	 * Returns the associated value of an option as a vector for comma separated values.
+	 */
+	public final Vector getValForOptionAsVector(int sectionIndex, int optionIndex){
+		String string = getValForOptionAsString(sectionIndex, optionIndex);
+		return splitString(string, ",");
+
+	}
+
+	/**
+	 * Returns the associated value of an option as a vector for comma separated values.
+	 */
+	public final Vector getValForOptionAsVector(String section, int optionIndex){
+		String string = getValForOptionAsString(section, optionIndex);
+		return splitString(string, ",");
+	}
+
+	/**
+	 * Returns the associated value of an option as a vector for comma separated values.
+	 */
+	public final Vector getValForOptionAsVector(int sectionIndex, String option){
+		String string = getValForOptionAsString(sectionIndex, option);
+		return splitString(string, ",");
+	}
+
+	/**
+	 * Returns the associated value of an option as a vector for comma separated values.
+	 */
+	public final Vector getValForOptionAsVector(String section, String option){
+		String string = getValForOptionAsString(section, option);
+		return splitString(string, ",");
+	}
+
+	/**
+	 * Returns the associated value of an option as a vector for comma separated values.
+	 */
+	public final Vector getValForOptionAsVector(int optionIndex){
+		String string = getValForOptionAsString(0, optionIndex);
+		return splitString(string, ",");
+	}
+
+	/**
+	 * Returns the associated value of an option as a vector for comma separated values.
+	 */
+	public final Vector getValForOptionAsVector(String option){
+		String string = getValForOptionAsString(0, option);
+		return splitString(string, ",");
+	}
+
+
+	// treatment of Vector values
+	/**
+	 * Returns a vector value as a String at the specified index.
+	 */
+	public static final String getStringAt(int index, Vector vector){
+		if(! indexInRange(index, vector))
+			return "";
+
+		return removeWrappingSpaceTab((String) vector.elementAt(index));
+	}
+
+	/**
+	 * Returns the associated value of a Vector as an int or 0 if the index is out of range or the value could not be parsed as an int.
+	 */
+	public static final int getIntAt(int index, Vector vector){
+		if(! indexInRange(index, vector))
+			return 0;
+
+		return atoi(getStringAt(index, vector).toCharArray());
+	}
+
+	/**
+	 * Returns the associated value of a Vector as a float or 0.0f the index is out of range or the value could not be parsed as a float.
+	 */
+	public static final float getFloatAt(int index, Vector vector){
+		if(! indexInRange(index, vector))
+			return 0.f;
+
+		return atof(getStringAt(index, vector).toCharArray());
+	}
+
+
+	/**
+	 * opens the specified resource and returns true if the opening and parsing was successfull.
+	 */
+	public final bool openResource(String resourceId){
+		//data = new Vector();
+		sections = new Vector();
+		return parseDataFile(Tools.loadTextFileFromResourceId(resourceId));
+	}
+
+	public Reader(String resourceId){
+		fileRead = openResource(resourceId);
+	}
+
+	public Reader(){}
+
+}

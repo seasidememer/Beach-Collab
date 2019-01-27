@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="skyfly_pad.dae"/>
+    <usercolor>
+      <label></label>
+      <defaultcolor r="0" g="0.733333" b="1"/>
+    </usercolor>
+    <usercolor>
+      <label></label>
+      <defaultcolor r="0.678431" g="0.678431" b="0.678431"/>
+    </usercolor>
+    <usercolor>
+      <label></label>
+      <defaultcolor r="0.176471" g="0.176471" b="0.176471"/>
+    </usercolor>
+    <materialpath name="Aluminum">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Metal_Aluminum_Anodized">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="__auto_14">AS Textures/Metal/Metal Roof/Metal Roof.nl2mat</materialpath>
+    <materialpath name="__auto_17">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
+    <materialpath name="__auto_6">AS Textures/Brick/Brick 02/Brick 02.nl2mat</materialpath>
+    <materialpath name="__auto_9">AS Textures/Tarmac/Tarmac1/Tarmac 1.nl2mat</materialpath>
+    <materialpath name="forrest_ground_03_diff_1k">AS Textures/Terrain/Brown Dirt/Brown Dirt.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,356 @@
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+
+public final class Ladder extends Script{
+	private static final String MARKER_TOP_VIEW = "TOP_VIEW";
+	private static final String MARKER_TOP_EXIT = "TOP_EXIT";
+	private static final String MARKER_TOP_END = "TOP_END";
+
+	private static final String MARKER_BOTTOM_VIEW = "BOTTOM_VIEW";
+	private static final String MARKER_BOTTOM_EXIT = "BOTTOM_EXIT";
+	private static final String MARKER_BOTTOM_END = "BOTTOM_END";
+
+	private static final String MARKER_RUNG_DISTANCE = "RUNG_DISTANCE";
+
+	private static final float ANIMATION_SPEED = 7;
+	private static final float ANIMATION_AUDIO_PHASE_DOWN = 0;
+	private static final float ANIMATION_AUDIO_PHASE_UP = 0.6f;
+
+	private static final String ERV_LABEL = "ladder";
+	private static final float ERV_ENTER_RANGE = 1.2f;
+
+	private static final String SOUNDRES_STEP = "step";
+	private static final float SOUND_STEP_FADE = 0.35f;
+
+	private Vector3f dirExitView = new Vector3f(0, 0, -1);
+
+	private Matrix4x4f mTopView;
+	private Vector3f posTopView;
+	private Vector3f posTopExit;
+	private ExternalRideView ervTop;
+
+	private Matrix4x4f mBottomView;
+	private Vector3f posBottomView;
+	private Vector3f posBottomExit;
+	private ExternalRideView ervBottom;
+
+	private float sqrDistanceBetweenViews = 0;
+
+	private bool activeErvInLastFrame = false;
+	private Vector3f posCurrentErv = new Vector3f();
+	private Vector3f posCurrentReference = new Vector3f();
+	private Vector3f dirMovement = new Vector3f();
+	private Matrix4x4f mSharedCamera = new Matrix4x4f();
+
+	private StreamedSound[] soundStep;
+	private int lastSoundSelection;
+
+	private bool newAnimationCycle = false;
+	private float animationTime = 0;
+	private float movementStrength = 0;
+	private float movementVariation = 0.5f;
+
+	private SceneObject getScoFromParentEntity(){
+		SceneObject sco = sim.getSceneObjectForEntityId(getParentEntityId());
+		if(sco == null){
+			System.err.println("could not find scenery object");
+			System.out.println("this script has to be a NL2SCO script");
+			System.throwRuntimeException("USER CONFIGURATION ERROR");
+		}
+		return sco;
+	}
+
+	private static SceneObjectElement getElementOnSco(
+		SceneObject sco, String name
+	){
+		SceneObjectElement element;
+		element = sco.getElementForName(name);
+		if(element == null){
+			System.err.println(
+				"could not find required scenery object element "
+				+ name
+				+ " on scenery object "
+				+ sco.getName()
+			);
+			System.throwRuntimeException("USER CONFIGURATION ERROR");
+		}
+		return element;
+	}
+
+	private void setupAbsoluteExitViewDirection(SceneObject sco){
+		sco.getMatrix().multVector3x3(dirExitView, dirExitView);
+		dirExitView.y = 0;
+	}
+
+	private void setupTopViewPositionsFromMarkers(
+		SceneObject sco, float yScale
+	){
+		SceneObjectElement elmMarkerTopEnd
+			= getElementOnSco(sco, MARKER_TOP_END);
+		SceneObjectElement elmMarkerTopView
+			= getElementOnSco(sco, MARKER_TOP_VIEW);
+		SceneObjectElement elmMarkerTopExit
+			= getElementOnSco(sco, MARKER_TOP_EXIT);
+
+		elmMarkerTopEnd.setVisible(false);
+		elmMarkerTopView.setVisible(false);
+		elmMarkerTopExit.setVisible(false);
+
+		//automatically corrects relative y positions when element hierarchy is set prperly
+		elmMarkerTopEnd.setScale(1, 1, 1/yScale);
+
+		mTopView = elmMarkerTopView.getAbsoluteMatrix();
+		posTopView = mTopView.getTrans();
+		posTopExit = elmMarkerTopExit.getAbsoluteMatrix().getTrans();
+	}
+
+	private void setupBottomViewPositionsFromMarkers(
+		SceneObject sco, float yScale
+	){
+		SceneObjectElement elmMarkerBottomEnd
+			= getElementOnSco(sco, MARKER_BOTTOM_END);
+		SceneObjectElement elmMarkerBottomView
+			= getElementOnSco(sco, MARKER_BOTTOM_VIEW);
+		SceneObjectElement elmMarkerBottomExit
+			= getElementOnSco(sco, MARKER_BOTTOM_EXIT);
+
+		elmMarkerBottomEnd.setVisible(false);
+		elmMarkerBottomView.setVisible(false);
+		elmMarkerBottomExit.setVisible(false);
+
+		//automatically corrects relative y positions when element hierarchy is set prperly
+		elmMarkerBottomEnd.setScale(1, 1, 1/yScale);
+
+		mBottomView = elmMarkerBottomView.getAbsoluteMatrix();
+		posBottomView = mBottomView.getTrans();
+		posBottomExit = elmMarkerBottomExit.getAbsoluteMatrix().getTrans();
+	}
+
+	private void setupMovementAnimation(SceneObject sco){
+		//keep this order!
+		dirMovement.set(posTopView);
+		dirMovement.sub(posBottomView);
+		sqrDistanceBetweenViews = dirMovement.sqrLength();
+		dirMovement.normalize();
+
+		SceneObjectElement elmMarkerRungDistance =
+			getElementOnSco(sco, MARKER_RUNG_DISTANCE);
+		elmMarkerRungDistance.setVisible(false);
+
+		Vector3f scaleReadout = new Vector3f();
+		Tools.matrixToPitchHeadBankPosScale(
+			elmMarkerRungDistance.getAbsoluteMatrix(), null, null, scaleReadout
+		);
+
+		movementStrength
+			= scaleReadout.z * ANIMATION_SPEED / (float) (2 * Math.PI);
+	}
+
+	private ExternalRideView initNewErv(
+		Vector3f enteringPos, float enteringRange,
+		String label
+	){
+		ExternalRideView erv = sim.createExternalRideView();
+		erv.setEnterWarpPoint(enteringPos, enteringRange);
+		erv.setLabel(label);
+		erv.setExitViewEnabled(true);
+		erv.setExitViewAbsolute(true);
+		erv.setExitViewLookDirection(dirExitView);
+		return erv;
+	}
+
+	private static StreamedSound loadSoundFromResource(String resourceId){
+		StreamedSound sound = StreamedSound.loadFromResourceId(resourceId);
+		if(sound == null){
+			System.err.println(
+				"could not find or load a required sound from the resource "
+				+ resourceId
+			);
+			System.throwRuntimeException("USER CONFIGURATION ERROR");
+		}
+		sound.setGain(0.5f);
+		return sound;
+	}
+
+	public final bool onInit(){
+		SceneObject sco = getScoFromParentEntity();
+
+		Vector3f scaleReadout = new Vector3f();
+		sco.getScale(scaleReadout);
+
+		setupAbsoluteExitViewDirection(sco);
+		setupTopViewPositionsFromMarkers(sco, scaleReadout.y);
+		setupBottomViewPositionsFromMarkers(sco, scaleReadout.y);
+		setupMovementAnimation(sco);
+
+		ervTop = initNewErv(posTopView, ERV_ENTER_RANGE, ERV_LABEL);
+		ervBottom = initNewErv(posBottomView, ERV_ENTER_RANGE, ERV_LABEL);
+		soundStep = new StreamedSound[]{
+			loadSoundFromResource(SOUNDRES_STEP + 0),
+			loadSoundFromResource(SOUNDRES_STEP + 1),
+			loadSoundFromResource(SOUNDRES_STEP + 2),
+			loadSoundFromResource(SOUNDRES_STEP + 3)
+		};
+		lastSoundSelection = 0;
+
+		return true;
+	}
+
+	private void resetErv(
+		ExternalRideView erv, Matrix4x4f startMatrix, Vector3f startPos
+	){
+		newAnimationCycle = true;
+		animationTime = 0;
+		mSharedCamera.initMatrix(startMatrix);
+		posCurrentReference.set(startPos);
+		posCurrentErv.set(startPos);
+		erv.setCameraMatrix(mSharedCamera);
+	}
+
+	private void resetErvTop(){
+		resetErv(ervTop, mTopView, posTopView);
+	}
+
+	private void resetErvBottom(){
+		resetErv(ervBottom, mBottomView, posBottomView);
+	}
+
+	private static void setMatrixToPosition(
+		Matrix4x4f matrix, Vector3f position
+	){
+		matrix.setElemAt(3, 0, position.x);
+		matrix.setElemAt(3, 1, position.y);
+		matrix.setElemAt(3, 2, position.z);
+	}
+
+	private void updateErvPos(ExternalRideView erv, Vector3f pos){
+		setMatrixToPosition(mSharedCamera, pos);
+		erv.setCameraMatrix(mSharedCamera);
+	}
+
+	private void startNewRandomStepSound(){
+		int randomSoundSelection = (int) (Math.random() * soundStep.length);
+
+		if(randomSoundSelection == lastSoundSelection){
+			soundStep[lastSoundSelection].stop();
+		}else{
+			soundStep[lastSoundSelection].stopFaded(SOUND_STEP_FADE);
+		}
+		soundStep[randomSoundSelection].play();
+
+		lastSoundSelection = randomSoundSelection;
+	}
+
+	private float moveAnimation(float timeDifference, float audioPhase){
+		animationTime += timeDifference;
+		float animationWave = (float) Math.sin(ANIMATION_SPEED * animationTime);
+		if(newAnimationCycle && animationWave > audioPhase){
+			newAnimationCycle = false;
+			startNewRandomStepSound();
+		}else if(animationWave < -audioPhase){
+			newAnimationCycle = true;
+		}
+		return
+			movementStrength
+			* (
+				animationTime
+				-
+				movementVariation * animationWave / ANIMATION_SPEED
+			);
+	}
+
+	private void moveErv(
+		ExternalRideView erv, bool moveDown, float timeDifference
+	){
+		float moveAmount;
+		if(moveDown){
+			moveAmount = moveAnimation(
+				-timeDifference, ANIMATION_AUDIO_PHASE_DOWN
+			);
+		}else{
+			moveAmount = moveAnimation(
+				timeDifference, ANIMATION_AUDIO_PHASE_UP
+			);
+		}
+
+		posCurrentErv.x = posCurrentReference.x + dirMovement.x * moveAmount;
+		posCurrentErv.y = posCurrentReference.y + dirMovement.y * moveAmount;
+		posCurrentErv.z = posCurrentReference.z + dirMovement.z * moveAmount;
+
+		updateErvPos(erv, posCurrentErv);
+	}
+
+	private void moveErvUp(ExternalRideView erv, float timeDifference){
+		moveErv(erv, false, timeDifference);
+	}
+
+	private void moveErvDown(ExternalRideView erv, float timeDifference){
+		moveErv(erv, true, timeDifference);
+	}
+
+	private void processErvMovement(ExternalRideView erv, float timeDifference){
+		bool movingDownRequested = Button.isPressed(Button.MOVE_BACKWARD);
+		bool movingUpRequested = Button.isPressed(Button.MOVE_FORWARD);
+
+		float sqrDistanceToTop = posCurrentErv.sqrDistance(posTopView);
+		float sqrDistanceToBottom = posCurrentErv.sqrDistance(posBottomView);
+		bool atTopPos = sqrDistanceToTop == 0;
+		bool atBottomPos = sqrDistanceToBottom == 0;
+
+		if(atTopPos){
+			erv.setExitViewPosition(posTopExit);
+			if(movingDownRequested){
+				moveErvDown(erv, timeDifference);
+			}
+
+		}else if(atBottomPos){
+			erv.setExitViewPosition(posBottomExit);
+			if(movingUpRequested){
+				moveErvUp(erv, timeDifference);
+			}
+
+		}else{
+			if(movingUpRequested){
+				moveErvUp(erv, timeDifference);
+				if(sqrDistanceToBottom > sqrDistanceBetweenViews){
+					posCurrentErv.set(posTopView);
+					updateErvPos(erv, posCurrentErv);
+				}
+				erv.setExitViewPosition(posTopExit);
+			}else if(movingDownRequested){
+				moveErvDown(erv, timeDifference);
+				if(sqrDistanceToTop > sqrDistanceBetweenViews){
+					posCurrentErv.set(posBottomView);
+					updateErvPos(erv, posCurrentErv);
+				}
+				erv.setExitViewPosition(posBottomExit);
+			}
+		}
+	}
+
+	public final void onNextFrame(float tick){
+		if(ervBottom.isActive()){
+			if(!activeErvInLastFrame){
+				activeErvInLastFrame = true;
+				resetErvBottom();
+			}
+			processErvMovement(ervBottom, tick);
+
+		}else if(ervTop.isActive()){
+			if(!activeErvInLastFrame){
+				activeErvInLastFrame = true;
+				resetErvTop();
+			}
+			processErvMovement(ervTop, tick);
+
+		}else{
+			activeErvInLastFrame = false;
+
+			//should be the same for both, saves a second function call
+			bool inWalkMode = ervBottom.isInWalkMode();
+
+			ervBottom.setEnterWarpPointEnabled(inWalkMode);
+			ervTop.setEnterWarpPointEnabled(inWalkMode);
+		}
+	}
+}

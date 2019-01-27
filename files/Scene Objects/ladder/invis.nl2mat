@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <transparency mode="opaque"/>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <materialtexture/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <option noeditorrender="true"/>
+    <option nonsolid="true"/>
+  </material>
+</root>

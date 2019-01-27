@@ -1,0 +1,88 @@
+package Flatride;
+import com.nolimitscoaster.*;
+import nlvm.math3d.Vector3f;
+import nlvm.math3d.Matrix4x4f;
+
+public abstract class Rotor{
+	public                 Vector3f               rotAxis        = new Vector3f(0,1,0);
+	public                 float                  extSpeed       = 0;
+	public                 float                  soundMoveThres = 0.1f;
+	public                 StaticSound            soundMove      = null;
+	
+	protected              Vector3f               axis           = new Vector3f();
+	protected              float                  phi            = 0;
+	protected              SceneObjectElement     elmRotator     = null;
+	protected              float                  curSpeed       = 0;
+	protected              float                  curAcc         = 0;
+	protected			   bool                   absRot         = false;
+	
+	protected static       float                  PI             = (float)Math.PI;
+	
+	public Rotor(SceneObjectElement element){
+		elmRotator = element;
+	}
+	
+	public void applyObjectYRotToAxis(float yRot){
+		Matrix4x4f M = new Matrix4x4f();
+		M.initYRot(yRot);
+		M.multVector3x3(rotAxis, axis);
+	}
+	
+	public bool atPos(float pos, float tolerance){
+		float rot = getRotation();
+		return (curSpeed == 0 && rot<=pos+tolerance && rot>=pos-tolerance);
+	}
+	
+	public float getRotation(){
+		return 2*PI*(phi/2/PI-(float)Math.floor(phi/2/PI+0.5f));
+	}
+	
+	public float getCurSpeed(){
+		return curSpeed;
+	}
+	
+	public Vector3f getNormAccVector(Vector3f pos){
+		Vector3f r = getRadiusVector(pos);
+		float acc = r.length()*(curSpeed+extSpeed)*(curSpeed+extSpeed);
+		r.normalize();
+		r.mul(acc);
+		return r;	
+	}
+	
+	public Vector3f getTanAccVector(Vector3f pos){
+		Vector3f tanAcc = cross(getRadiusVector(pos),axis);
+		tanAcc.mul(curAcc);
+		return tanAcc;
+	}
+	
+	protected Vector3f getRadiusVector(Vector3f pos){
+		Vector3f o = elmRotator.getAbsoluteMatrix().getTrans();
+		Vector3f r = axis.dup();
+		r.mul(dot(o, axis) - dot(pos, axis));
+		r.add(pos);
+		r.sub(o);
+		return r;
+	}
+	
+	protected void update(float tick){
+		if(soundMove!=null){
+			if(Math.abs(curSpeed)>soundMoveThres){
+				soundMove.playLoop();
+			}else{
+				soundMove.stopFaded(0.3f);
+			}
+		}
+		curSpeed+=curAcc*tick;
+		if(!absRot)
+			phi+=curSpeed*tick;
+		elmRotator.setRotation(phi, rotAxis);
+	}
+	
+	protected static final float dot(Vector3f v1, Vector3f v2){
+		return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
+	}
+	
+	protected static final Vector3f cross(Vector3f v1, Vector3f v2){
+		return new Vector3f(v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x*v2.z, v1.x*v2.y - v1.y*v2.x);
+	}
+}

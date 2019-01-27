@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>Ambient=add(0.2,tex0);
+Result=mul(color,tex0);</shadercore>
+      <custommaterial>
+        <diffuse r="0.415686" g="0.415686" b="0.415686"/>
+        <ambient r="0.415686" g="0.415686" b="0.415686"/>
+        <specular r="0.301961" g="0.301961" b="0.301961"/>
+        <shininess exponent="36.2985"/>
+      </custommaterial>
+      <reflection fresnelconst="-0.1" fresnelvar="0.3"/>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <map>Gondola-AO.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

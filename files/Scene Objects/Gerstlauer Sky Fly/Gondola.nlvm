@@ -1,0 +1,408 @@
+/*
+Instructions:
+
+The moment of inertia factor and pendulum length are combined in the factor C (higher value -> more rapdid gondola movement), the value F specifies a constant friction values (higher value -> faster gondola stopping). D is the drag coefficient for the wind influence of the wings (higher value -> wings have stronger influence).
+
+*/
+
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+
+public class Gondola{
+
+	private static final float C      = 0.21f;  //moment of inertia factor and pendulum length
+	private static final float F      = 0.09f;  //constant friction value
+	private static final float F_DAMP = 0.58f;  //damping friction value
+	private static final float D      = 0.05f;  //drag coefficient
+
+	//G value, gondola normal, and rotation axis
+	private static final Vector3f G = new Vector3f(0,-9.81f,0);
+	private static final Vector3f N = new Vector3f(0,-1,0);
+	private static final Vector3f A = new Vector3f(0,0,-1);
+
+	private Vector3f v3PosCur, v3PosLast, v3SpeedCur, v3WindSpeed, v3WindDirection, v3SpeedLast, v3Acc, v3Norm, v3Axis, v3M;
+	private Matrix4x4f mAbs;
+
+	private static final float BRAKE_ROT = 0.35f;
+	private float rotPos = 0.f;
+	private float rotVel = 0.f;
+	private float rotAcc = 0.f;
+	private float fr = 0.f;
+
+	private bool brake = true;
+	private bool damp = false;
+	private float brakeT = 1;
+
+	//wing values for controlling the wind influenced rotation
+	private float wingLVal = 0.5f;
+	private float wingRVal = 0.5f;
+
+	private SceneObjectElement elm, elmWingL, elmWingR;
+
+	private static final Vector3f WING_ROT_MAX = new Vector3f(0,0,(float)Math.toRadians(40));
+	private static final Vector3f WING_ROT_MIN = new Vector3f(0,0,(float)Math.toRadians(-40));
+	private static final Vector3f WING_ROT_PARK = new Vector3f(0,0,0);
+
+	private Vector3f wingLRot = new Vector3f();
+	private Vector3f wingRRot = new Vector3f();
+	private Vector3f wingLRotPark = new Vector3f();
+	private Vector3f wingRRotPark = new Vector3f();
+	private bool bParkWings = false;
+	private bool bAiActive = false;
+
+	private static final float AI_SKILL_LOOPER_CHANCE = 0.13f;
+
+	private bool ghostsModeWaiting;
+	private bool ghostIsLooper;
+
+	private float aiT = 0.0f;
+	private float aiTSpeed = 0.0f;
+	private bool aiRotateRight;
+	private float parkWingsT = 0.0f;
+
+	private StaticSound wingLEnd, wingREnd, sndCompress, sndSlide, sndClonk;
+
+	private Simulator sim;
+
+
+	public Gondola(SceneObjectElement elm, SceneObjectElement elmWingL, SceneObjectElement elmWingR, Simulator sim){
+		this.elm = elm;
+		this.elmWingL = elmWingL;
+		this.elmWingR = elmWingR;
+		this.sim = sim;
+		v3WindDirection = new Vector3f((float)Math.sin(sim.getCurWindAzimuth()), 0, -(float)Math.cos(sim.getCurWindAzimuth()));
+		v3WindSpeed = new Vector3f(v3WindDirection);
+		v3WindSpeed.mul(-sim.getCurWindSpeed());
+		v3PosCur = elm.getAbsoluteMatrix().getTrans();
+		v3PosLast = elm.getAbsoluteMatrix().getTrans();
+		v3SpeedCur = new Vector3f(0,0,0);
+		v3SpeedLast = new Vector3f(0,0,0);
+		v3Acc = new Vector3f(G);
+		v3Norm = new Vector3f(N);
+		v3Axis = new Vector3f(A);
+		v3M = new Vector3f();
+
+		wingLEnd  = StaticSound.loadFromFile("wing-stop.wav",0);
+		wingREnd  = StaticSound.loadFromFile("wing-stop.wav",0);
+		wingLEnd .setDistanceParameters(0.4f, 1.5f);
+		wingREnd .setDistanceParameters(0.4f, 1.5f);
+
+		generateNewRandomAiValues();
+
+		sndCompress = StaticSound.loadFromFile("compress.wav",0);
+		sndCompress.setDistanceParameters(0.4f, 1.5f);
+		sndCompress.setGain(0.3f);
+
+		sndSlide = StaticSound.loadFromFile("slide.wav",0);
+		sndSlide.setDistanceParameters(0.4f, 1.5f);
+
+		sndClonk  = StaticSound.loadFromFile("clonk.wav",0);
+		sndClonk.setDistanceParameters(0.4f, 1.5f);
+	}
+
+	public final Vector3f getPos(){
+		return elm.getAbsoluteMatrix().getTrans();
+	}
+
+	public void generateNewRandomAiValues(){
+		if(Math.random() < AI_SKILL_LOOPER_CHANCE){
+			ghostIsLooper = true;
+		}else{
+			ghostIsLooper = false;
+		}
+		aiT = (float) Math.random();
+		aiTSpeed = (float) (Math.random()*0.2 + 0.1);		
+	}
+
+	public void disableGhosts(){
+		if(bAiActive){
+			bAiActive = false;
+			parkWings();
+			generateNewRandomAiValues();
+		}
+	}
+
+	public void enableGhosts(){
+		if(!bAiActive){
+			bAiActive = true;
+			aiT = 0;
+		}
+	}
+
+	public void parkWings(){
+		bParkWings = true;
+	}
+
+	private final void setLeftWing(){
+		wingLRot.lerp(wingLVal, WING_ROT_MIN, WING_ROT_MAX);
+		elmWingL.setRotation(wingLRot);
+	}
+
+	public final void leftWingDown(float tick){
+		float lastVal = wingLVal;
+
+		wingLVal += tick*2;
+
+		if(lastVal < 1 && wingLVal >= 1){
+			wingLEnd.setPosition(elmWingL.getAbsoluteMatrix().getTrans());
+			wingLEnd.play();
+		}
+
+		if(wingLVal > 1)
+			wingLVal = 1;
+
+		setLeftWing();
+	}
+
+	public final void leftWingUp(float tick){
+		float lastVal = wingLVal;
+
+		wingLVal -= tick*2;
+
+		if(lastVal > 0 && wingLVal <= 0){
+			wingLEnd.setPosition(elmWingL.getAbsoluteMatrix().getTrans());
+			wingLEnd.play();
+		}
+
+		if(wingLVal < 0)
+			wingLVal = 0;
+
+		setLeftWing();
+	}
+
+	private final void setRightWing(){
+		wingRRot.lerp(wingRVal, WING_ROT_MIN, WING_ROT_MAX);
+		elmWingR.setRotation(wingRRot);
+	}
+
+	public final void rightWingUp(float tick){
+		float lastVal = wingRVal;
+
+		wingRVal += tick*2;
+
+		if(lastVal < 1 && wingRVal >= 1){
+			wingREnd.setPosition(elmWingR.getAbsoluteMatrix().getTrans());
+			wingREnd.play();
+		}
+
+		if(wingRVal > 1)
+			wingRVal = 1;
+
+		setRightWing();
+	}
+
+	public final void rightWingDown(float tick){
+		float lastVal = wingRVal;
+
+		wingRVal -= tick*2;
+
+		if(lastVal > 0 && wingRVal <= 0){
+			wingREnd.setPosition(elmWingR.getAbsoluteMatrix().getTrans());
+			wingREnd.play();
+		}
+
+		if(wingRVal < 0)
+			wingRVal = 0;
+
+		setRightWing();
+	}
+
+	public final void setDamp(bool b){
+		damp = b;
+		if(damp){
+			fr = F_DAMP;
+			sndCompress.play();
+			sndCompress.setPosition(elm.getAbsoluteMatrix().getTrans());
+
+			sndSlide.playLoop();
+			sndSlide.setPosition(elm.getAbsoluteMatrix().getTrans());
+		}else{
+			sndSlide.stopFaded(0.3f);
+			fr = F;
+		}
+	}
+
+	public final void setBrake(bool b){
+		if(brake == b) return;
+
+		brake = b;
+		if(brake){
+			sndSlide.stopFaded(0.5f);
+		}else{
+			setDamp(false);
+			brakeT = 0.f;
+		}
+	}
+
+	public final void setGhostsModeWaiting(){
+		ghostsModeWaiting = true;
+	}
+
+	public final void setGhostsModeRiding(){
+		ghostsModeWaiting = false;
+	}
+
+	private final void processGhosts(float tick){
+		if(!ghostsModeWaiting && ghostIsLooper){
+			aiRotateRight = rotVel < 0;
+		}else{
+			if(ghostsModeWaiting){
+				aiT += aiTSpeed * tick;
+				if(aiT > 1){
+					aiT = aiT - 1;
+					aiRotateRight = Math.random() > 0.5;
+				}
+			}else{
+				aiT += aiTSpeed * tick;
+				if(aiT > 1){
+					aiT = aiT - 1;
+				}
+				aiRotateRight = (rect(aiT) == 1);				
+			}
+		}
+		if(aiRotateRight){
+			leftWingUp(tick);
+			rightWingUp(tick);
+		}else{
+			leftWingDown(tick);
+			rightWingDown(tick);
+		}
+	}
+
+	public final void update(float tick){
+		if(bParkWings){
+			//wing parking when not in seat
+			if(parkWingsT > 1.f){
+				bParkWings = false;
+				parkWingsT = 0;
+				wingLVal = 0.5f;
+				wingRVal = 0.5f;
+				wingLRot.set(WING_ROT_PARK);
+				wingRRot.set(WING_ROT_PARK);
+				elmWingL.setRotation(wingLRot);
+				elmWingR.setRotation(wingRRot);
+			}
+			wingLRotPark.lerp(easeOutElastic(parkWingsT), wingLRot, WING_ROT_PARK);
+			wingRRotPark.lerp(easeOutElastic(parkWingsT), wingRRot, WING_ROT_PARK);
+			elmWingL.setRotation(wingLRotPark);
+			elmWingR.setRotation(wingRRotPark);
+			parkWingsT+=tick*0.4f;
+		}
+
+		//free gondola swinging acceleration
+		mAbs = elm.getAbsoluteMatrix();
+		v3PosLast.set(v3PosCur);
+		v3PosCur = mAbs.getTrans();
+
+		v3SpeedLast.set(v3SpeedCur);
+		v3SpeedCur.set(v3PosCur);
+		v3SpeedCur.sub(v3PosLast);
+		v3SpeedCur.div(tick);
+
+		v3Acc.set(v3SpeedLast);
+		v3Acc.sub(v3SpeedCur);
+		v3Acc.div(tick);
+		v3Acc.add(G);
+
+		mAbs.invert();
+		mAbs.multVector3x3(v3Acc,v3Acc);
+
+		rotAcc = v3Acc.y*C;
+
+		//wind influence controlled by wing positions
+		v3WindSpeed.set(v3WindDirection);
+		v3WindSpeed.mul(-sim.getCurWindSpeed());
+		v3WindSpeed.sub(v3SpeedCur);
+		mAbs.multVector3x3(v3WindSpeed,v3WindSpeed);
+		rotAcc += (wingLVal - wingRVal)*v3WindSpeed.x*D*(1 - (float)Math.abs(rotVel*rotVel/48.0f));
+
+		//rotational veolocity caused by acceleration
+		rotVel += rotAcc*tick;
+
+		//simulated stiction by fixing gondola
+		if((float)Math.abs(rotVel)<0.01f && (float)Math.abs(rotAcc)<0.01f){
+			rotVel = 0;
+		}else{
+			rotVel -= sign(rotVel)*fr*tick;
+		}
+
+		//rotation caused by velocity
+		rotPos+=rotVel*tick;
+
+		if(damp){
+			sndCompress.setPosition(v3PosCur);
+			sndSlide.setPosition(v3PosCur);
+			float rotVelAbs = (float) Math.abs(rotVel);
+			sndSlide.setGain((float) Math.min(-0.2f + rotVelAbs / 3.14f, 0.3f));
+			sndSlide.setPitch(0.7f + rotVelAbs / 8.28f);
+			if(!brake){
+				if(rotPos > -0.1f && rotPos < 0.1f){
+					if(rotVelAbs > 0.1f){
+						sndClonk.setPosition(v3PosCur);
+						sndClonk.play();
+					}
+				}
+			}
+		}
+
+		if(brake){
+			//gondola braking animation
+			float ramp = (float)Tools.cubicRamp(brakeT*1.05f);
+			if(ramp >= 1)
+				ramp = 1;
+
+			rotPos = (BRAKE_ROT - easeOutElastic(brakeT*1.4f-0.4f) * BRAKE_ROT ) * ramp + (1 - ramp) * rotPos;
+
+			if(brakeT > 0.3f && brakeT < 0.4f){
+				sndClonk.setPosition(v3PosCur);
+				sndClonk.play();
+			}
+
+			if(brakeT >= 1){
+				rotPos = 0;
+				rotVel = 0;
+				brakeT = 1;
+			}else{
+				// brakeT += tick*0.05f;
+				brakeT += tick*0.09f;
+			}
+		}
+
+		if(bAiActive){
+			processGhosts(tick);
+		}
+
+		//keep rot position in -180° +180° degree range
+		if(rotPos>(float)Math.PI){
+			rotPos = rotPos - (float)(2*Math.PI);
+		}
+		if(rotPos<-(float)Math.PI){
+			rotPos = rotPos + (float)(2*Math.PI);
+		}
+
+		elm.setRotation(rotPos, 1, 0, 0);
+	}
+
+	private static final int rect(float t){
+		if(t < 0.5f){
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+
+	private static final float sign(float f){
+		if(f<0.f) return -1;
+		return 1;
+	}
+
+	private static final float easeOutElastic(double t){
+		if(t<0) return 0;
+		if(t>1) return 1;
+		// double p = 0.2;
+		double p = 0.4;
+		double e = -8;
+		return (float)(Math.pow(2,e*t) * Math.sin((t-p/4)*(2*Math.PI)/p) + 1);
+	}
+
+}

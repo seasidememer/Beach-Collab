@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="door.dae"/>
+    <description>A simple door that can be opened and closed using the the &apos;ACTION&apos; button in NL2 (left mouse click by default)</description>
+    <preview>preview.png</preview>
+    <script>
+      <classpath></classpath>
+      <class>DoorClickL</class>
+    </script>
+    <materialpath name="Door">Door.nl2mat</materialpath>
+    <materialpath name="Frame">Frame.nl2mat</materialpath>
+    <materialpath name="Handle">Handle.nl2mat</materialpath>
+  </sceneobject>
+</root>

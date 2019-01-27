@@ -1,0 +1,774 @@
+/**
+ * Sky Fly Script
+ *
+ * version: 1.1
+ * author: Daniel H
+ *
+ * Instructions:
+ * To change the waiting time and a random waiting time contribution change the values of
+ * WAIT_TIME and WAIT_TIME_RANDOM, HARNESS_CLOSE_RANDOM.
+ * The total waiting time until doors will be closed is WAIT_TIME + randomFactor*WAIT_TIME_RANDOM + randomFactor2*HARNESS_CLOSE_RANDOM where randomFactor1 and randomFActor2 are in the [0,1[ range
+ * and are recalculated after each ride cycle.
+ *
+ * The gondola behaviour can be changed in Gondola.nlvm
+ * The automatic program can be changed in Automatic.nlvm
+ */
+
+import Flatride.*;
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+import nlvm.util.Vector;
+import Config.Reader;
+
+public class SkyflyScript extends Script{
+	//waiting times (can be overwritten by external config)
+	private static float WAIT_TIME =            10.0f;  //minimum waiting time
+	private static float WAIT_TIME_RANDOM =     10.0f;  //random contribution
+	private static float HARNESS_CLOSE_RANDOM = 20.0f;  //maximum random harness closing time
+	private static float HARNESS_OPEN_RANDOM  =  2.0f;  //maximum random harness opening time
+
+	private float rideWaitTime = WAIT_TIME + WAIT_TIME_RANDOM;
+	private float rideWaitT    = 0.f;
+
+	private static Vector skyflyPool;
+	private static Vector doorPool;
+	// private static SkyflyScript latestSkyfly;
+
+	//object and moving parts variables
+	private SceneObjectElement elmDoorEntrance1, elmDoorEntrance2, elmDoorExit1, elmDoorExit2;
+	private bool hasDoors = false;
+
+	private SceneObject sco;
+	private SceneObjectElement elmArmMount, elmArm, elmCylinders1, elmCylinders2, elmGondola1, elmGondola2, elmGondola3, elmGondola4, elmGondola5, elmGondola6, elmGondola7, elmGondola8, elmGondola9, elmGondola10, elmGondola11, elmGondola12, elmCam[], elmHarness[];
+	private Vector3f cylinders1t2, cylinders1t2Init;
+	private DrivenRotor arm;
+	private Gondola gondola[], gondolaActive;
+	private ExternalRideView rideView;
+	private bool rideViewActive = false;
+	private StaticSound sndArm, sndArm2, sndArmDown, sndArmUp;
+
+	//arm lift variables and settings
+	private static final int        ARM_STATE_UP          = 0;
+	private static final int        ARM_STATE_MOVING_DOWN = 1;
+	private static final int        ARM_STATE_MOVING_UP   = 2;
+	private static final int        ARM_STATE_DOWN        = 3;
+
+	private static final Vector3f   ARM_ROT_UP           = new Vector3f((float)Math.toRadians(-20),0,0);
+	private static final Vector3f   ARM_ROT_DOWN         = new Vector3f(0,0,0);
+
+	private static final float      ARM_SPEED            = 0.07f;
+
+	private int armState = ARM_STATE_DOWN;
+
+	private Vector3f armRot = new Vector3f(ARM_ROT_DOWN);
+
+	private float armT = 0.f;
+
+	//door variables and settings
+	private static final int        DOOR_STATE_OPENED        = 0;
+	private static final int        DOOR_STATE_MOVING_OPEN   = 1;
+	private static final int        DOOR_STATE_MOVING_CLOSE  = 2;
+	private static final int        DOOR_STATE_CLOSED        = 3;
+
+	private static final Vector3f   DOOR_ROT_OPENED          = new Vector3f(0,(float)Math.toRadians(90),0);
+	private static final Vector3f   DOOR_ROT_CLOSED          = new Vector3f(0,0,0);
+
+	private static final float      DOOR_SPEED               = 0.3f;
+
+	private int doorState = DOOR_STATE_CLOSED;
+
+	private Vector3f doorRot = new Vector3f(DOOR_ROT_CLOSED);
+
+	private float doorT = 0.f;
+
+	//harness variables and settings
+	private static final int        HARNESS_STATE_CLOSED        = 0;
+	private static final int        HARNESS_STATE_MOVING_CLOSE  = 1;
+	private static final int        HARNESS_STATE_MOVING_OPEN   = 2;
+	private static final int        HARNESS_STATE_OPENED        = 3;
+
+	private static final float      HARNESS_ROT_CLOSED          = 0;
+	private static final float      HARNESS_ROT_OPENED          = (float)Math.toRadians(85);
+
+	private static final float      HARNESS_SPEED               = 0.2f;
+
+	private int harnessState = HARNESS_STATE_CLOSED;
+
+	private float[] harnessRot = new float[]{
+		HARNESS_ROT_CLOSED,
+		HARNESS_ROT_CLOSED,
+		HARNESS_ROT_CLOSED,
+		HARNESS_ROT_CLOSED,
+		HARNESS_ROT_CLOSED,
+		HARNESS_ROT_CLOSED,
+		HARNESS_ROT_CLOSED,
+		HARNESS_ROT_CLOSED,
+		HARNESS_ROT_CLOSED,
+		HARNESS_ROT_CLOSED,
+		HARNESS_ROT_CLOSED,
+		HARNESS_ROT_CLOSED};
+
+	private Matrix4x4f[] harnessM;
+
+	private float[] harnessT = new float[]{
+		0.f,
+		0.f,
+		0.f,
+		0.f,
+		0.f,
+		0.f,
+		0.f,
+		0.f,
+		0.f,
+		0.f,
+		0.f,
+		0.f};
+
+	//automatic variables and settings
+	private	Automatic autoProg;
+	private	AutoPattern	autoCur;
+	private float autoT = 0.f;
+	private int iAuto = 0;
+
+	//ride variables and settings
+	private static final int RIDE_STATE_STANDBY = 0;
+	private static final int RIDE_STATE_AUTOMATIC = 1;
+	private static final int RIDE_STATE_PARKING = 2;
+	private int rideState = RIDE_STATE_STANDBY;
+
+	private final void endRide(){
+		for(int i = 11; i >= 0; --i){
+			if(harnessState != HARNESS_STATE_OPENED){
+				harnessT[i] = (float)(-HARNESS_OPEN_RANDOM*Math.random());
+				harnessT[i] *= HARNESS_SPEED;
+			}else{
+
+			}
+		}
+		armState = ARM_STATE_MOVING_DOWN;
+		rideState = RIDE_STATE_PARKING;
+		harnessState = HARNESS_STATE_MOVING_OPEN;
+		doorState = DOOR_STATE_MOVING_OPEN;
+		rideWaitT = 0.f;
+		rideWaitTime = WAIT_TIME + (float)Math.random()*WAIT_TIME_RANDOM;
+		autoT = 0.f;
+		gondola[ 0].setDamp(true);
+		gondola[ 1].setDamp(true);
+		gondola[ 2].setDamp(true);
+		gondola[ 3].setDamp(true);
+		gondola[ 4].setDamp(true);
+		gondola[ 5].setDamp(true);
+		gondola[ 6].setDamp(true);
+		gondola[ 7].setDamp(true);
+		gondola[ 8].setDamp(true);
+		gondola[ 9].setDamp(true);
+		gondola[10].setDamp(true);
+		gondola[11].setDamp(true);
+	}
+
+	private final void startRide(){
+		for(int i = 11; i >= 0; --i){
+			if(harnessState != HARNESS_STATE_CLOSED){
+				harnessT[i] = 1+(float)(HARNESS_CLOSE_RANDOM*Math.random()*HARNESS_SPEED);
+			}
+		}
+		armState = ARM_STATE_MOVING_UP;
+		rideState = RIDE_STATE_AUTOMATIC;
+		harnessState = HARNESS_STATE_MOVING_CLOSE;
+		doorState = DOOR_STATE_MOVING_CLOSE;
+		autoCur = autoProg.programs[iAuto];
+		autoCur.restart();
+		autoT = 0.f;
+		rideWaitT = 0.f;
+
+		gondola[ 0].setGhostsModeWaiting();
+		gondola[ 1].setGhostsModeWaiting();
+		gondola[ 2].setGhostsModeWaiting();
+		gondola[ 3].setGhostsModeWaiting();
+		gondola[ 4].setGhostsModeWaiting();
+		gondola[ 5].setGhostsModeWaiting();
+		gondola[ 6].setGhostsModeWaiting();
+		gondola[ 7].setGhostsModeWaiting();
+		gondola[ 8].setGhostsModeWaiting();
+		gondola[ 9].setGhostsModeWaiting();
+		gondola[10].setGhostsModeWaiting();
+		gondola[11].setGhostsModeWaiting();
+	}
+
+	private final void autoProgram(float tick){
+		autoT+=tick;
+		if(autoCur!=null){
+			arm.speed(autoCur.current().getArm()*arm.minSpeed);
+
+			if(autoCur.nextTime()==-1.f){
+				endRide();
+			}
+			if(autoT >= autoCur.nextTime()){
+				autoCur.next();
+			}
+		}else{
+			endRide();
+		}
+	}
+
+	private void addDoors(SkyflyScript skyfly, SceneObject sco){
+		skyfly.elmDoorEntrance1 = sco.getElementForName("Door_000");
+		skyfly.elmDoorEntrance2 = sco.getElementForName("Door_001");
+		skyfly.elmDoorExit1 = sco.getElementForName("Door_002");
+		skyfly.elmDoorExit2 = sco.getElementForName("Door_003");
+		if(skyfly.elmDoorEntrance1 != null && skyfly.elmDoorEntrance2 != null && skyfly.elmDoorExit1 != null && skyfly.elmDoorExit2 != null ){}
+			skyfly.hasDoors = true;
+	}
+
+	public bool onInit(){
+		//read configuration from configuration
+		Reader cfgTimes = new Reader("times");
+
+		if(cfgTimes.isOptionPresent("wait"))
+			WAIT_TIME = cfgTimes.getValForOptionAsFloat("wait");
+
+		if(cfgTimes.isOptionPresent("waitRandom"))
+			WAIT_TIME_RANDOM = cfgTimes.getValForOptionAsFloat("waitRandom");
+
+		if(cfgTimes.isOptionPresent("harnessClose"))
+			HARNESS_CLOSE_RANDOM = cfgTimes.getValForOptionAsFloat("harnessClose");
+
+		if(cfgTimes.isOptionPresent("harnessOpen"))
+			HARNESS_OPEN_RANDOM  = cfgTimes.getValForOptionAsFloat("harnessOpen");
+
+		//initial scene object and elements setup
+		sco = sim.getSceneObjectForEntityId(getParentEntityId());
+
+		//shared script usage: look for closest doors for skyflys
+		if(sco.getElementAt(0).getName().startsWith("Door")){
+			//sco is probably a door (validity is checked in addDoors(...))
+
+			SkyflyScript closestSkyfly = null;
+			float closestDist = 10.f;
+			Vector3f d = new Vector3f();
+
+			if(skyflyPool != null){
+				for(int i = skyflyPool.size() - 1; i >=0 ; --i){
+
+					SkyflyScript currentSkyfly = (SkyflyScript) skyflyPool.elementAt(i);
+
+					d.set(sco.getTranslation());
+					d.sub(currentSkyfly.sco.getTranslation());
+
+					float dist = d.length();
+					if(dist < closestDist){
+						closestDist = dist;
+						closestSkyfly = currentSkyfly;
+					}
+
+				}
+			}
+
+			if(closestSkyfly != null){
+				//skfly is in area
+				addDoors(closestSkyfly, sco);
+			}else{
+				//no skyfly in area add sco to the door pool
+				if(doorPool == null)
+					doorPool = new Vector();
+				doorPool.addElement(sco);
+			}
+			return false;
+		}else{
+			//sco is assumed to be a skyfly (no further error handling if not)
+			SceneObject closestDoor = null;
+			float closestDist = 10.f;
+			Vector3f d = new Vector3f();
+
+			if(doorPool != null){
+				for(int i = doorPool.size() - 1; i >=0 ; --i){
+
+					SceneObject currentDoor = (SceneObject) doorPool.elementAt(i);
+
+					d.set(sco.getTranslation());
+					d.sub(currentDoor.getTranslation());
+
+					float dist = d.length();
+					if(dist < closestDist){
+						closestDist = dist;
+						closestDoor = currentDoor;
+					}
+
+				}
+			}
+
+			if(closestDoor != null){
+				//door is in area
+				addDoors(this, closestDoor);
+			}else{
+				//no door in area add skyfly to the skyfly pool
+				if(skyflyPool == null)
+					skyflyPool = new Vector();
+				skyflyPool.addElement(this);
+			}
+
+		}
+
+		Vector3f rot = new Vector3f();
+		sco.getRotation(rot);
+
+		//initial main arm and hydraulic cylinder setup
+		elmCylinders1 = sco.getElementForName("Cylinders");
+		elmCylinders2 = sco.getElementForName("Cylinders2");
+		elmArmMount = sco.getElementForName("Arm-Mount");
+		elmArm = sco.getElementForName("Arm");
+		arm = new DrivenRotor(elmArm);
+		arm.rotAxis.set(0,(float)Math.sin(Math.toRadians(35)),(float)Math.cos(Math.toRadians(35)));
+		arm.applyObjectYRotToAxis(rot.y);
+		arm.maxSpeed = (float)Math.toRadians(0.f);
+		arm.minSpeed = (float)Math.toRadians(-39.f);
+		arm.acc = (float)Math.toRadians(2.0f);
+		arm.dec = (float)Math.toRadians(2.0f);
+		cylinders1t2 = new Vector3f(elmCylinders1.getAbsoluteMatrix().getTrans());
+		cylinders1t2.sub(elmCylinders2.getAbsoluteMatrix().getTrans());
+		cylinders1t2Init = new Vector3f(cylinders1t2);
+		cylinders1t2Init.normalize();
+
+		//add Gondolas
+		gondola = new Gondola[12];
+		gondola[ 0] = new Gondola(sco.getElementForName("seat1l"),sco.getElementForName("seat1l-wing-l"),sco.getElementForName("seat1l-wing-r"),sim);
+		gondola[ 1] = new Gondola(sco.getElementForName("seat1r"),sco.getElementForName("seat1r-wing-l"),sco.getElementForName("seat1r-wing-r"),sim);
+		gondola[ 2] = new Gondola(sco.getElementForName("seat2c"),sco.getElementForName("seat2c-wing-l"),sco.getElementForName("seat2c-wing-r"),sim);
+		gondola[ 3] = new Gondola(sco.getElementForName("seat2l"),sco.getElementForName("seat2l-wing-l"),sco.getElementForName("seat2l-wing-r"),sim);
+		gondola[ 4] = new Gondola(sco.getElementForName("seat2r"),sco.getElementForName("seat2r-wing-l"),sco.getElementForName("seat2r-wing-r"),sim);
+		gondola[ 5] = new Gondola(sco.getElementForName("seat3l"),sco.getElementForName("seat3l-wing-l"),sco.getElementForName("seat3l-wing-r"),sim);
+		gondola[ 6] = new Gondola(sco.getElementForName("seat3r"),sco.getElementForName("seat3r-wing-l"),sco.getElementForName("seat3r-wing-r"),sim);
+		gondola[ 7] = new Gondola(sco.getElementForName("seat4c"),sco.getElementForName("seat4c-wing-l"),sco.getElementForName("seat4c-wing-r"),sim);
+		gondola[ 8] = new Gondola(sco.getElementForName("seat4l"),sco.getElementForName("seat4l-wing-l"),sco.getElementForName("seat4l-wing-r"),sim);
+		gondola[ 9] = new Gondola(sco.getElementForName("seat4r"),sco.getElementForName("seat4r-wing-l"),sco.getElementForName("seat4r-wing-r"),sim);
+		gondola[10] = new Gondola(sco.getElementForName("seat5l"),sco.getElementForName("seat5l-wing-l"),sco.getElementForName("seat5l-wing-r"),sim);
+		gondola[11] = new Gondola(sco.getElementForName("seat5r"),sco.getElementForName("seat5r-wing-l"),sco.getElementForName("seat5r-wing-r"),sim);
+
+		//harnesses
+		elmHarness = new SceneObjectElement[]{
+			sco.getElementForName("seat1l-harness"),
+			sco.getElementForName("seat1r-harness"),
+			sco.getElementForName("seat2c-harness"),
+			sco.getElementForName("seat2l-harness"),
+			sco.getElementForName("seat2r-harness"),
+			sco.getElementForName("seat3l-harness"),
+			sco.getElementForName("seat3r-harness"),
+			sco.getElementForName("seat4c-harness"),
+			sco.getElementForName("seat4l-harness"),
+			sco.getElementForName("seat4r-harness"),
+			sco.getElementForName("seat5l-harness"),
+			sco.getElementForName("seat5r-harness")};
+
+		harnessM = new Matrix4x4f[]{
+			elmHarness[ 0].getMatrix(),
+			elmHarness[ 1].getMatrix(),
+			elmHarness[ 2].getMatrix(),
+			elmHarness[ 3].getMatrix(),
+			elmHarness[ 4].getMatrix(),
+			elmHarness[ 5].getMatrix(),
+			elmHarness[ 6].getMatrix(),
+			elmHarness[ 7].getMatrix(),
+			elmHarness[ 8].getMatrix(),
+			elmHarness[ 9].getMatrix(),
+			elmHarness[10].getMatrix(),
+			elmHarness[11].getMatrix()};
+
+		//add camera positions
+		elmCam = new SceneObjectElement[12];
+		String sCamPrefix = "cam_";
+		String sNumber = "000";
+		for(int i = 0; i < elmCam.length; i++){
+			if(i < 10)
+				sNumber = "00"+i;
+			else
+				sNumber = "0"+i;
+			elmCam[i] = sco.getElementForName(sCamPrefix + sNumber);
+			elmCam[i].setVisible(false);
+		}
+
+		//create external ride view
+		rideView = sim.createExternalRideView();
+		rideView.setLabel(sco.getName());
+		rideView.setEnterWarpPoint(sco.getTranslation(), 12.f);
+		rideView.setEnterWarpPointEnabled(true);
+		rideView.setButtonHelpDescription(Button.CHANGE_VIEW_MODE, "left wing down");
+		rideView.setButtonHelpDescription(Button.MOVE_LEFT, "left wing up");
+		rideView.setButtonHelpDescription(Button.MOVE_FORWARD, "right wing down");
+		rideView.setButtonHelpDescription(Button.MOVE_BACKWARD, "right wing up");
+		rideView.setButtonHelpDescription(Button.NEXT_SEAT, "next seat");
+
+		//sound setup
+		sndArm  = StaticSound.loadFromFile("gear.wav",0);
+		sndArm2 = StaticSound.loadFromFile("motor.wav", 0);
+		sndArm.setDistanceParameters(1.0f, 1.3f);
+		sndArm2.setDistanceParameters(1.3f, 1.3f);
+		sndArm.setPosition(elmArm.getAbsoluteMatrix().getTrans());
+		sndArm2.setPosition(elmArm.getAbsoluteMatrix().getTrans());
+		sndArm.playLoop();
+
+		sndArmDown = StaticSound.loadFromFile("gear.wav",0);
+		sndArmUp   = StaticSound.loadFromFile("gear.wav"  ,0);
+
+		sndArmDown.setDistanceParameters(0.7f, 2.2f);
+		sndArmDown.setPitch(1.2f);
+		sndArmUp  .setDistanceParameters(0.7f, 2.2f);
+		sndArmUp.setPitch(1.5f);
+
+		sndArmDown.setPosition(elmCylinders2.getAbsoluteMatrix().getTrans());
+		sndArmUp  .setPosition(elmCylinders2.getAbsoluteMatrix().getTrans());
+
+		//load automatic
+		autoProg = new Automatic();
+
+		//start with door opening
+		endRide();
+		//start with arm lifting
+		// startRide();
+		return true;
+	}
+
+	public void onNextFrame(float simTick){
+		//maintain a minimum tick of 0.04f to ensure physical consistency of motion equations
+		float tick = simTick;
+		float tickCounter = 0;
+		while(tick > 0.04f){
+			tick/=2.f;
+		}
+		do{
+			if(armState==ARM_STATE_MOVING_UP){
+				if(harnessState == HARNESS_STATE_CLOSED){
+					if(!hasDoors || (hasDoors && doorState == DOOR_STATE_CLOSED)){
+						if(armT == 0.f){
+							sndArmUp.playLoop();
+						}
+						armRot.lerp((float)Tools.switchRampC1(1,1,0.2,armT),ARM_ROT_DOWN,ARM_ROT_UP);
+
+						armT += tick*ARM_SPEED;
+
+						if(armT > 1.f) armT = 1.f;
+
+						elmArmMount.setRotation(armRot);
+
+						cylinders1t2.set(elmCylinders1.getAbsoluteMatrix().getTrans());
+						cylinders1t2.sub(elmCylinders2.getAbsoluteMatrix().getTrans());
+						cylinders1t2.normalize();
+						cylinders1t2.mul(cylinders1t2Init);
+						float cylRot = (float)Math.acos(cylinders1t2.x+cylinders1t2.y+cylinders1t2.z);
+						elmCylinders1.setRotation(-cylRot-armRot.x,1,0,0);
+						elmCylinders2.setRotation(-cylRot,1,0,0);
+
+						if(armT == 1.f){
+							armState = ARM_STATE_UP;
+							sndArmUp.stopFaded(0.5f);
+						}
+					}
+				}
+
+			}
+			else if(armState == ARM_STATE_MOVING_DOWN)
+			{
+				if(rideState == RIDE_STATE_PARKING){
+					if(arm.moveToPosSmooth(0.f, tick)){
+						gondola[ 0].setBrake(true);
+						gondola[ 1].setBrake(true);
+						gondola[ 2].setBrake(true);
+						gondola[ 3].setBrake(true);
+						gondola[ 4].setBrake(true);
+						gondola[ 5].setBrake(true);
+						gondola[ 6].setBrake(true);
+						gondola[ 7].setBrake(true);
+						gondola[ 8].setBrake(true);
+						gondola[ 9].setBrake(true);
+						gondola[10].setBrake(true);
+						gondola[11].setBrake(true);
+
+						gondola[ 0].setGhostsModeWaiting();
+						gondola[ 1].setGhostsModeWaiting();
+						gondola[ 2].setGhostsModeWaiting();
+						gondola[ 3].setGhostsModeWaiting();
+						gondola[ 4].setGhostsModeWaiting();
+						gondola[ 5].setGhostsModeWaiting();
+						gondola[ 6].setGhostsModeWaiting();
+						gondola[ 7].setGhostsModeWaiting();
+						gondola[ 8].setGhostsModeWaiting();
+						gondola[ 9].setGhostsModeWaiting();
+						gondola[10].setGhostsModeWaiting();
+						gondola[11].setGhostsModeWaiting();
+
+						rideState = RIDE_STATE_STANDBY;
+					}
+				}else if(rideState == RIDE_STATE_STANDBY){
+					if(armT == 1.f){
+						sndArmDown.playLoop();
+					}
+					armRot.lerp((float)Tools.switchRampC1(1,1,0.2,armT),ARM_ROT_DOWN,ARM_ROT_UP);
+					armT -= tick*ARM_SPEED;
+
+
+					if(armT < 0.f) armT = 0.f;
+
+					elmArmMount.setRotation(armRot);
+					cylinders1t2.set(elmCylinders1.getAbsoluteMatrix().getTrans());
+					cylinders1t2.sub(elmCylinders2.getAbsoluteMatrix().getTrans());
+					cylinders1t2.normalize();
+					cylinders1t2.mul(cylinders1t2Init);
+					float cylRot = (float)Math.acos(cylinders1t2.x+cylinders1t2.y+cylinders1t2.z);
+					elmCylinders1.setRotation(-cylRot-armRot.x,1,0,0);
+					elmCylinders2.setRotation(-cylRot,1,0,0);
+
+					if(armT == 0.f){
+						armState = ARM_STATE_DOWN;
+						sndArmDown.stopFaded(0.5f);
+					}
+				}
+			}
+			else if(armState == ARM_STATE_UP)
+			{
+				if(rideState == RIDE_STATE_AUTOMATIC){
+
+					gondola[ 0].setBrake(false);
+					gondola[ 1].setBrake(false);
+					gondola[ 2].setBrake(false);
+					gondola[ 3].setBrake(false);
+					gondola[ 4].setBrake(false);
+					gondola[ 5].setBrake(false);
+					gondola[ 6].setBrake(false);
+					gondola[ 7].setBrake(false);
+					gondola[ 8].setBrake(false);
+					gondola[ 9].setBrake(false);
+					gondola[10].setBrake(false);
+					gondola[11].setBrake(false);
+
+					gondola[ 0].setGhostsModeRiding();
+					gondola[ 1].setGhostsModeRiding();
+					gondola[ 2].setGhostsModeRiding();
+					gondola[ 3].setGhostsModeRiding();
+					gondola[ 4].setGhostsModeRiding();
+					gondola[ 5].setGhostsModeRiding();
+					gondola[ 6].setGhostsModeRiding();
+					gondola[ 7].setGhostsModeRiding();
+					gondola[ 8].setGhostsModeRiding();
+					gondola[ 9].setGhostsModeRiding();
+					gondola[10].setGhostsModeRiding();
+					gondola[11].setGhostsModeRiding();
+
+					autoProgram(tick);
+				}
+			}
+
+			if(harnessState == HARNESS_STATE_MOVING_OPEN)
+			{
+				if(armState == ARM_STATE_DOWN){
+					float T = 1;
+
+					Matrix4x4f mRot = new Matrix4x4f();
+					Matrix4x4f m;
+
+					for(int i = 11; i >= 0; --i){
+						if(harnessT[i]>=0)
+							harnessRot[i] = (float)Tools.switchRampC1(1,HARNESS_ROT_OPENED,0.2,harnessT[i]) + HARNESS_ROT_CLOSED;
+
+						harnessT[i] += tick*HARNESS_SPEED;
+
+						if(harnessT[i] > 1.f){
+							harnessT[i] = 1.f;
+							gondola[i].disableGhosts();
+							gondola[i].parkWings();
+						}
+
+						m = harnessM[i].dup();
+						mRot.initYRot(harnessRot[i]);
+						m.multRight(mRot);
+						elmHarness[i].setMatrix(m);
+
+						if(harnessT[i]<T)
+							T = harnessT[i];
+					}
+					if(T == 1.f)
+						harnessState = HARNESS_STATE_OPENED;
+				}
+			}
+			else if(harnessState == HARNESS_STATE_MOVING_CLOSE)
+			{
+				float T = 0;
+
+				Matrix4x4f mRot = new Matrix4x4f();
+				Matrix4x4f m;
+
+				for(int i = 11; i >= 0; --i){
+					if(harnessT[i]<=1)
+						harnessRot[i] = (float)Tools.switchRampC1(1,HARNESS_ROT_OPENED,0.2,harnessT[i]) + HARNESS_ROT_CLOSED;
+
+					harnessT[i] -= tick*HARNESS_SPEED;
+
+					if(harnessT[i] < 0.f){
+						harnessT[i] = 0.f;
+						if(gondola[i] != gondolaActive){
+							gondola[i].enableGhosts();
+						}
+					}
+
+					m = harnessM[i].dup();
+					mRot.initYRot(harnessRot[i]);
+					m.multRight(mRot);
+					elmHarness[i].setMatrix(m);
+
+					if(harnessT[i]>T)
+						T = harnessT[i];
+				}
+				if(T == 0.f)
+					harnessState = HARNESS_STATE_CLOSED;
+			}
+			else if(harnessState == HARNESS_STATE_OPENED){
+				if(!hasDoors){
+					if(rideWaitT >= rideWaitTime){
+						startRide();
+					}
+					rideWaitT += tick;
+				}
+
+			}
+
+			if(hasDoors){
+
+				if(doorState == DOOR_STATE_MOVING_OPEN)
+				{
+					if(armState == ARM_STATE_DOWN){
+
+						doorRot.lerp((float)Tools.switchRampC1(1,1,0.2,doorT),DOOR_ROT_CLOSED,DOOR_ROT_OPENED);
+
+						doorT += tick*DOOR_SPEED;
+
+						if(doorT > 1.f){
+							doorT = 1.f;
+						}
+
+						elmDoorEntrance2.setRotation(doorRot);
+						elmDoorExit2.setRotation(doorRot);
+						doorRot.mul(-1);
+						elmDoorEntrance1.setRotation(doorRot);
+						elmDoorExit1.setRotation(doorRot);
+
+						if(doorT == 1){
+							doorState = DOOR_STATE_OPENED;
+						}
+					}
+				}
+				else if(doorState == DOOR_STATE_MOVING_CLOSE)
+				{
+						if(harnessState == HARNESS_STATE_CLOSED){
+							doorRot.lerp((float)Tools.switchRampC1(1,1,0.2,doorT),DOOR_ROT_CLOSED,DOOR_ROT_OPENED);
+
+							doorT -= tick*DOOR_SPEED;
+
+							if(doorT < 0.f){
+								doorT = 0.f;
+							}
+
+							elmDoorEntrance2.setRotation(doorRot);
+							elmDoorExit2.setRotation(doorRot);
+							doorRot.mul(-1);
+							elmDoorEntrance1.setRotation(doorRot);
+							elmDoorExit1.setRotation(doorRot);
+
+							if(doorT == 0){
+								doorState = DOOR_STATE_CLOSED;
+							}
+						}
+				}
+				else if(doorState == DOOR_STATE_OPENED){
+					if(rideWaitT >= rideWaitTime){
+						startRide();
+					}
+					rideWaitT += tick;
+
+				}
+			}
+
+			arm.update(tick);
+			gondola[ 0].update(tick);
+			gondola[ 1].update(tick);
+			gondola[ 2].update(tick);
+			gondola[ 3].update(tick);
+			gondola[ 4].update(tick);
+			gondola[ 5].update(tick);
+			gondola[ 6].update(tick);
+			gondola[ 7].update(tick);
+			gondola[ 8].update(tick);
+			gondola[ 9].update(tick);
+			gondola[10].update(tick);
+			gondola[11].update(tick);
+
+			if(rideView.isActive()){
+				if(rideViewActive == false){
+
+					//search for closest cam
+					Vector3f dist = new Vector3f();
+					Vector3f viewPos = new Vector3f();
+					sim.getViewPos(viewPos);
+					int closestCam     = 11;
+					float closestCamDist = 999999.f;
+
+					for(int i = closestCam; i >= 0; --i){
+						dist.set(viewPos);
+						dist.sub(elmCam[i].getAbsoluteMatrix().getTrans());
+						if(dist.length() < closestCamDist){
+							closestCamDist = dist.length();
+							closestCam = i;
+						}
+					}
+					rideView.setCurrentSeatIndex(closestCam);
+					gondolaActive = gondola[closestCam];
+					gondolaActive.disableGhosts();
+				}
+				rideViewActive = true;
+
+				//change active gondola and trigger parking the wings of the active gondola when changing the seat
+				if(gondolaActive != gondola[rideView.getCurrentSeatIndex(12)]){
+					gondolaActive.parkWings();
+					gondolaActive.enableGhosts();
+
+					gondolaActive = gondola[rideView.getCurrentSeatIndex(12)];
+					gondolaActive.parkWings();
+					gondolaActive.disableGhosts();
+				}
+				rideView.setCameraMatrix(elmCam[rideView.getCurrentSeatIndex(12)].getAbsoluteMatrix());
+
+				//button controls
+				if(Button.isPressed(Button.CHANGE_VIEW_MODE)){
+					if(!Button.isPressed(Button.MOVE_LEFT))
+						gondolaActive.leftWingDown(tick);
+				}else if(Button.isPressed(Button.MOVE_LEFT)){
+					if(!Button.isPressed(Button.CHANGE_VIEW_MODE))
+						gondolaActive.leftWingUp(tick);
+				}
+
+				if(Button.isPressed(Button.MOVE_FORWARD)){
+					if(!Button.isPressed(Button.MOVE_BACKWARD))
+						gondolaActive.rightWingUp(tick);
+				}else if(Button.isPressed(Button.MOVE_BACKWARD)){
+					if(!Button.isPressed(Button.MOVE_FORWARD))
+						gondolaActive.rightWingDown(tick);
+				}
+
+			}else{
+				//park wings when leaving the external ride view of the active gondola
+				if(gondolaActive != null)
+					gondolaActive.parkWings();
+				gondolaActive = null;
+				rideViewActive = false;
+			}
+			tickCounter+=tick;
+		}while(tickCounter < simTick);
+
+		//update sound
+		float armSpeed = -(float)Math.abs(arm.getCurSpeed())/arm.minSpeed;
+		if(armSpeed > 0.05f){
+			sndArm2.playLoop();
+		}else{
+			sndArm2.stopFaded(0.5f);
+		}
+		sndArm.setPitch(0.8f*armSpeed+0.2f);
+		sndArm.setGain(2*armSpeed);
+	}
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>Result.rgb=tex0;
+Metallic = tex0.a;
+Smoothness = tex1.a;</shadercore>
+      <transparency mode="opaque"/>
+      <linearshading/>
+      <custommaterial>
+        <diffuse r="1" g="1" b="1"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="1" g="1" b="1"/>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <reflection fresnelconst="0" fresnelvar="0.4"/>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <map>textures/common/roof_Material_color_metallic.png</map>
+        <tcgen mode="base"/>
+        <tcmod mode="objectscale" a0="0" a1="0" a2="1" b0="0" b1="1" b2="0"/>
+      </texunit>
+      <texunit>
+        <map>textures/common/roof_Material_normal_smoothness.png</map>
+        <bump mode="normalgloss"/>
+        <tcgen mode="base"/>
+        <tcmod mode="objectscale" a0="0" a1="0" a2="1" b0="0" b1="1" b2="0"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

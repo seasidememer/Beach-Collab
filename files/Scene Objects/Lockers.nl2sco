@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Lockers.dae"/>
+    <param basescalex="1.2"/>
+    <param basescaley="1.2"/>
+    <param basescalez="1.2"/>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="0.352941" g="0.352941" b="0.352941"/>
+    </usercolor>
+    <materialpath name="Metal_Rough">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+  </sceneobject>
+</root>

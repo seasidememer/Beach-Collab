@@ -1,0 +1,143 @@
+import com.nolimitscoaster.*;
+
+public class roar extends Script {
+
+	private static final String sSoundFile = "roar.ogg";
+
+ StaticSound sSound;
+ StaticSound sSound1;
+ StaticSound sSound2;
+ StaticSound sSound3;
+ 
+ StaticSound rattle1;
+ StaticSound rattle2;
+ StaticSound rattle3;
+ 
+private static final float range = 5;	
+	private static final int carToAttach = 3; 
+
+	
+	private SceneObject sco;	
+	private Train train;	
+
+ public bool onInit(){
+ sco = sim.getSceneObjectForEntityId(getParentEntityId());
+		if (sco == null)
+		{
+			System.err.println("attach_object.nlvm: This script must be assigned to a scene object.");
+			return false;
+		}
+		
+		// ********************************************
+		// Determine if there is a track within range of the scenery object.
+		// ********************************************
+		TrackPos trackPos = sim.findNearestCoasterTrack(sco.getTranslation(), range);
+		if (trackPos == null)
+		{
+			System.err.println("attach_object.nlvm: No track found within range of " + range + " meters.");
+			return false;
+		}
+		
+		// ********************************************
+		// Determine if there is a train within range of the scenery object.
+		// ********************************************
+		Coaster coaster = trackPos.getCoaster();
+		train = coaster.findNearestTrain(sco.getTranslation(), range);
+		if (train == null)
+		{
+			System.err.println("attach_object.nlvm: No train found within range of " + range + " meters.");
+			return false;
+		}
+		
+		
+	sSound = StaticSound.loadFromFile(sSoundFile, 0);
+	sSound1 = StaticSound.loadFromFile("roar2.ogg", 0);
+	sSound2 = StaticSound.loadFromFile("roar3.ogg", 0);
+	sSound3 = StaticSound.loadFromFile("wind.ogg", 0);
+	
+	rattle1 = StaticSound.loadFromFile("Rattling.ogg", 0);
+	rattle2 = StaticSound.loadFromFile("Rattling2.ogg", 0);
+	rattle3 = StaticSound.loadFromFile("Rattling3.ogg", 0);
+	
+	sSound.setDopplerMode(true);
+	sSound1.setDopplerMode(true);
+	sSound2.setDopplerMode(true);
+	
+		if(sSound == null) {
+			System.err.println("Sound file not found");
+			return false;
+		}
+		
+		
+		sSound.playLoop();
+		sSound1.playLoop();
+		sSound2.playLoop();
+		sSound3.playLoop();
+		return true;
+ }
+	
+	float time = 0;
+	float time2 = 0;
+	float rand = (float)Math.random()*10;
+	
+	float offset = (float)Math.random()/6;
+	
+ public void onNextFrame(float tick){
+	
+	if(time2 > rand){
+		
+		switch((int)(Math.random()*3.0f)){
+			case 0:
+					rattle1.play();
+				break;
+			case 1:
+					rattle2.play();
+				break;
+			case 2:
+					rattle3.play();
+				break;
+		}
+		
+		time2 = 0;
+		rand = (float)Math.random()*10;
+		
+	}
+	
+	time2 += sim.getCurSimulationTickSec();
+	time += sim.getCurSimulationTickSec();
+	
+	rattle1.setPosition(sco.getTranslation());
+	rattle2.setPosition(sco.getTranslation());
+	rattle3.setPosition(sco.getTranslation());
+	
+	rattle1.setGain(((float)(train.getSpeed()-10)/20)/3);
+	rattle2.setGain(((float)(train.getSpeed()-10)/20)/3);
+	rattle3.setGain(((float)(train.getSpeed()-10)/20)/3);
+	
+	rattle1.setDistanceParameters(5,0.2f);
+	rattle2.setDistanceParameters(5,0.2f);
+	rattle3.setDistanceParameters(5,0.2f);
+	
+	 sSound.setPosition(sco.getTranslation());
+	 sSound1.setPosition(sco.getTranslation());
+	 sSound2.setPosition(sco.getTranslation());
+	 sSound3.setPosition(sco.getTranslation());
+	
+		sSound.setPitch((float)(train.getSpeed()/50)+0.5f+offset+(float)(Math.sin(time+train.getSpeed())/20));
+		sSound.setGain((float)(Math.abs(train.getSpeed()/25))/2);
+		sSound.setDistanceParameters(5,0.2f);
+		
+		sSound3.setPitch((float)(train.getSpeed()/50)+1+offset+(float)(Math.sin(time+train.getSpeed())/20));
+		sSound3.setGain((float)((train.getSpeed()-10)/2));
+		sSound3.setDistanceParameters(2,100);
+		
+		sSound2.setPitch((float)(train.getSpeed()/50)+0.5f+offset+(float)(Math.sin(time+train.getSpeed())/20));
+		sSound2.setGain(((float)(train.getSpeed()-10)/20)/2);
+		sSound2.setDistanceParameters(5,0.2f);
+		
+		sSound1.setPitch((float)(train.getSpeed()/50)+0.5f+offset+(float)(Math.sin(time+train.getSpeed())/20));
+		sSound1.setGain((float)Math.abs((train.getSpeed()/9))/2);
+		sSound1.setDistanceParameters(5,2);
+ }
+ 
+}

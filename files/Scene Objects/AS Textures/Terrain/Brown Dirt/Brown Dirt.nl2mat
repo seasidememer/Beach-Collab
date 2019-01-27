@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <transparency mode="opaque"/>
+      <linearshading/>
+      <custommaterial>
+        <diffuse r="1" g="1" b="1"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="0.670588" g="0.509804" b="0.352941"/>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <map>brown_mud_dry_diff_2k.jpg</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>brown_mud_dry_nor_2k.jpg</map>
+        <bump mode="normalgloss"/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

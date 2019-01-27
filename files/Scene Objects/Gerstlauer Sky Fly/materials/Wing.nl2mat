@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>Ambient=add(0.4,tex1);
+
+tmp0 = mad(tex1,0.4,0.7);
+tmp1 = mul(tex0.r, Entity5);
+tmp2 = mad(tex0.g, Entity6, tmp1);
+
+Result=mul(tmp0,tmp2);</shadercore>
+      <custommaterial>
+        <specular r="0.85098" g="0.85098" b="0.85098"/>
+      </custommaterial>
+      <reflection affectedbyspecular="true" fresnelconst="0.2" fresnelvar="0.3"/>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <map>wing-cm.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>Wing-AO.png</map>
+        <tcgen mode="lightmapcoord"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

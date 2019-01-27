@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Backstage.dae"/>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="0.827451" g="0.827451" b="0.827451"/>
+    </usercolor>
+    <materialpath name="Neon">Pink Neon.nl2mat</materialpath>
+    <materialpath name="Road">AS Textures/Tarmac/Tarmac2/Tarmac2.nl2mat</materialpath>
+    <materialpath name="concrete_floor_02_diff_4k__2_">AS Textures/Concrete/Concrete 01/Concrete 01.nl2mat</materialpath>
+    <materialpath name="white_plaster_02_diff_4k">AS Textures/Plaster/Plaster Wall/Plaster Wall.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Boardwalk and Cafe.dae"/>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="0.827451" g="0.827451" b="0.827451"/>
+    </usercolor>
+    <materialpath name="Dark_Wooden_Decking">AS Textures/Wood/Wood Deck 3/Wood Deck 03.nl2mat</materialpath>
+    <materialpath name="Steel_Brushed_Stainless">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Tarmac1">AS Textures/Tarmac/Tarmac2/Tarmac2.nl2mat</materialpath>
+    <materialpath name="Tarmac2">AS Textures/Tarmac/Tarmac1/Tarmac 1.nl2mat</materialpath>
+    <materialpath name="Tarmac3">AS Textures/Tarmac/Tarmac1/Tarmac 1.nl2mat</materialpath>
+    <materialpath name="Translucent_Glass_Blue">Glass.nl2mat</materialpath>
+    <materialpath name="Wood_Deck_1">AS Textures/Wood/Wood Deck 2/Wood Deck 02.nl2mat</materialpath>
+    <materialpath name="Wood_Deck_2">AS Textures/Wood/Wood Deck 2/Wood Deck 02.nl2mat</materialpath>
+    <materialpath name="concrete_floor_02_diff_4k__2_">AS Textures/Concrete/Concrete 01/Concrete 01.nl2mat</materialpath>
+    <materialpath name="white_plaster_02_diff_4k">AS Textures/Plaster/Plaster Wall/Plaster Wall.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <transparency mode="opaque"/>
+      <linearshading/>
+      <custommaterial>
+        <diffuse r="1" g="1" b="1"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="0.678431" g="0.639216" b="0.521569"/>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <map>Tarmac1.jpg</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>NormalMap (5).png</map>
+        <bump mode="normalgloss"/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

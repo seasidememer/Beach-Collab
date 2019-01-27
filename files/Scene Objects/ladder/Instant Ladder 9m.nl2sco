@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="ladder_9m.dae"/>
+    <description>Instantly usable ladder. Enter with E and move forward or backward to climb.</description>
+    <preview>Instant Ladder Preview.jpg</preview>
+    <usercolor>
+      <label>Base Color</label>
+      <defaultcolor r="0.482353" g="0.847059" b="0.827451"/>
+    </usercolor>
+    <usercolor>
+      <label>Dirt Color</label>
+      <defaultcolor r="0.572549" g="0.647059" b="0.643137"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>Ladder</class>
+      <sharedvm>true</sharedvm>
+      <resource id="step0">intern:data/sounds/walk/metal1.wav</resource>
+	  <resource id="step1">intern:data/sounds/walk/metal2.wav</resource>
+	  <resource id="step2">intern:data/sounds/walk/metal3.wav</resource>
+	  <resource id="step3">intern:data/sounds/walk/metal4.wav</resource>
+    </script>
+    <materialpath name="invis">invis.nl2mat</materialpath>
+    <materialpath name="ladder">ladder.nl2mat</materialpath>
+  </sceneobject>
+</root>

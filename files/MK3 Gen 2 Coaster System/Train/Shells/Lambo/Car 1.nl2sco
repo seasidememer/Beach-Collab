@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="MainCarShell.dae"/>
+    <preview>Textures/as_logo.png</preview>
+    <usercolor>
+      <label>Shell Colour</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>CC_Train1Car</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="Bolt_Head1">Textures/Rough Metal.nl2mat</materialpath>
+    <materialpath name="Bolt_Head1_0">Textures/Rough Metal.nl2mat</materialpath>
+    <materialpath name="Primary_Colour">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Shiny_Metal">intern:data/materials/Chrome.nl2mat</materialpath>
+  </sceneobject>
+</root>

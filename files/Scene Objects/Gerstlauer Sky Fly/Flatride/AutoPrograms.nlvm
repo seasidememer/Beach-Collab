@@ -1,0 +1,22 @@
+package Flatride;
+
+public abstract class AutoPrograms{
+	private 					int 				programCount=0;
+	public						AutoPattern[]		programs;
+	protected					AutoPattern			program;
+	
+	public void newProgram(){
+		program = new AutoPattern();
+	}
+	
+	public void endProgram(){
+		++programCount;
+		AutoPattern[] newPrograms = new AutoPattern[programCount];
+		int i = 0;
+		for(i = 0; i<programCount-1; ++i){
+			newPrograms[i]=programs[i];
+		}
+		newPrograms[i] = program;
+		programs = newPrograms;
+	}
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Snacks.dae"/>
+    <materialpath name="Color_009">Shading.nl2mat</materialpath>
+    <materialpath name="snack_machine">Shading.nl2mat</materialpath>
+  </sceneobject>
+</root>

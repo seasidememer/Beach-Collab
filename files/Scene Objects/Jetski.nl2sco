@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Jetski.dae"/>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <materialpath name="Detail">Shiny Black.nl2mat</materialpath>
+    <materialpath name="Primary_">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Secondary">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="Shiny">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="Tertiary">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
+  </sceneobject>
+</root>

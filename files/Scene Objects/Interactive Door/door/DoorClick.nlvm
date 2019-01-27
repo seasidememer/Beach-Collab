@@ -1,0 +1,73 @@
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+import nlvm.lang.Math;
+
+public class DoorClick extends Script
+{	
+	protected static final float DEG = (float)Math.PI/180.f;
+	protected String SCRIPT_NAME = "Door";
+	protected String TURN_NAME = "Door";
+	protected String HANDLE_NAME = "Handle";
+	protected float PHI_MAX=-82*DEG;
+	protected float PHI_T=2.f;
+	protected float PHI_Ta=PHI_T/5.f;
+	protected float PHI_HANDLE_CLOSE=0*DEG;	
+	protected float PHI_HANDLE_OPEN=-12*DEG;
+	private bool change = false;
+	private bool open = false;
+	private float t=0.f;
+	private float phi,phiCurrent,phiTarget=0.f;
+	private Vector3f clickPos = new Vector3f();
+	private Vector3f dis = new Vector3f();
+	private SceneObject obj;
+	private SceneObjectElement turn;
+	private SceneObjectElement handle;
+	
+	private bool inv=false;
+	
+	public bool onInit(){
+		obj = sim.getSceneObjectForEntityId(getParentEntityId());
+		if(obj==null){
+			System.err.println(SCRIPT_NAME + ": Object not found");
+			return false;
+		}
+		turn = obj.getElementForName(TURN_NAME);
+		if(turn==null){
+			System.err.println(SCRIPT_NAME + ": Element " + TURN_NAME + " not found");
+			return false;
+		}
+		handle = obj.getElementForName(HANDLE_NAME);
+		if(handle==null){
+			System.err.println(SCRIPT_NAME + ": Element " + HANDLE_NAME + " not found");
+			return false;
+		}
+		clickPos=handle.getAbsoluteMatrix().getTrans();
+		return true;
+	}
+
+	public void onNextFrame(float tick)
+	{
+		if(change){
+			phi=phiCurrent+(float)Tools.switchRampC1(PHI_T,phiTarget,PHI_Ta,t);
+			turn.setRotation(0,phi,0);
+			if(t>=PHI_T){
+				open=phiTarget==PHI_MAX;
+				change=false;
+				handle.setRotation(0,0,PHI_HANDLE_CLOSE);
+				clickPos=handle.getAbsoluteMatrix().getTrans();
+			}
+			t+=tick;
+			return;
+		}
+		if(Button.isPressed(Button.ACTION)){
+			sim.getViewPos(dis);
+			dis.sub(clickPos);
+			if(dis.length()>0.9f) return;
+			change=true;
+			handle.setRotation(0,0,PHI_HANDLE_OPEN);
+			t=0.f;
+			phiCurrent=phi;
+			phiTarget=open?-PHI_MAX:PHI_MAX;
+		}
+	}
+}

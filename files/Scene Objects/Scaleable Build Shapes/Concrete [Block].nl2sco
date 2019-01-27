@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="resources/models/block.dae"/>
+    <preview>resources/previews/concrete.jpg</preview>
+    <param basescalex="2"/>
+    <param basescaley="2"/>
+    <param basescalez="2"/>
+    <materialpath name="floor">resources/materials/[concrete] xz.nl2mat</materialpath>
+    <materialpath name="roof">resources/materials/[concrete] xz.nl2mat</materialpath>
+    <materialpath name="wall_e">resources/materials/[concrete] zy.nl2mat</materialpath>
+    <materialpath name="wall_n">resources/materials/[concrete] xy.nl2mat</materialpath>
+    <materialpath name="wall_s">resources/materials/[concrete] xy.nl2mat</materialpath>
+    <materialpath name="wall_w">resources/materials/[concrete] zy.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="UIBox.3ds"/>
+    <description>This sco attatches to a train and car, then plays audio in the simulator</description>
+    <preview>icon.png</preview>
+    <param fixambient="true"/>
+    <script>
+      <classpath></classpath>
+      <class>onBoardAudio</class>
+    </script>
+    <materialpath name="icon">noRender.nl2mat</materialpath>
+  </sceneobject>
+</root>

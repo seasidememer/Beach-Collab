@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Skyfly.dae">
+      <clip mesh="Fence" distance="100"/>
+      <clip mesh="Cylinders" distance="120"/>
+      <clip mesh="Cylinders2" distance="160"/>
+      <clip mesh="legs" distance="200"/>
+      <clip mesh="arm-boom-connectors-screws" distance="40"/>
+      <clip mesh="screw_000" distance="20"/>
+      <clip mesh="screw_001" distance="20"/>
+      <clip mesh="screw_002" distance="20"/>
+      <clip mesh="screw_003" distance="20"/>
+      <clip mesh="screw_004" distance="20"/>
+      <clip mesh="screw_005" distance="20"/>
+      <clip mesh="screw_006" distance="20"/>
+      <clip mesh="screw_007" distance="20"/>
+      <clip mesh="screw_008" distance="20"/>
+      <clip mesh="screw_009" distance="20"/>
+      <clip mesh="screw_010" distance="20"/>
+      <clip mesh="screw_011" distance="20"/>
+      <clip mesh="screw_012" distance="20"/>
+      <clip mesh="screw_013" distance="20"/>
+      <clip mesh="screw_014" distance="20"/>
+      <clip mesh="screw_015" distance="20"/>
+      <clip mesh="screw_016" distance="20"/>
+      <clip mesh="screw_017" distance="20"/>
+      <clip mesh="screw_018" distance="20"/>
+      <clip mesh="screw_019" distance="20"/>
+      <clip mesh="screw_020" distance="20"/>
+      <clip mesh="screw_021" distance="20"/>
+      <clip mesh="screw_022" distance="20"/>
+      <clip mesh="screw_023" distance="20"/>
+      <clip mesh="screw_024" distance="20"/>
+      <clip mesh="screw_025" distance="20"/>
+      <clip mesh="screw_026" distance="20"/>
+      <clip mesh="screw_027" distance="20"/>
+      <clip mesh="screw_028" distance="20"/>
+      <clip mesh="screw_029" distance="20"/>
+      <clip mesh="screw_030" distance="20"/>
+      <clip mesh="screw_031" distance="20"/>
+      <clip mesh="screw_032" distance="20"/>
+      <clip mesh="screw_033" distance="20"/>
+      <clip mesh="screw_034" distance="20"/>
+      <clip mesh="screw_035" distance="20"/>
+      <clip mesh="screw_036" distance="20"/>
+      <clip mesh="screw_037" distance="20"/>
+      <clip mesh="screw_038" distance="20"/>
+      <clip mesh="screw_039" distance="20"/>
+      <clip mesh="screw_040" distance="20"/>
+      <clip mesh="screw_041" distance="20"/>
+      <clip mesh="seat1l-harness" distance="40"/>
+      <clip mesh="seat1r-harness" distance="40"/>
+      <clip mesh="seat2c-harness" distance="40"/>
+      <clip mesh="seat2l-harness" distance="40"/>
+      <clip mesh="seat2r-harness" distance="40"/>
+      <clip mesh="seat3l-harness" distance="40"/>
+      <clip mesh="seat3r-harness" distance="40"/>
+      <clip mesh="seat4c-harness" distance="40"/>
+      <clip mesh="seat4l-harness" distance="40"/>
+      <clip mesh="seat4r-harness" distance="40"/>
+      <clip mesh="seat5l-harness" distance="40"/>
+      <clip mesh="seat5r-harness" distance="40"/>
+      <clip mesh="seat-harness_000" distance="95"/>
+      <clip mesh="seat-harness_001" distance="95"/>
+      <clip mesh="seat-harness_002" distance="95"/>
+      <clip mesh="seat-harness_003" distance="95"/>
+      <clip mesh="seat-harness_004" distance="95"/>
+      <clip mesh="seat-harness_005" distance="95"/>
+      <clip mesh="seat-harness_006" distance="95"/>
+      <clip mesh="seat-harness_007" distance="95"/>
+      <clip mesh="seat-harness_008" distance="95"/>
+      <clip mesh="seat-harness_009" distance="95"/>
+      <clip mesh="seat-harness_010" distance="95"/>
+      <clip mesh="seat-harness_011" distance="95"/>
+      <clip mesh="Wire_000" distance="20"/>
+      <clip mesh="Wire_001" distance="20"/>
+      <clip mesh="Wire_002" distance="20"/>
+      <clip mesh="Wire_003" distance="20"/>
+      <clip mesh="Wire_004" distance="20"/>
+      <clip mesh="Wire_005" distance="20"/>
+      <clip mesh="Wire_006" distance="20"/>
+      <clip mesh="Wire_007" distance="20"/>
+      <clip mesh="Wire_008" distance="20"/>
+      <clip mesh="Wire_009" distance="20"/>
+      <clip mesh="Wire_010" distance="20"/>
+      <clip mesh="Wire_011" distance="20"/>
+      <clip mesh="Wire_012" distance="20"/>
+      <clip mesh="Electronics1" distance="80"/>
+      <clip mesh="Electronics2" distance="60"/>
+      <clip mesh="Electronics2_001" distance="60"/>
+      <clip mesh="Electronics2_002" distance="60"/>
+      <clip mesh="arch-large-gondola_connector" distance="60"/>
+      <clip mesh="arch-small-gondola_connector" distance="60"/>
+    </model>
+    <description>Experience your interactive ride now on the Sky Fly.</description>
+    <preview>skyfly.png</preview>
+    <param allowscale="false"/>
+    <usercolor>
+      <label>Foot</label>
+      <defaultcolor r="0.415686" g="0.556863" b="0.509804"/>
+    </usercolor>
+    <usercolor>
+      <label>Arm</label>
+      <defaultcolor r="0.00784314" g="0.733333" b="1"/>
+    </usercolor>
+    <usercolor>
+      <label>Mounts</label>
+      <defaultcolor r="0.94902" g="0.94902" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Gondola</label>
+      <defaultcolor r="1" g="0.4" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Gondola Color 2</label>
+      <defaultcolor r="0.94902" g="0.94902" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Wing Color 1</label>
+      <defaultcolor r="1" g="0.4" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Wing Color 2</label>
+      <defaultcolor r="0.572549" g="0.282353" b="0.631373"/>
+    </usercolor>
+    <usercolor>
+      <label>Main Boom</label>
+      <defaultcolor r="0.0156863" g="0.682353" b="0.901961"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>SkyflyScript</class>
+      <sharedvm>true</sharedvm>
+      <resource id="license">LICENSE.TXT</resource>
+      <resource id="times">times.cfg</resource>
+    </script>
+    <materialpath name="Arm">materials/Main-Arm.nl2mat</materialpath>
+    <materialpath name="Footer">materials/Foot.nl2mat</materialpath>
+    <materialpath name="Motor">materials/Motor.nl2mat</materialpath>
+    <materialpath name="Wire">materials/Wire.nl2mat</materialpath>
+    <materialpath name="arch">materials/Gondola-Mount-Arch.nl2mat</materialpath>
+    <materialpath name="arm-boom">materials/Gondola-Mount-Boom.nl2mat</materialpath>
+    <materialpath name="cam">materials/hidden.nl2mat</materialpath>
+    <materialpath name="electronics-case">materials/Electronics1.nl2mat</materialpath>
+    <materialpath name="electronics2-case">materials/Electronics2.nl2mat</materialpath>
+    <materialpath name="harness">materials/Gondola-Harness.nl2mat</materialpath>
+    <materialpath name="harness-metal">materials/Gondola-Harness-Metal.nl2mat</materialpath>
+    <materialpath name="metal">materials/metal.nl2mat</materialpath>
+    <materialpath name="screw">materials/Screw.nl2mat</materialpath>
+    <materialpath name="seat-cover">materials/Gondola-Cover.nl2mat</materialpath>
+    <materialpath name="seat-mount">materials/Gondola-Mount.nl2mat</materialpath>
+    <materialpath name="seat-shell-inner">materials/Gondola-Seat.nl2mat</materialpath>
+    <materialpath name="seat-shell-outer">materials/Gondola-Cover.nl2mat</materialpath>
+    <materialpath name="wing">materials/Wing.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <custommaterial>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <reflection fresnelconst="0" fresnelvar="0.4"/>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <materialtexture/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

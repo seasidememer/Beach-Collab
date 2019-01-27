@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Data/Objects/addOn_lightCrown.dae"/>
+    <description>Lighting Package AddOn. Use Scrambler ride&apos;s XYZ position and rotation.</description>
+    <preview>Data/Resources/ICONS/ICO_AddOnLight.png</preview>
+    <usercolor>
+      <label>Metal</label>
+      <defaultcolor r="0.270588" g="0.270588" b="0.270588"/>
+    </usercolor>
+    <usercolor>
+      <label>Arm Light</label>
+      <defaultcolor r="1" g="0.564706" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Top Light 1</label>
+      <defaultcolor r="1" g="0.564706" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Top Light 2</label>
+      <defaultcolor r="1" g="0.796079" b="0.4"/>
+    </usercolor>
+    <script>
+      <classpath>Data/Resources</classpath>
+      <class>rideAnimation</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="color0">Data/Materials/Color 0.nl2mat</materialpath>
+    <materialpath name="color1">Data/Materials/Color 1 Light.nl2mat</materialpath>
+    <materialpath name="color2">Data/Materials/Color 2 Light.nl2mat</materialpath>
+    <materialpath name="color3">Data/Materials/Color 3 Light.nl2mat</materialpath>
+  </sceneobject>
+</root>

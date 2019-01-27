@@ -1,0 +1,163 @@
+import com.nolimitscoaster.*;
+import nlvm.lang.String;
+import nlvm.lang.System;
+import nlvm.math3d.Matrix4x4f;
+import nlvm.math3d.Vector3f;
+import nlvm.util.Vector;
+ 
+public class WheelFixedRadiusFromSection extends Script {
+ 
+    //START OWN SETUP HERE------------------------:
+    private static final float WHEEL_RADIUS = 0.723524f / 2.f; //meters
+ 
+    //multiple wheels are possible, therfore at least ensure you have for example wheel0 on the object
+    //additional wheels have to be called wheel1, wheel2, wheel3 and so on.
+    private static final String WHEEL_NAME_PREFIX = "wheel";
+ 
+    private static final String SOUND_START_NAME = "start";
+    private static final String SOUND_STOP_NAME = "stop";
+    private static final String SOUND_LOOP_NAME = "loop";
+ 
+    private static final String SOUND_LOOP_PITCHED_NAME = "loop pitched";
+    //the pitch will be calculated as speed / SOUND_LOOP_PITCHED_REFERENCE_SPEED + SOUND_LOOP_PITCHED_OFFSET
+    private static final float SOUND_LOOP_PITCHED_REFERENCE_SPEED = 6.28f;
+    private static final float SOUND_LOOP_PITCHED_OFFSET = 0.5f;
+ 
+    private static final float TRACK_SEARCH_RANGE = 2.f;
+ 
+    private static final Vector3f ROTATION_AXIS = new Vector3f(1, 0, 0);
+    //STOP OWN SETUP HERE-------------------------:
+ 
+ 
+    private static final String ERROR_PREFIX = "WheelFixedRadiusFromSection script: ";
+ 
+    private Section section;
+ 
+    private int numberOfWheels;
+    private Vector wheels, axes;
+    private float rotationAngle;
+ 
+    private float lastSpeed;
+    private StaticSound sndStart, sndLoop, sndLoopPitched, sndStop;
+ 
+    public bool onInit() {
+        SceneObject sco = sim.getSceneObjectForEntityId(getParentEntityId());
+        Vector3f objectPosition = sco.getTranslation();
+ 
+        if (!setupSection(sco, objectPosition)) return false;
+        if (!setupWheels(sco)) return false;
+        setupSounds(objectPosition);
+ 
+        return true;
+    }
+ 
+    private bool setupSection(SceneObject sco, Vector3f objectPosition) {
+        String sectionName = sco.getName();
+        TrackPos track = sim.findNearestCoasterTrack(objectPosition, TRACK_SEARCH_RANGE);
+        if (track == null) {
+            System.err.println(ERROR_PREFIX + "No coaster track found");
+            System.out.println("Ensure that your model is within the " + TRACK_SEARCH_RANGE + "m range the coaster track you want to use it.");
+            return false;
+        }
+        Coaster coaster = track.getCoaster();
+        section = coaster.getSection(sectionName);
+        if (section == null) {
+            System.err.println(ERROR_PREFIX + "No section with the name '" + sectionName + "' found!");
+            System.out.println("Ensure that the object name is a valid section name on the closest track to the object");
+            return false;
+        }
+        return true;
+    }
+ 
+    private bool setupWheels(SceneObject sco) {
+        wheels = new Vector();
+        axes = new Vector();
+        SceneObjectElement wheel = null, wheelLast = null;
+        int i = 0;
+        while ((wheel = sco.getElementForName(WHEEL_NAME_PREFIX + i++)) != null) {
+            wheels.addElement(wheel);
+            Matrix4x4f m = wheel.getMatrix();
+            Vector3f axis = new Vector3f();
+            m.multVector3x3(ROTATION_AXIS, axis);
+            axis.normalize();
+            axes.addElement(axis);
+            wheelLast = wheel;
+        }
+        numberOfWheels = wheels.size();
+        if (wheelLast == null) {
+            System.err.println(ERROR_PREFIX + "No wheel element found!");
+            System.out.println("Ensure that your model contains elements " + WHEEL_NAME_PREFIX + "0, " + WHEEL_NAME_PREFIX + "1, " + WHEEL_NAME_PREFIX + "2, and so on");
+            return false;
+        }
+        return true;
+    }
+ 
+    private void setupSounds(Vector3f objectPosition) {
+        sndStart = StaticSound.loadFromResourceId(SOUND_START_NAME, 0);
+        if (sndStart != null) {
+            sndStart.setPosition(objectPosition);
+        }
+ 
+        sndLoop = StaticSound.loadFromResourceId(SOUND_LOOP_NAME, 0);
+        if (sndLoop != null) {
+            sndLoop.setPosition(objectPosition);
+        }
+ 
+        sndLoopPitched = StaticSound.loadFromResourceId(SOUND_LOOP_PITCHED_NAME, 0);
+        if (sndLoopPitched != null) {
+            sndLoopPitched.setPosition(objectPosition);
+        }
+ 
+        sndStop = StaticSound.loadFromResourceId(SOUND_STOP_NAME, 0);
+        if (sndStop != null) {
+            sndStop.setPosition(objectPosition);
+        }
+    }
+ 
+    public void onNextFrame(float tick) {
+        float wheelSpeed = (float) section.getTransportCurrentSpeed() / WHEEL_RADIUS;
+        if (wheelSpeed != 0) {
+            rotationAngle += wheelSpeed * tick;
+            for (int i = numberOfWheels - 1; i >= 0; --i) {
+                SceneObjectElement wheel = (SceneObjectElement) wheels.elementAt(i);
+                Vector3f axis = (Vector3f) axes.elementAt(i);
+                wheel.setRotation(rotationAngle, axis);
+            }
+            if (lastSpeed == 0) {
+                playSoundWhenPresent(sndStart);
+                loopSoundWhenPresent(sndLoop);
+                loopSoundWhenPresent(sndLoopPitched);
+            } else {
+                playSoundWhenPresent(sndStop);
+                stopSoundWhenPresent(sndLoop);
+                stopSoundWhenPresent(sndLoopPitched);
+            }
+            pitchSoundWhenPresent(sndLoopPitched, wheelSpeed / SOUND_LOOP_PITCHED_REFERENCE_SPEED + SOUND_LOOP_PITCHED_OFFSET);
+        }
+        lastSpeed = wheelSpeed;
+    }
+ 
+    private void playSoundWhenPresent(StaticSound sound) {
+        if (sound != null) {
+            sound.play();
+        }
+    }
+ 
+    private void stopSoundWhenPresent(StaticSound sound) {
+        if (sound != null) {
+            sound.stopFaded(0.1f);
+        }
+    }
+ 
+    private void loopSoundWhenPresent(StaticSound sound) {
+        if (sound != null) {
+            sound.playLoop();
+        }
+    }
+ 
+    private void pitchSoundWhenPresent(StaticSound sound, float pitch) {
+        if (sound != null) {
+            sound.setPitch(pitch);
+        }
+    }
+}

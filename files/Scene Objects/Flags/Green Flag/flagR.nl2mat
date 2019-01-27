@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <deformvertices>
+      <deformverticeswave base="0" amplitude="-0.07" phase="0" frequency="0.5" div="2"/>
+    </deformvertices>
+    <renderpass>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <map>flag.jpg</map>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

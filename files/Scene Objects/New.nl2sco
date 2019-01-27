@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="aquarium.dae"/>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="0.329412" g="0.611765" b="1"/>
+    </usercolor>
+    <usercolor>
+      <label>2</label>
+      <defaultcolor r="0.117647" g="0.117647" b="0.117647"/>
+    </usercolor>
+    <usercolor>
+      <label>3</label>
+      <defaultcolor r="0.478431" g="0.478431" b="0.478431"/>
+    </usercolor>
+    <materialpath name="concrete">AS Textures/Concrete/Concrete 01/Concrete 01.nl2mat</materialpath>
+    <materialpath name="metal_blue">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="metal_blue_1">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="metal_dark">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="metal_dark_2">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="metal_light">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
+    <materialpath name="metal_light_0">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
+    <materialpath name="slightly_transparent_glass">Glassdark.nl2mat</materialpath>
+    <materialpath name="stucco_plaster">AS Textures/Plaster/Plaster Wall/Plaster Wall.nl2mat</materialpath>
+    <materialpath name="tarmac">AS Textures/Tarmac/Tarmac1/Tarmac 1.nl2mat</materialpath>
+    <materialpath name="transparent_glass">Glass.nl2mat</materialpath>
+  </sceneobject>
+</root>

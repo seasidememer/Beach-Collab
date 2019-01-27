@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <rgbgen mode="constlighting"/>
+      <texunit>
+        <materialtexture/>
+      </texunit>
+    </renderpass>
+    <option norender="true"/>
+    <option nonsolid="true"/>
+    <option noshadowcast="true"/>
+    <option noshadowreceive="true"/>
+  </material>
+</root>

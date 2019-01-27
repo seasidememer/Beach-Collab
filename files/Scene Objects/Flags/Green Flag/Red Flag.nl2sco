@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="flagA.3DS">
+      <lod path="flagA.3DS" distance="7.62"/>
+      <lod path="flagB.3DS" distance="22.86"/>
+      <lod path="flagC.3DS" distance="45.72"/>
+      <clip distance="243.84"/>
+    </model>
+    <materialpath name="flagL">flagL.nl2mat</materialpath>
+    <materialpath name="flagR">flagR.nl2mat</materialpath>
+    <materialpath name="pole">pole.nl2mat</materialpath>
+  </sceneobject>
+</root>

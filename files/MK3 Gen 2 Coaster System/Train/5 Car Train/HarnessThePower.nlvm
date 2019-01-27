@@ -1,0 +1,65 @@
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+public class HarnessThePower extends Script {
+
+	SceneObject sco;
+	SceneObjectElement[] harness;
+	
+	Train train;
+	
+	private float[] rand;
+	
+	public bool onInit(){
+
+		 sco = sim.getSceneObjectForEntityId(getParentEntityId());
+	
+		TrackPos trackPos = sim.findNearestCoasterTrack(sco.getTranslation(), 5);
+		if (trackPos == null)
+		{
+			System.err.println("attach_object.nlvm: No track found within range of " + 5 + " meters.");
+			return false;
+		}
+		
+		Coaster coaster = trackPos.getCoaster();
+	
+		train = coaster.findNearestTrain(sco.getTranslation(), 15);
+
+	
+		int i2 = 0;
+		while(sco.getElementForName("Harness" + i2) != null){
+		
+			i2++;
+		
+		}  
+		harness = new SceneObjectElement[i2];
+		rand = new float[i2];
+		
+		Vector3f posOut = new Vector3f();
+		
+		for(int i = 0; i < harness.length; i++){
+			
+			harness[i] = sco.getElementForName("Harness" + (i));	
+			rand[i] = (float)Math.random()/3;
+			Tools.matrixToPitchHeadBankPos(harness[i].getMatrix(),  null, posOut);
+			
+		}
+	
+		return true;
+	
+	}
+
+	float rotation = 0;
+	
+	public void onNextFrame(float tick){
+		
+		
+		for(int i = 0; i < harness.length; i++){
+			
+					harness[i].setRotation(-(float)Tools.switchRampC2(1-rand[i],0.8f,0.2f,train.getHarnessState()),0,0);
+		
+			
+		}
+		
+	}
+
+}

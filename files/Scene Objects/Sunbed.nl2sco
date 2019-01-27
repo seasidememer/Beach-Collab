@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Sunbed.dae">
+      <clip mesh="back" distance="15"/>
+      <clip mesh="slat" distance="25"/>
+      <clip distance="30"/>
+    </model>
+    <param randomroty="true"/>
+    <param randomrotvariationy="360"/>
+    <param basescalex="1.2"/>
+    <param basescaley="1.2"/>
+    <param basescalez="1.2"/>
+    <param lockonterrain="true"/>
+    <param adjustterrainslope="true"/>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <materialpath name="__Snow_">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+  </sceneobject>
+</root>

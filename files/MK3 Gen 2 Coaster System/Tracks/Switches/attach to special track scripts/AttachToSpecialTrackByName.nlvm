@@ -1,0 +1,58 @@
+import com.nolimitscoaster.*;
+
+public final class AttachToSpecialTrackByName extends AttachToSpecialTrack{
+	private static final float TRACK_SEARCH_RANGE = 5.0f;
+	private SceneObject sco;
+	private String specialTrackName;
+	private String specialTrackBranch;
+
+	private final static String[] splitStringAtLastDelim(
+		String string, char delim
+	){
+		String[] parts = new String[]{
+			string,
+			""
+		};
+		for(int i = string.length() - 1; i >= 0; --i){
+			if(string.charAt(i) == delim){
+				parts[0] = string.substring(0, i);
+				parts[1] = string.substring(i+1);
+				break;
+			}
+		}
+		return parts;
+	}
+
+	private final static int stringToInt(String string){
+		for(int i = string.length() - 1; i >= 0; --i){
+			if(string.charAt(i) < '0' || string.charAt(i) > '9'){
+				System.err.println(
+					"Not a number: " + string + "!\n"
+					+ "Only number characters are allowed for the part after"
+					+ " the '/' in the object name."
+				);
+				System.exit(0);
+			}
+		}
+		return Integer.parseInt(string);
+	}
+
+	protected final void onScoLoaded(SceneObject sco){
+		this.sco = sco;
+		String[] nameParts = splitStringAtLastDelim(sco.getName(), '/');
+		specialTrackName = nameParts[0];
+		specialTrackBranch = nameParts[1];
+	}
+
+	protected final Coaster getCoaster(){
+		return getNearestCoasterInRangeFromSco(TRACK_SEARCH_RANGE, sco);
+	}
+
+	protected final int getSpecialTrackBranchNumber(){
+		return stringToInt(specialTrackBranch);
+	}
+
+	protected final String getSpecialTrackName(){
+		return specialTrackName;
+	}
+}

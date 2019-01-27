@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <transparency mode="opaque"/>
+      <linearshading/>
+      <custommaterial>
+        <diffuse r="1" g="1" b="1"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="0.858824" g="0.839216" b="0.682353"/>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <map>Dark_Wooden_Decking.jpg</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>NormalMap (11).png</map>
+        <bump mode="normalgloss"/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

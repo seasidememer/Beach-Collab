@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Exit Sign.dae">
+      <clip distance="30"/>
+    </model>
+    <param basescalex="1.5"/>
+    <param basescaley="1.5"/>
+    <param basescalez="1.5"/>
+    <usercolor>
+      <label>Metal</label>
+      <defaultcolor r="0.113725" g="0.113725" b="0.113725"/>
+    </usercolor>
+    <materialpath name="Steel_Brushed_Stainless">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="img_935-1_5">Exit Sign/Light.nl2mat</materialpath>
+  </sceneobject>
+</root>

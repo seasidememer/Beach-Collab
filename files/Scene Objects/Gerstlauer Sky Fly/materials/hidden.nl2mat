@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <materialtexture/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <option norender="true"/>
+    <option noeditorrender="true"/>
+  </material>
+</root>

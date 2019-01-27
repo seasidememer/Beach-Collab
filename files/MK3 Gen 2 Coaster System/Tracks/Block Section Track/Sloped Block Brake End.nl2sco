@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Sloped Block Brake End.dae">
+      <clip mesh="Mid_Detail" distance="30"/>
+      <clip mesh="Detail" distance="10"/>
+    </model>
+    <preview>Textures/as_logo.png</preview>
+    <usercolor>
+      <label>Track Colour</label>
+      <defaultcolor r="0.521569" g="0" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Plate Colour</label>
+      <defaultcolor r="0.129412" g="0.129412" b="0.129412"/>
+    </usercolor>
+    <usercolor>
+      <label>Details</label>
+      <defaultcolor r="0" g="0" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Sensors</label>
+      <defaultcolor r="0.917647" g="0.847059" b="0.0666667"/>
+    </usercolor>
+    <materialpath name="Bolt_Head">Textures/Bolt Head.nl2mat</materialpath>
+    <materialpath name="Detail_">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
+    <materialpath name="LSM_Plate">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="LSM_Texture">Textures/Copper.nl2mat</materialpath>
+    <materialpath name="Rail_Friction_Strip">Textures/Friction Strip Texture.nl2mat</materialpath>
+    <materialpath name="Sensor_Yellow">intern:data/materials/metal/Metal A User3.nl2mat</materialpath>
+    <materialpath name="Sensr_Light">Textures/Sensor Green Light.nl2mat</materialpath>
+    <materialpath name="Shiny_Metal">intern:data/materials/Metal Floor 2.nl2mat</materialpath>
+    <materialpath name="Track_Colour">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+  </sceneobject>
+</root>

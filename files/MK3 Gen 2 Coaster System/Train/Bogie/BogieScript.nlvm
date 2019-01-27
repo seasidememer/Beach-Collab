@@ -1,0 +1,138 @@
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+
+public class BogieScript extends Script
+{
+	private static final float range = 5;	
+	public static int[] car = new int[999];
+	private int carToAttach = 0;
+	
+	private SceneObject sco;	
+	private SceneObjectElement R,L;
+	private SceneObjectElement RR,LL;
+	private Train train;	
+	private Vector3f posOut = new Vector3f(0,0,0);
+	private Vector3f pitchHeadBankOut = new Vector3f(0,0,0);
+	private Vector3f pitchHeadBankOut2 = new Vector3f(0,0,0);
+	private Matrix4x4f carMatrix = new Matrix4x4f();
+	
+	private Matrix4x4f lastRoll = new Matrix4x4f();
+	private Matrix4x4f currentRoll = new Matrix4x4f();
+	private double roll = 0;
+	float time = 0;
+	TrackPos track;
+	double offset = 0;
+	
+	Matrix4x4f matrix = new Matrix4x4f();
+		Matrix4x4f A = new Matrix4x4f();
+		Matrix4x4f B = new Matrix4x4f();
+		Vector3f v = new Vector3f();
+	
+	public bool onInit()
+	{									
+		
+		
+		
+		sco = sim.getSceneObjectForEntityId(getParentEntityId());
+		if (sco == null)
+		{
+			System.err.println("attach_object.nlvm: This script must be assigned to a scene object.");
+			return false;
+		}
+		
+		R = sco.getElementForName("R");
+		L = sco.getElementForName("L");
+		RR = sco.getElementForName("RRot");
+		LL = sco.getElementForName("LRot");
+		
+		TrackPos trackPos = sim.findNearestCoasterTrack(sco.getTranslation(), range);
+		if (trackPos == null)
+		{
+			System.err.println("attach_object.nlvm: No track found within range of " + range + " meters.");
+			return false;
+		}
+		
+		Coaster coaster = trackPos.getCoaster();
+		train = coaster.findNearestTrain(sco.getTranslation(), range);
+		if (train == null)
+		{
+			System.err.println("attach_object.nlvm: No train found within range of " + range + " meters.");
+			return false;
+		}
+		
+		
+		
+		for(int i = 0; i < coaster.getTrainCount(); i++){
+			
+				if(train == coaster.getTrainAt(i)){
+					
+					carToAttach = car[i];
+		
+					car[i]++;
+					
+				}
+					
+			
+		}
+		train.getCarMatrix(carToAttach,carMatrix);
+		sco.setMatrix(carMatrix);
+		track = sim.findNearestCoasterTrack(sco.getTranslation(), range);
+		
+		return true;
+	}
+
+	public void onNextFrame(float tick)
+	{
+		
+		offset += train.getSpeed()*sim.getCurSimulationTickSec();
+		
+		train.getCarMatrix(carToAttach, carMatrix);
+		train.getBogieMatrix(carToAttach, matrix);
+
+		matrix.invert();
+		
+		Tools.matrixToPitchHeadBankPos(carMatrix, pitchHeadBankOut, posOut);
+		sco.setRotation(pitchHeadBankOut);
+		sco.setTranslation(posOut);
+		
+		matrix.multRight(carMatrix);
+		
+		//Rolling algortihm
+		TrackPos track2 = track.getTrackPosOnCenterRailsWithOffset(offset);
+		lastRoll = currentRoll.dup();
+		currentRoll = track.getCenterRailsMatrix();
+		
+		Tools.matrixToPitchHeadBankPos(lastRoll, pitchHeadBankOut2, posOut);
+		double lastRoll2 = pitchHeadBankOut2.z;
+		
+		Tools.matrixToPitchHeadBankPos(currentRoll, pitchHeadBankOut2, posOut);
+		double curRoll2 = pitchHeadBankOut2.z;
+		
+		A = currentRoll.dup();
+		B = lastRoll.dup();
+		
+		A.invert();
+		A.multRight(B);
+		
+		Tools.matrixToPitchHeadBankPos(A, v, posOut);
+		
+		
+		if(curRoll2-lastRoll2 != 0){
+		roll = curRoll2-lastRoll2;
+		roll = v.z;
+		}
+		
+		
+		Tools.matrixToPitchHeadBankPos(matrix, pitchHeadBankOut, posOut);
+
+		R.setRotation(-pitchHeadBankOut.x - (float)roll,0,0);
+		L.setRotation(-pitchHeadBankOut.x + (float)roll,0,0);
+			
+			
+		RR.setRotation(0,-pitchHeadBankOut.y,0);
+		LL.setRotation(0,-pitchHeadBankOut.y,0);
+		
+		
+		
+	}
+}

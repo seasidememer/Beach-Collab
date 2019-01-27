@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Groyne.dae"/>
+    <materialpath name="rough_wood_Diff_4k">AS Textures/Wood/Wood 01/Wood 01.nl2mat</materialpath>
+  </sceneobject>
+</root>

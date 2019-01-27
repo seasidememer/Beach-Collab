@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="North Boardwalk.dae"/>
+    <materialpath name="Bluecrete">cONCRETE bUMP.nl2mat</materialpath>
+    <materialpath name="Tarmac2">AS Textures/Tarmac/Tarmac1/Tarmac 1.nl2mat</materialpath>
+    <materialpath name="Wood_Deck_1">AS Textures/Wood/Wood Deck 2/Wood Deck 02.nl2mat</materialpath>
+    <materialpath name="concrete_floor_02_diff_4k__2_">AS Textures/Concrete/Concrete 01/Concrete 01.nl2mat</materialpath>
+    <materialpath name="white_plaster_02_diff_4k">AS Textures/Plaster/Plaster Wall/Plaster Wall.nl2mat</materialpath>
+  </sceneobject>
+</root>

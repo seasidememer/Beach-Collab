@@ -1,0 +1,77 @@
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+import nlvm.lang.String;
+
+public class onBoardAudio extends Script implements TrackTriggerListener{
+
+ //********************* YOU CAN CHANGE THESE VARIABLES *************************
+	String coasterName = "Fuze";	//This is where the name of your coaster goes
+	final float GAIN = 15.0f;									//This is the gain radius of the sound
+	final float FALLOFF = 2.0f;									//This is the fall off distance of the sound
+	final String audio1FileName 	= "Onboard Audio.ogg";			//The name of your sound file, format must be in .ogg
+	final String trigger1Name 		= "start";					//Name of your 1st trigger (starting)
+	final String trigger2Name 		= "stop";					//Name of your 2nd trigger (ending)
+ //************************** HOW TO USE THIS CODE *****************************
+ // To use this code you must place the onBoardAudioBox.sco scenery object into the editor, then
+ // you MUST name the object accordingly X-Y , X would be your train and Y would be your car. The
+ // code uses this to calculate what train and car to attach this object to. And example name would be
+ // 2-5 , this will direct the code to retrieve data from train 2, car 5. This code can only support up to 9 trains and 9 cars.
+ //************************** DO NOT EDIT CODE BELOW *****************************
+ 
+ Coaster coaster;
+ Train train;
+ SceneObject sco;
+ Vector3f soundLocation = new Vector3f();
+ 
+ // List of sound files to be used in coding.
+ StaticSound audio1;
+ 
+ // List of triggers that will be used on the track
+ TrackTrigger trigger1;
+ TrackTrigger trigger2;
+ int trainID = 1;
+ int carID = 1;
+ 
+ public bool onInit(){
+	
+	//Setting up coaster
+	coaster = sim.getCoaster(coasterName);
+	//Setting up Audio
+	audio1 	= StaticSound.loadFromFile(audio1FileName,0);
+	audio1.setDistanceParameters(GAIN, FALLOFF);
+	//Setting up Triggers
+	trigger1 	= coaster.getTrackTrigger(trigger1Name);
+	trigger2 	= coaster.getTrackTrigger(trigger2Name);
+	trigger1.addTrackTriggerListener(this);
+	trigger2.addTrackTriggerListener(this);
+	//Calculating train and car to follow
+	sco = sim.getSceneObjectForEntityId(getParentEntityId());
+	String scoName = sco.getName();
+	trainID = Integer.parseInt(String.valueOf(scoName.charAt(0))) - 1;	//Allows user to put 1 as starting index
+	carID = Integer.parseInt(String.valueOf(scoName.charAt(2))) - 1;
+	train = coaster.getTrainAt(trainID);
+	
+
+	return true;
+ }
+ 
+ public void onNextFrame(float tick){
+	train.getCarOrientationAndPosition(carID, null, null, null, soundLocation);
+	audio1.setPosition(soundLocation);
+	sco.setTranslation(soundLocation);
+ }
+ 
+ //*********************************************************************** Additional Functions
+
+
+ public void onTrainEntering(TrackTrigger trigger, Train train){
+	if(train == coaster.getTrainAt(trainID) && trigger == trigger1) audio1.play();
+	if(train == coaster.getTrainAt(trainID) && trigger == trigger2) audio1.stop();
+ }
+ 
+ public void onTrainLeaving(TrackTrigger trigger, Train train){
+	//Do Nothing
+ }
+ 
+ 
+}

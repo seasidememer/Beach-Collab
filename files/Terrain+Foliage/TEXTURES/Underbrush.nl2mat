@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <deformvertices>
+      <deformverticesplant frequency="0.05" dx="0.1" dy="0.1"/>
+    </deformvertices>
+    <renderpass>
+      <alphatest function="ge128"/>
+      <premultiplyalpha/>
+      <rgbgen mode="constlighting"/>
+      <texunit>
+        <materialtexture/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

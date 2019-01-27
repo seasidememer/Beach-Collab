@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="parasol.dae"/>
+    <param baseoffsety="-0.5"/>
+    <param usemeshoriginaspivot="true"/>
+    <param randomrotx="true"/>
+    <param randomrotvariationx="10"/>
+    <param randomroty="true"/>
+    <param randomrotvariationy="360"/>
+    <param randomrotz="true"/>
+    <param randomrotvariationz="10"/>
+    <param basescalex="0.015"/>
+    <param basescaley="0.015"/>
+    <param basescalez="0.015"/>
+    <param lockonterrain="true"/>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <materialpath name="Color_000">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Color_002">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="Color_C01">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
+  </sceneobject>
+</root>

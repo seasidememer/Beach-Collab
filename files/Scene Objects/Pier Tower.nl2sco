@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Pier Tower.dae"/>
+    <usercolor>
+      <label>Trim</label>
+      <defaultcolor r="0.0784314" g="0.0784314" b="0.0784314"/>
+    </usercolor>
+    <materialpath name="Dark_Crete">cONCRETE bUMP.nl2mat</materialpath>
+    <materialpath name="Detail">Shiny Black.nl2mat</materialpath>
+    <materialpath name="Metal_01__fences_and_trim_">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Metal_Shiny">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="Tarmac2">AS Textures/Tarmac/Tarmac1/Tarmac 1.nl2mat</materialpath>
+    <materialpath name="concrete_floor_02_diff_4k__2_">AS Textures/Concrete/Concrete 01/Concrete 01.nl2mat</materialpath>
+    <materialpath name="white_plaster_02_diff_4k">AS Textures/Plaster/Plaster Wall/Plaster Wall.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,107 @@
+import com.nolimitscoaster.*;
+
+public abstract class AttachToSpecialTrack extends Script{
+	abstract protected void onScoLoaded(SceneObject sco);
+	abstract protected Coaster getCoaster();
+	abstract protected int getSpecialTrackBranchNumber();
+	abstract protected String getSpecialTrackName();
+
+	private SceneObject sco;
+	private SpecialTrack specialTrack;
+	private int specialTrackBranchNumber;
+
+	protected static final Coaster getNearestCoasterInRangeFromSco(
+		float range, SceneObject sco
+	){
+		TrackPos tp = sim.findNearestCoasterTrack(
+			sco.getTranslation(),
+			range
+		);
+		if(tp == null){
+			System.err.println(
+				"could not find coaster track within "
+				+ range
+				+ "m range from scene object positon"
+			);
+			System.out.println(
+				"the senery object has to be placed next to a coaster track"
+			);
+			System.exit(0);
+		}
+
+		Coaster coaster = tp.getCoaster();
+		if(coaster == null){
+			System.err.println(
+				"fatal error, found coaster track but no coaster object"
+			);
+			System.out.println(
+				"this should never happen, test in another scenario and maybe"
+				+"consider contacting the NL2 support if this keeps happening!"
+			);
+			System.exit(0);
+		}
+		return coaster;
+	}
+
+
+	private SceneObject getScoFromParentEntity(){
+		SceneObject sco = sim.getSceneObjectForEntityId(getParentEntityId());
+		if(sco == null){
+			System.err.println("could not find scenery object");
+			System.out.println("this script has to be a NL2SCO script");
+			System.exit(0);
+		}
+		return sco;
+	}
+
+	protected static final SpecialTrack findSpecialTrackOnCoaster(
+		String specialTrackName, Coaster coaster
+	){
+		SpecialTrack specialTrack = coaster.getSpecialTrack(specialTrackName);
+		if(specialTrack == null){
+			System.err.println(
+				"could not find special track "
+				+ specialTrackName
+				+ " on coaster "
+				+ coaster.getName()
+			);
+			System.exit(0);
+		}
+		return specialTrack;
+	}
+
+	private void validateSpecialTrackBranchNumber(){
+		int specialTrackBranchCount = specialTrack.getMoveableBranchCount();
+		if(specialTrackBranchNumber >= specialTrackBranchCount){
+			System.err.println(
+				"The largest allowed branch number for the special track '"
+				+ specialTrack.getName() + "' is " + specialTrackBranchCount
+				+ " but " + specialTrackBranchNumber + " was entered in the"
+				+ " object name."
+			);
+			System.exit(0);
+		}
+	}
+
+	private void setScoToTransferBranch(){
+		sco.setMatrix(
+			specialTrack.getMoveableBranchMatrix(specialTrackBranchNumber)
+		);
+	}
+
+	public final bool onInit(){
+		sco = getScoFromParentEntity();
+		onScoLoaded(sco);
+		specialTrack = findSpecialTrackOnCoaster(
+			getSpecialTrackName(), getCoaster()
+		);
+		specialTrackBranchNumber = getSpecialTrackBranchNumber();
+		validateSpecialTrackBranchNumber();
+		setScoToTransferBranch();
+		return true;
+	}
+
+	public final void onNextFrame(float tick){
+		setScoToTransferBranch();
+	}
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>Result.rgb=Tex0;
+Specular.rgb=Tex1;</shadercore>
+      <custommaterial>
+        <diffuse r="0.929412" g="0.929412" b="0.929412"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="0.894118" g="0.894118" b="0.894118"/>
+        <shininess exponent="10"/>
+      </custommaterial>
+      <reflection bump="true" fresnelconst="-0.06" fresnelvar="0.15"/>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <map>Door.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>Door Specular.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>Door Displacement.png</map>
+        <bump mode="heightgloss" heightscale="4"/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

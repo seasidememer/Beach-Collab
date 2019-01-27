@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <custommaterial>
+        <diffuse r="0" g="0" b="0"/>
+      </custommaterial>
+      <reflection fresnelconst="-0.05" fresnelvar="0.35"/>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <materialtexture/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

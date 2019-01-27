@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Ferris Wheel.dae"/>
+    <script>
+      <classpath></classpath>
+      <class>FerrisWheel</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="Gondola">Placeholder.nl2mat</materialpath>
+    <materialpath name="Rim">Placeholder.nl2mat</materialpath>
+    <materialpath name="Wheel">Placeholder.nl2mat</materialpath>
+  </sceneobject>
+</root>

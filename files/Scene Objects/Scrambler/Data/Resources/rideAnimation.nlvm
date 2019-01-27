@@ -1,0 +1,230 @@
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+import nlvm.lang.String;
+
+/* *************************************************
+	Scrambler Script by Joshua V. / SirMaverick34
+	
+	Animates scrambler ride, comments are present to make more 
+	sense of what is happeninng in the script. Modify if you'd like
+************************************************** */ 
+
+public class rideAnimation extends Script
+{		
+	
+	private SceneObject sco;
+	private SceneObjectElement main, arm[], camera[];
+	
+	// Other variables
+	private float timer_Master = 0;
+	
+	private float time_loading = 20.0f; // seconds that ride waits for loading
+	private float time_active = 120.0f; // seconds that ride is moving
+	private int main_Rotations = -13; 	// number of rotations the main hub makes in the amount of time active
+	private int sub_Rotations = 30; 	// number of rotations the sub hubs makes in the amount of time active
+	
+	private bool rotateArms = true;
+	
+	private StaticSound motor, startUp;
+	
+	//Camera
+	private ExternalRideView view_cam[]; // Ride cameras
+	
+	public bool onInit() { //On Initialization
+		sco = sim.getSceneObjectForEntityId(getParentEntityId()); // gets the reference of the NL2SCO it's attached to
+		
+		// Now find the sub objects that we need to rotate
+		main = sco.getElementForName("main"); // set our element to the one we made in the model.
+		arm = new SceneObjectElement[3];  // Make an array, size 3 to hold the references of the sub wheels 
+		
+		for(int i = 0; i < 3; i++) // For Loop to automate finding the sub wheels.
+		{
+			arm[i] = sco.getElementForName("arm" + i); // arm0, arm1, arm2
+		}
+		
+		if(arm[0] == null)
+		{
+			// arms are not present, this is an add on that does not use the arms
+			rotateArms = false;
+		}
+		
+		// NULL POINTER ERRORS OCCUR IF A REFERENCE IS ATTEMPTED TO BE ACCESSED, BUT IS MISSING
+		// Make sure the name the script is searching for IS IDENTICAL to the name on the model.
+		
+		// Override starting time, since animation begins at time 0
+		// We can start it in it's loading phase
+		timer_Master = time_active + 3.0f; // Initialize timer to be set after active time plus 3 seconds after.
+		
+		motor = StaticSound.loadFromFile("motor.ogg", 0);
+		motor.setEnvironmentMode(StaticSound.E_ENVMODE_LOCAL);
+		motor.setDistanceParameters(10.0f, 3.0f);
+		motor.setPosition(sco.getTranslation());
+		startUp = StaticSound.loadFromFile("startUp.ogg", 0);
+		startUp.setEnvironmentMode(StaticSound.E_ENVMODE_LOCAL);
+		startUp.setDistanceParameters(10.0f, 3.0f);
+		startUp.setPosition(sco.getTranslation());
+		startUp.setGain(0.05f);
+		
+		// Get the ride's name
+		String rideName = "NAME RIDE IN EDITOR OR ELSE!";
+		if(!sco.getName().equals(""))
+		{
+			rideName = sco.getName();
+		}
+		
+		// Set up cameras
+		camera = new SceneObjectElement[12];
+		view_cam = new ExternalRideView[12];
+		for(int i = 0; i < 12; i++)
+		{
+			camera[i] = sco.getElementForName("cam" + i);
+			view_cam[i] = sim.createExternalRideView();
+			view_cam[i].setLabel(rideName + ", car " + (i+1));
+		
+		}
+		
+		
+		
+		onNextFrame(0.00000001f); // Call this function so that object doesn't 'snap' when loading is finished.
+		return true;
+	}
+	
+	// This is called every frame.
+	public void onNextFrame(float tick) {
+		timer_Master += tick; // increase the timer master with the amount of time the frame has been displayed
+		
+		// Control when to reset the animation
+		if(timer_Master >= time_active + time_loading) // if the timer passes the operation time and additional loading time...
+		{
+			// Reset the timer smoothly
+			timer_Master %= (time_active + time_loading);
+			
+			//timer_Master = 0; // also works
+		}
+		
+		
+		// Temporary throw-away variables
+		float rotation_main = 0;
+		float rotation_arm0 = 0;
+		float rotation_arm1 = 0;
+		float rotation_arm2 = 0;
+		// Calculations for rotations
+		
+		rotation_main += rotateProcess(0.0f, timer_Master, 360.0f*main_Rotations, time_active, 20.0f);
+		rotation_arm0 += rotateProcess(1.1f, timer_Master, 360.0f*sub_Rotations, time_active, 8.0f);
+		rotation_arm1 += rotateProcess(1.7f, timer_Master, 360.0f*sub_Rotations, time_active, 7.0f);
+		rotation_arm2 += rotateProcess(2.3f, timer_Master, 360.0f*sub_Rotations, time_active, 9.0f);
+		
+		
+		// Now push rotation calculations to the actual objects' rotation
+		main.setRotation(0,rotation_main,0);
+
+		if(rotateArms){
+			arm[0].setRotation(0,rotation_arm0,0);
+			arm[1].setRotation(0,rotation_arm1,0);
+			arm[2].setRotation(0,rotation_arm2,0);
+			
+			// Sound Control
+			float motor_vol = 0;
+			float motor_pitch = 0.5f;
+		
+			processSFXLoop(0, timer_Master, motor);
+			processSFXStop(time_active + 1.0f, timer_Master, motor);
+		
+			motor_vol += transformProcess(0.0f, timer_Master, 1.0f, 10.0f, 0.0f);
+			motor_vol += transformProcess(time_active-9.0f, timer_Master, -1.0f, 10.0f, 0.0f);
+		
+			motor_pitch += transformProcess(0.0f, timer_Master, 0.5f, 20.0f, 0.0f);
+			motor_pitch += transformProcess(time_active-20.0f, timer_Master, -0.5f, 20.0f, 0.0f);
+		
+			motor.setGain(motor_vol);
+			motor.setPitch(motor_pitch);
+
+			processSFXOneShot(time_active + time_loading - 4.0f, timer_Master, startUp);
+		
+		
+			// Cameras
+			for(int i = 0; i < 12; i++)
+			{
+				Matrix4x4f m_cam = camera[i].getAbsoluteMatrix();
+				Vector3f cameraTrans = new Vector3f();
+				m_cam.getTrans(cameraTrans);
+				view_cam[i].setEnterWarpPoint(cameraTrans, 4);
+				
+				if(view_cam[i].isActive())
+				{
+				
+					float x = -0.15f; // IN / OUT SEAT
+					float y = 0.05f; // VEERTICAL DISPLACEMENT	
+					float z = 0.0f;
+				
+					Matrix4x4f mtrans = new Matrix4x4f();
+					mtrans.initTrans(x, z, y);
+      
+					m_cam.multRight(mtrans);
+				
+					Matrix4x4f mrot = new Matrix4x4f();
+					mrot.initZRot((float)Math.toRadians(90));
+					m_cam.multRight(mrot);
+					mrot.initXRot((float)Math.toRadians(90));
+					m_cam.multRight(mrot);
+					mrot.initYRot(0);
+					m_cam.multRight(mrot);
+	
+					view_cam[i].setCameraMatrix(m_cam);
+				
+				}
+			}
+		}
+	
+	}
+
+	// Custom function that will sequence a rotation value
+	public float rotateProcess(float startTime, float curTime, float rotationDeg, float duration, float accelTime){	
+		if(startTime > curTime) return 0;
+		if(curTime > startTime + curTime) return (float)Math.toRadians(rotationDeg);
+		
+		float rotVal;
+		float animTime = curTime - startTime;
+	    //System.out.println(rotationDeg * Tools.switchRampC2(duration, 1, accelTime, animTime));
+		return rotVal = (float)Math.toRadians(rotationDeg * Tools.switchRampC2(duration, 1.0f, accelTime, animTime));
+		
+	}
+	
+	public void processSFXLoop(float startTime, float curTime, StaticSound sfx){
+		if(startTime > curTime) return;
+		if(curTime > startTime + 0.5f) return;
+		
+		sfx.playLoop();
+	}
+	
+	public void processSFXStop(float startTime, float curTime, StaticSound sfx){
+		if(startTime > curTime) return;
+		if(curTime > startTime + 0.5f) return;
+		
+		sfx.stop();
+	}
+	
+	public float transformProcess(float startTime, float curTime, float dist, float duration, float accelTime){	
+		float animSmoothTime = 0.0f;
+		curTime -= animSmoothTime; // Kick the animation in a little bit sooner.
+		duration += animSmoothTime * 2.0f; // Negate kickin animation and extend the animation.
+		if(startTime > curTime) return 0;
+		if(curTime > startTime + curTime + animSmoothTime) return dist;
+		
+		float rotVal;
+		float animTime = curTime - startTime;
+	    //System.out.println(rotationDeg * Tools.switchRampC2(duration, 1, accelTime, animTime));
+		return rotVal = dist * (float)Tools.switchRampC2(duration, 1.0f, accelTime, animTime);
+		
+	}
+	
+	public void processSFXOneShot(float startTime, float curTime, StaticSound sfx){
+		if(startTime > curTime) return;
+		if(curTime > startTime + 0.5f) return;
+		
+		sfx.play();
+	}
+}
+
+

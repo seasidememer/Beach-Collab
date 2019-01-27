@@ -1,0 +1,60 @@
+package Flatride;
+
+public class AutoPattern{
+	private	static final	String			SCRIPT_NAME = "autoPattern";
+	private					AutoEvent		cur;
+	private					AutoEvent		first;
+	
+	public AutoPattern(){
+		at(0.f);
+	}
+	public AutoEvent at(float time){
+		if(time < 0.f) time = 0.f;
+		if(cur==null){
+			AutoEvent ret = new AutoEvent(time);
+			first = ret;
+			cur = ret;
+			return ret;
+		}
+		if(cur.getTime() == time){
+			return cur;
+		}
+		if(cur.getTime() > time){
+			System.err.println(SCRIPT_NAME + ": You have to add auto events in chronological order, check the automatic patterns");
+		}
+		AutoEvent ret = new AutoEvent(time);
+		ret.setArm(cur.getArm());
+		cur.setNext(ret);
+		cur = ret;
+		return ret;
+	}
+	
+	public void endAt(float time){
+		at(time);
+		restart();
+	}
+	
+	public void restart(){
+		cur = first;
+	}
+	
+	public AutoEvent current(){
+		if(cur==null){
+			return new AutoEvent(0.f);
+		}
+		return cur;
+	}
+	
+	public void next(){
+		if(cur.getNext()!=null){
+			cur=cur.getNext();
+		}
+	}
+	
+	public float nextTime(){
+		if(cur.getNext()==null){
+			return -1;
+		}
+		return cur.getNext().getTime();
+	}
+}

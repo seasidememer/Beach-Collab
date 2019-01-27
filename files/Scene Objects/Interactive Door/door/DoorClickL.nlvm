@@ -1,0 +1,14 @@
+public class DoorClickL extends DoorClick
+{	
+	public final bool onInit(){
+		super.SCRIPT_NAME = "DoorL";		//script name (for error display)
+		super.TURN_NAME = "Door";		//name of the turning object element in the model
+		super.HANDLE_NAME = "Handle";	//name of the handle object element in the model
+		super.PHI_MAX=-82*DEG;			//opening door angle (degrees)
+		super.PHI_T=2.f;				//the time (in seconds) it takes to open the door
+		super.PHI_Ta=PHI_T/5.f;			//the acceleration time (in seconds) for the door animation
+		super.PHI_HANDLE_CLOSE=0*DEG;	//handle close position (degrees)
+		super.PHI_HANDLE_OPEN=-12*DEG;	//handle open position (degrees)
+		return super.onInit();			//do not delete this line!
+	}
+}

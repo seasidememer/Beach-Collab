@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <custommaterial>
+        <diffuse r="0.137255" g="0.137255" b="0.137255"/>
+        <ambient r="0.137255" g="0.137255" b="0.137255"/>
+        <specular r="0.658824" g="0.658824" b="0.658824"/>
+        <shininess exponent="109.851"/>
+      </custommaterial>
+      <reflection fresnelconst="-0.1" fresnelvar="0.3"/>
+      <rgbgen mode="lighting"/>
+    </renderpass>
+  </material>
+</root>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="ladder_stackable_bottom.dae"/>
+    <description>Stackable ladder objects. Requires extra script object to make them climbable.</description>
+    <preview>Stackable Ladder Preview Bottom.jpg</preview>
+    <usercolor>
+      <label>Base Color</label>
+      <defaultcolor r="0.482353" g="0.847059" b="0.827451"/>
+    </usercolor>
+    <usercolor>
+      <label>Dirt Color</label>
+      <defaultcolor r="0.572549" g="0.647059" b="0.643137"/>
+    </usercolor>
+    <materialpath name="ladder">ladder.nl2mat</materialpath>
+  </sceneobject>
+</root>

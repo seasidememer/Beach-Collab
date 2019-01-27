@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Data/Objects/scrambler.dae"/>
+    <description>Scrambler ride. Remember to name it in the editor!</description>
+    <preview>Data/Resources/ICONS/ICO_Ride.png</preview>
+    <usercolor>
+      <label>Base</label>
+      <defaultcolor r="1" g="0.517647" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Accent</label>
+      <defaultcolor r="0.294118" g="0.294118" b="0.294118"/>
+    </usercolor>
+    <usercolor>
+      <label>Arms</label>
+      <defaultcolor r="1" g="0.517647" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Sub Arms</label>
+      <defaultcolor r="1" g="0.517647" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Car Bottom</label>
+      <defaultcolor r="1" g="0.968628" b="0.45098"/>
+    </usercolor>
+    <usercolor>
+      <label>Car Top</label>
+      <defaultcolor r="1" g="0.517647" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Car Accent</label>
+      <defaultcolor r="0.294118" g="0.294118" b="0.294118"/>
+    </usercolor>
+    <usercolor>
+      <label>Seat</label>
+      <defaultcolor r="0.752941" g="0.752941" b="0.752941"/>
+    </usercolor>
+    <script>
+      <classpath>Data/Resources</classpath>
+      <class>rideAnimation</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="chrome">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="color0">Data/Materials/Color 0.nl2mat</materialpath>
+    <materialpath name="color1">Data/Materials/Color 1.nl2mat</materialpath>
+    <materialpath name="color2">Data/Materials/Color 2.nl2mat</materialpath>
+    <materialpath name="color3">Data/Materials/Color 3.nl2mat</materialpath>
+    <materialpath name="color4">Data/Materials/Color 4.nl2mat</materialpath>
+    <materialpath name="color5">Data/Materials/Color 5.nl2mat</materialpath>
+    <materialpath name="color6">Data/Materials/Color 6.nl2mat</materialpath>
+    <materialpath name="color7">Data/Materials/Color 7.nl2mat</materialpath>
+    <materialpath name="material">Data/Materials/Never Render.nl2mat</materialpath>
+    <materialpath name="material_2">Data/Materials/No Render Sprite.nl2mat</materialpath>
+  </sceneobject>
+</root>

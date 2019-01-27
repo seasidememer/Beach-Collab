@@ -1,0 +1,36 @@
+package Flatride;
+
+public class AutoEvent{
+	private			float			time;
+	private			float			armSpeed;
+	private			AutoEvent		next;
+	
+	public AutoEvent(float thetime){
+		time = thetime;
+		armSpeed = 0.f;
+		next = null;
+	}
+	
+	public AutoEvent setArm(float thespeed){
+		if(thespeed < -1) thespeed = -1;
+		if(thespeed > 1) thespeed = 1;
+		armSpeed = thespeed;
+		return this;
+	}
+	
+	public float getArm(){
+		return armSpeed;
+	}
+		
+	public float getTime(){
+		return time;
+	}
+	
+	public void setNext(AutoEvent event){
+		next = event;
+	}
+	
+	public AutoEvent getNext(){
+		return next;
+	}
+}

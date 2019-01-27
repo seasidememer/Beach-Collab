@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Coca Cola.dae"/>
+    <materialpath name="Coca_cola">Shading.nl2mat</materialpath>
+    <materialpath name="Color_008">Shading.nl2mat</materialpath>
+    <materialpath name="Color_M07">Shading.nl2mat</materialpath>
+    <materialpath name="Color_M09">Shading.nl2mat</materialpath>
+    <materialpath name="Steve_Edges">Shading.nl2mat</materialpath>
+  </sceneobject>
+</root>

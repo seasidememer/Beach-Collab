@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Danger Sign 1.dae">
+      <clip distance="20"/>
+    </model>
+    <materialpath name="Metal">intern:data/materials/Metal Floor 2.nl2mat</materialpath>
+  </sceneobject>
+</root>

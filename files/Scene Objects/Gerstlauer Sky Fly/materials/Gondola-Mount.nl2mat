@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>Ambient=add(0.8,tex0);
+Result = Entity4;
+Specular = mad(Entity4,0.3,0.7);</shadercore>
+      <custommaterial>
+        <diffuse r="0.964706" g="0.917647" b="0.152941"/>
+        <ambient r="0.964706" g="0.917647" b="0.152941"/>
+        <specular r="0.988235" g="1" b="0.666667"/>
+        <shininess exponent="100.299"/>
+      </custommaterial>
+      <reflection affectedbyspecular="true" fresnelconst="0.1" fresnelvar="0.3"/>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <map>Gondola-AO.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>
