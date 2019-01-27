@@ -16,7 +16,7 @@
         <tcgen mode="base"/>
       </texunit>
       <texunit>
-        <map>/C:/Users/User/Documents/GitHub/Beach-Collab/files/Scene Objects/pavillion/normalmaps/floor_nm.jpg</map>
+        <map>normalmaps/floor_nm.jpg</map>
         <bump mode="normalgloss"/>
         <tcgen mode="base"/>
       </texunit>
