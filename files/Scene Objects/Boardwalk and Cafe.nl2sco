@@ -7,7 +7,7 @@
       <defaultcolor r="0.827451" g="0.827451" b="0.827451"/>
     </usercolor>
     <materialpath name="Dark_Wooden_Decking">AS Textures/Wood/Wood Deck 3/Wood Deck 03.nl2mat</materialpath>
-    <materialpath name="Steel_Brushed_Stainless">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Steel_Brushed_Stainless">intern:data/materials/Chrome.nl2mat</materialpath>
     <materialpath name="Tarmac1">AS Textures/Tarmac/Tarmac2/Tarmac2.nl2mat</materialpath>
     <materialpath name="Tarmac2">AS Textures/Tarmac/Tarmac1/Tarmac 1.nl2mat</materialpath>
     <materialpath name="Tarmac3">AS Textures/Tarmac/Tarmac1/Tarmac 1.nl2mat</materialpath>
