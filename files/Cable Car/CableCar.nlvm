@@ -1,4 +1,5 @@
 import com.nolimitscoaster.*;
+import nlvm.math3d.*;
 
 public class CableCar extends Script{
 	
@@ -41,7 +42,60 @@ public class CableCar extends Script{
 			
 		}
 		
+		// Orient Cable Trees
+		for (int i = 0; i < cableTreeCount; i++) {
+			
+			CableTree a;
+			CableTree b;
+			
+			if (i == 0) {
+				
+				a = cableTrees[i];
+				b = cableTrees[i+1];
+				
+			} else {
+				
+				a = cableTrees[i];
+				b = cableTrees[i-1];
+				
+			}
+			
+			Vector3f aPos = a.sco.getTranslation();
+			Vector3f bPos = b.sco.getTranslation();
+			
+			float rot;
+			
+			if (i == 0) {
+			
+				rot = (float) Math.atan2(bPos.x - aPos.x, bPos.z - aPos.z);
+			
+			} else {
+			
+				rot = (float) Math.atan2(aPos.x - bPos.x, aPos.z - bPos.z);
+			
+			}
+			
+			a.sco.setRotation(0, rot, 0);
+			
+		}
 		
+		// Stretch Cables
+		for (int i = 1; i < cableTreeCount -1; i++) {
+			
+			CableTree a = cableTrees[i+1];
+			CableTree b = cableTrees[i];
+			CableTree c = cableTrees[i-1];
+			
+			float ba = b.getDistance(a);
+			float bc = b.getDistance(c);
+			
+			b.leftCable.setScale(1,ba,1);
+			b.rightCable.setScale(1,bc,1);
+			
+			b.leftCable.setRotation(b.getAngle(a),0,0);
+			b.rightCable.setRotation(-b.getAngle(c),0,0);
+			
+		}
 	
 		return true;
 		
