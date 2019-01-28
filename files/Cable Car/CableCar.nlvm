@@ -103,7 +103,7 @@ public class CableCar extends Script{
 	
 	public void onNextFrame(float tick) {
 		
-		
+		//
 		
 	}
 	
