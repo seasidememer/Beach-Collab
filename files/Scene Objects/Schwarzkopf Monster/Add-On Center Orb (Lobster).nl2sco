@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Object/addOn_LobsterHead.dae">
+      <clip mesh="detail_S" distance="76.2"/>
+    </model>
+    <description>Adds an orb with a Lobster to the ride&apos;s center. Use the same 3D Coordinates as the Monster ride.</description>
+    <preview>Resources/ICONS/ICON_AddOnOrbCreature.png</preview>
+    <usercolor>
+      <label>Base</label>
+      <defaultcolor r="1" g="0.847059" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Lobster</label>
+      <defaultcolor r="0.709804" g="0.317647" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Lobster Eyes</label>
+      <defaultcolor r="0.160784" g="0.160784" b="0.160784"/>
+    </usercolor>
+    <script>
+      <classpath>Resources</classpath>
+      <class>rideAnimation</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="E_Color0">Materials/E_Color0.nl2mat</materialpath>
+    <materialpath name="glass">Materials/No Render Face.nl2mat</materialpath>
+    <materialpath name="lobBack">Materials/E_Color1.nl2mat</materialpath>
+    <materialpath name="lobClaw">Materials/E_Color1.nl2mat</materialpath>
+    <materialpath name="lobEyes">Materials/E_Color2.nl2mat</materialpath>
+    <materialpath name="noRenderFace">Materials/No Render Face.nl2mat</materialpath>
+    <materialpath name="superReflect">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="whiteLight">Materials/Lights.nl2mat</materialpath>
+  </sceneobject>
+</root>

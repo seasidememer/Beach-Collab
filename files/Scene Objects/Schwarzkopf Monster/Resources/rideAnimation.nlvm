@@ -1,0 +1,488 @@
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+//import nlvm.lang.String;
+
+/* *************************************************
+	MONSTER III animation Control by Josh V.(maverick34jjv)
+	This file is not edit-friendly, so modify with caution!
+	
+	The variable animSpeed refers the animation speed. 100 being normal.
+	Higher values result in a faster animation, lower values result in a slower one.
+	
+************************************************** */ 
+
+public class rideAnimation extends Script
+{		
+		// Monster iii animations
+		//	0	Standard Operation
+		//  1 	Debugging Animation
+		//	2	Six Flags Great America Operation
+		//	
+		private int animationMode = 0;	// Can be changed to modes above!
+		
+		
+		private float animSpeed = 100.0f; // Percent
+		
+		// CAUTION WITH EDITING VALUES AFTER THIS LINE! CAUTION WITH EDITING VALUES AFTER THIS LINE! CAUTION WITH EDITING VALUES AFTER THIS LINE!
+		
+		
+		private bool useCalculatedValues = false;
+		
+		private SceneObject sco;//Scenery object handle
+		private SceneObjectElement mainHub, topHub, topShifter, topRevolver, arm[], armHub[], carriage[];
+		private SceneObjectElement armPoint[], hubPoint[];
+		private SceneObjectElement armPiston[], hubPiston[], liftPistonExtension;
+		
+		private float curTime = -1;
+		//private ExternalRideView seat[];
+		private String rideName = "GIVE SCENE OBJECT A NAME! OR ElSE!";
+		private int addonID = -1;
+		// ADDON IDs
+		// 01 Center Orbs
+		// Hub Attatchment
+		
+		// Sound FX
+		private StaticSound startUp, motor0, motor1, airRelease;
+		
+		// Extras
+		private Vector3f v3f_scoPos = new Vector3f();
+		private float carriageStartOffset[]; 
+		private ExternalRideView cam[];
+		private float armHubStartOffset[];
+		private float animationTime = 0;
+		private float orbOffset = 0;
+		
+	public bool onInit() { //On Initialization
+		curTime = 134.0f; // Used to override animation time. Useful for debugging	
+		switch(animationMode){
+			case 0:
+				animationTime = 140.0f;
+			break;
+			case 1:
+				animationTime = 100.0f;
+			break;
+			case 2:
+				animationTime = 130.0f;
+			break;
+			default:
+				animationMode = 0;
+				animationTime = 140.0f;
+			break;
+		}		
+		// Get SCO and SCOE 
+		sco = sim.getSceneObjectForEntityId(getParentEntityId());
+		mainHub = sco.getElementForName("main");
+		topHub = sco.getElementForName("main2");
+		topShifter = sco.getElementForName("topshifter");
+		topRevolver = sco.getElementForName("topRevolver");
+		arm = new SceneObjectElement[5];
+		armPoint = new SceneObjectElement[6];
+		hubPoint = new SceneObjectElement[6];
+		SceneObjectElement rodPoint[];
+		rodPoint = new SceneObjectElement[5];
+		armPiston = new SceneObjectElement[6];
+		hubPiston = new SceneObjectElement[6];
+		armHub = new SceneObjectElement[5];
+		armHubStartOffset = new float[5];
+		carriage = new SceneObjectElement[25];
+		carriageStartOffset = new float[25];
+		cam = new ExternalRideView[25];
+		for(int i = 0; i < 5; i++){
+			arm[i] = sco.getElementForName("arm_"+i);	
+			armHub[i] = sco.getElementForName("armHub"+i);	
+			armPoint[i] = sco.getElementForName("armPoint_"+i);	
+			hubPoint[i] = sco.getElementForName("rod_"+i);	
+			rodPoint[i] = sco.getElementForName("endPoint"+i);	
+			armPiston[i] = sco.getElementForName("pistonArm"+i);	
+			hubPiston[i] = sco.getElementForName("pistonHub"+i);	
+			armHubStartOffset[i] = (float)Math.random()*(float)Math.PI*2.0f;
+		}
+		armPiston[5] = sco.getElementForName("pistonArm"+ 5);	
+		hubPiston[5] = sco.getElementForName("pistonHub"+ 5);	
+		armPoint[5] = sco.getElementForName("armPoint_"+ 5);	
+		hubPoint[5] = sco.getElementForName("rod_"+ 5);	
+		liftPistonExtension = sco.getElementForName("liftExtension");	
+		
+		if(arm[0] == null	){ // No arm is found, must be an orb addon
+			addonID = 01;
+			Vector3f temprot = new Vector3f();
+			sco.getRotation(temprot); // Get the rotation
+			System.out.println(temprot);
+			orbOffset = temprot.y; // Save offset value
+			sco.setRotation(new Vector3f(temprot.x,temprot.y - orbOffset,temprot.z)); // Undo the rotation
+			return true;
+		}
+		
+		for(int i = 0; i < 25; i++){
+			carriageStartOffset[i] = (float)Math.random()*(float)Math.PI*2.0f;
+			carriage[i] = sco.getElementForName("carriage"+i);	
+			cam[i] = sim.createExternalRideView();
+			cam[i].setEnterWarpPoint(carriage[i].getAbsoluteMatrix().getTrans(), 2.5f);
+			cam[i].setLabel(", Car: " + i);
+		}
+		
+		for(int i = 0; i < 5; i++){
+			if(!useCalculatedValues){
+				hubPoint[i].setVisible(false);	
+				rodPoint[i].setVisible(false);	
+			}
+		
+		}
+		
+		v3f_scoPos = sco.getTranslation();
+		
+		// Sound....
+		startUp = StaticSound.loadFromFile("startUp.ogg", 0);
+		startUp.setPosition(v3f_scoPos);
+		startUp.setEnvironmentMode(StaticSound.E_ENVMODE_GLOBAL);
+		startUp.setDistanceParameters(6.0f, 4.0f);
+		motor0 = StaticSound.loadFromFile("motor.ogg", 0);
+		motor0.setPosition(v3f_scoPos);
+		motor0.setEnvironmentMode(StaticSound.E_ENVMODE_GLOBAL);
+		motor0.setDistanceParameters(6.0f, 4.0f);
+		motor1 = StaticSound.loadFromFile("motor.ogg", 0);
+		motor1.setPosition(v3f_scoPos);
+		motor1.setEnvironmentMode(StaticSound.E_ENVMODE_GLOBAL);
+		motor1.setDistanceParameters(6.0f, 4.0f);
+		airRelease = StaticSound.loadFromFile("airRelease.ogg", 0);
+		airRelease.setPosition(v3f_scoPos);
+		airRelease.setEnvironmentMode(StaticSound.E_ENVMODE_GLOBAL);
+		airRelease.setDistanceParameters(6.0f, 4.0f);
+	
+		
+		return true;
+	}
+	
+	public void onNextFrame(float tick) {
+		curTime += tick * animSpeed / 100.0f;
+	    float cur_mainRotation = 0;
+	    float cur_shiftRotation = 0;
+	    float cur_revolverRotation = 0;
+	    float cur_armHub = 0;
+	    float cur_carriageRotation0 = 0;
+	    float cur_carriageRotation1 = 0;
+	    float cur_carriageRotation2 = 0;
+	    float cur_carriageRotation3 = 0;
+	    float cur_carriageRotation4 = 0;
+	    float cur_motor0Vol = 0;
+	    float cur_motor1Vol = 0;
+		float cur_motor0Pit = 0;
+	    float cur_motor1Pit = 0;
+		//System.out.println(curTime);
+		
+		// ANIMATION ADDITIONS START ANIMATION ADDITIONS START ANIMATION ADDITIONS START ANIMATION ADDITIONS START ANIMATION ADDITIONS START
+		// ---------------------------------------------------------
+		
+		// Standard Operation
+		if(animationMode == 0)
+		{
+			cur_mainRotation += rotateProcess(20.0f, curTime, -360.0f * 8.0f, 70.0f, 12.0f);
+			cur_revolverRotation += rotateProcess(1.0f, curTime, 360.0f * 8.0f, 99.0f, 12.0f);
+			
+			cur_armHub += rotateProcess(10.0f, curTime, 360.0f * 21.0f, 86.0f, 20.0f);
+			
+			cur_shiftRotation += rotateProcess(1.0f, curTime, 30.0f, 14.0f, 5.0f);
+			cur_shiftRotation += rotateProcess(65.0f, curTime, -30.0f, 15.0f, 5.0f);
+			
+			cur_carriageRotation0 += rotateProcess(5.0f, curTime, 360.0f * 8.0f, 97.0f, 20.0f);
+			cur_carriageRotation1 += rotateProcess(5.5f, curTime, 360.0f * 7.0f, 98.0f, 20.0f);
+			cur_carriageRotation2 += rotateProcess(4.5f, curTime, 360.0f * 6.0f, 96.0f, 20.0f);
+			cur_carriageRotation3 += rotateProcess(4.75f, curTime, 360.0f * 9.0f, 93.0f, 20.0f);
+			cur_carriageRotation4 += rotateProcess(6.0f, curTime, 360.0f * 10.0f, 96.0f, 20.0f);
+			cur_carriageRotation0 += rockProcess(6.0f, curTime, 270.0f, 96.0f, 15.0f, 0.9f);
+			cur_carriageRotation1 += rockProcess(6.5f, curTime, 270.0f, 91.0f, 15.0f, 0.5f);
+			cur_carriageRotation2 += rockProcess(6.2f, curTime, 270.0f, 97.0f, 15.0f, 0.6f);
+			cur_carriageRotation3 += rockProcess(6.9f, curTime, 270.0f, 94.0f, 15.0f, 1.0f);
+			cur_carriageRotation4 += rockProcess(6.7f, curTime, 270.0f, 95.0f, 15.0f, 0.4f);
+			if(addonID == -1){
+			
+				cur_motor0Vol += transformProcess(0.0f, curTime, 8, 5.0f, 0.5f);
+				cur_motor0Pit += transformProcess(0.0f, curTime, 1, 8.0f, 3.0f);
+				
+				cur_motor1Vol += transformProcess(20.0f, curTime, 8, 5.0f, 0.5f);
+				cur_motor1Pit += transformProcess(20.0f, curTime, 1, 12.0f, 3.0f);
+				
+				cur_motor1Vol += transformProcess(93.0f, curTime, -8.0f, 5.0f, 0.5f);
+				cur_motor1Pit += transformProcess(88.0f, curTime, -1.0f, 12.0f, 3.0f);
+				
+				cur_motor0Vol += transformProcess(82.0f, curTime, -8, 5.0f, 0.5f);
+				cur_motor0Pit += transformProcess(80.0f, curTime, -1, 8.0f, 3.0f);
+
+			
+				motor0.setGain(cur_motor0Vol);
+				motor0.setPitch(cur_motor0Pit);
+				motor1.setGain(cur_motor1Vol);
+				motor1.setPitch(cur_motor1Pit * 0.8f);
+				
+				processSFXOneShot(137.0f, curTime, startUp);
+				processSFXOneShot(102.0f, curTime, airRelease);
+				processSFXLoop(0.5f, curTime, motor0);
+				processSFXLoop(19.0f, curTime, motor1);
+				
+			}
+		}
+							
+		// Debug Animation
+		if(animationMode == 1)
+		{
+			cur_mainRotation += rotateProcess(0.0f, curTime, -180.0f, 15.0f, 7.5f);
+			cur_revolverRotation += rotateProcess(15.0f, curTime, 180.0f, 15.0f, 7.5f);
+			cur_mainRotation += rotateProcess(30.0f, curTime, -180.0f, 15.0f, 7.5f);
+			cur_revolverRotation += rotateProcess(30.0f, curTime, 180.0f, 15.0f, 7.5f);
+			
+			cur_shiftRotation += rotateProcess(45.0f, curTime, 30.0f, 15.0f, 5.0f);
+			cur_mainRotation += rotateProcess(60.0f, curTime, 360.0f, 25.0f, 7.5f);
+			cur_revolverRotation += rotateProcess(60.0f, curTime, -360.0f, 25.0f, 7.5f);
+			cur_shiftRotation += rotateProcess(70.0f, curTime, -30.0f, 15.0f, 5.0f);
+			
+			cur_armHub += rotateProcess(0.0f, curTime, 360.0f * 6.0f, 80.0f, 20.0f);
+			
+		}
+		
+		// SFGAm Animation
+		if(animationMode == 2)
+		{
+			cur_mainRotation += rotateProcess(5.0f, curTime, -360.0f * 11.0f, 100.0f, 25.0f);
+			cur_armHub += rotateProcess(1.0f, curTime, 360.0f * 20.0f, 110.0f, 25.0f);
+			cur_shiftRotation += rotateProcess(25.0f, curTime, 30.0f, 10.0f, 5.0f);
+			cur_shiftRotation += rotateProcess(85.0f, curTime, -30.0f, 10.0f, 5.0f);
+		}
+		
+			
+		if(addonID == -1){
+			mainHub.setRotation(new Vector3f(0,cur_mainRotation,0));
+		}
+		topHub.setRotation(new Vector3f(0,cur_mainRotation - cur_revolverRotation + orbOffset,0));
+		topRevolver.setRotation(new Vector3f(0,cur_revolverRotation,0));
+		topShifter.setRotation(new Vector3f(0,0,cur_shiftRotation));
+		if(addonID == -1){
+			for(int i = 0; i < 25;i++){
+			float tempx = 0;
+			if(i%5 == 0){
+				tempx = cur_carriageRotation0;
+			}
+			else if(i%5 == 1){
+				tempx = cur_carriageRotation1;
+			}
+			else if(i%5 == 2){
+				tempx = cur_carriageRotation2;
+			}
+			else if(i%5 == 3){
+				tempx = cur_carriageRotation3;
+				
+			}else{
+				tempx = cur_carriageRotation4;
+			}
+			float neg = 1;
+			if(i%2 == 0) neg = -1;
+			
+			carriage[i].setRotation(new Vector3f(0,carriageStartOffset[i] + tempx * neg,0));
+			}
+		
+		
+			for(int i = 0; i < 5; i++){
+				armHub[i].setRotation(new Vector3f(0,cur_armHub + armHubStartOffset[i],0));
+			}
+		}
+		
+		
+		
+		
+		if(addonID == -1){
+			for(int i = 0; i < 5; i++){
+			
+			// Since calculating these angles are a sore pain in the butt... Let's fake it! Yippie!
+			float armAngle = 0;
+			float angularDifferenceHubs = (cur_mainRotation % (2.0f*3.1415f) - cur_revolverRotation % (2.0f*3.1415f) + 3.1415f) % (2.0f*3.1415f);
+			float tolerance0 = (float)((Math.cos(angularDifferenceHubs + i * -1.25664f))+1)/2.0f;
+			//if(i == 0) System.out.println(tolerance0);
+			armAngle = (float)Math.toRadians(-21.0f * tolerance0) * (float)Math.toDegrees(cur_shiftRotation)/30.0f;
+			arm[i].setRotation(new Vector3f(0,i * -1.25664f,armAngle));
+
+			placePiston(i,cur_mainRotation);
+
+			}
+			placePiston(5,cur_mainRotation);
+			// This is the lift piston
+			float tempEx = cur_shiftRotation/(float)Math.toRadians(30.0f)*0.32f;
+			
+			liftPistonExtension.setTranslation(new Vector3f(-tempEx+0.18f,0,0)); 
+		}
+		
+		//System.out.println(Math.sin(45));
+		
+		
+		if(curTime >= animationTime){ //140
+			curTime %= animationTime;
+		
+		}
+		
+			// CAMERA
+		if(addonID == -1){
+		for(int i = 0; i < 25; i++){
+				cam[i].setEnterWarpPoint(carriage[i].getAbsoluteMatrix().getTrans(), 2.5f);
+	
+			
+			if(cam[i].isActive()){
+			
+			float x = 0.4f;
+			float y = 0.95f;
+			float z = 0;
+			
+			Matrix4x4f m_Car = carriage[i].getAbsoluteMatrix();
+			Vector3f v_CarTrans = new Vector3f();
+			m_Car.getTrans(v_CarTrans);
+			
+			Matrix4x4f mtrans = new Matrix4x4f();
+			mtrans.initTrans(x, z, y);
+      
+			m_Car.multRight(mtrans);
+      
+			Matrix4x4f mrot = new Matrix4x4f();
+			mrot.initZRot((float)Math.toRadians(0));
+			m_Car.multRight(mrot);
+			mrot.initXRot((float)Math.toRadians(90));
+			m_Car.multRight(mrot);
+			mrot.initYRot((float)Math.toRadians(90));
+			m_Car.multRight(mrot);
+			
+			cam[i].setCameraMatrix(m_Car);
+			}
+		}
+		}
+	}
+		
+		
+	private void placePiston(int i,float mainRotation){
+		Matrix4x4f m_armPoint = armPoint[i].getAbsoluteMatrix();
+		Matrix4x4f m_hubPoint = hubPoint[i].getAbsoluteMatrix();
+		Vector3f v3f_armPos = m_armPoint.getTrans();
+		Vector3f v3f_hubPos = m_hubPoint.getTrans();
+		
+		Vector3f v3f_hubArmPlace = new Vector3f();
+		Vector3f v3f_hubPosPlace = new Vector3f();
+		
+		//Tools.matrixToPitchHeadBankPos(m_armPoint, null, v3f_armPos);
+		
+		
+		v3f_hubArmPlace.x = v3f_armPos.x - v3f_scoPos.x;	
+		v3f_hubArmPlace.z = v3f_armPos.y - v3f_scoPos.y; // Horizontal
+		v3f_hubArmPlace.y = v3f_scoPos.z - v3f_armPos.z; // Vertical
+		
+		
+		v3f_hubPosPlace.x = v3f_hubPos.x - v3f_scoPos.x;	
+		v3f_hubPosPlace.z = v3f_hubPos.y - v3f_scoPos.y; // Horizontal
+		v3f_hubPosPlace.y = v3f_scoPos.z - v3f_hubPos.z; // Vertical
+		
+		
+		
+		// Arm vertical rotation
+		float tempx = (float)Math.sqrt((v3f_armPos.x-v3f_hubPos.x)*(v3f_armPos.x-v3f_hubPos.x) + (v3f_armPos.z-v3f_hubPos.z)*(v3f_armPos.z-v3f_hubPos.z));
+		float tempy = v3f_armPos.y - v3f_hubPos.y ;
+		float vertAngle = (float)Math.atan(tempy/tempx);
+		// Arm horizontal rotation
+		float diffz = v3f_armPos.z - v3f_hubPos.z;
+		float diffx = v3f_armPos.x - v3f_hubPos.x;
+		float horzAngle = (float)Math.atan(diffx/diffz);
+		if(diffz >= 0) horzAngle += (float)Math.toRadians(180);
+		
+		
+		armPiston[i].setRotation(new Vector3f(0,horzAngle + (float)Math.toRadians(90),vertAngle));
+		armPiston[i].setTranslation(v3f_hubArmPlace);
+		
+		// Hub vertical rotations
+		vertAngle = (float)Math.atan(tempx/tempy);
+		// Arm horizontal rotation
+		horzAngle = (float)Math.atan(diffz/diffx);
+		if(diffx >= 0) horzAngle += (float)Math.toRadians(180);
+		if(tempy >= 0) vertAngle *= -1.0f;
+		//if(i == 0)System.out.println(vertAngle);
+		
+		hubPiston[i].setRotation(new Vector3f(0,-horzAngle,vertAngle + (float)Math.toRadians(90)));
+		hubPiston[i].setTranslation(v3f_hubPosPlace);
+		
+		
+		//if(i == 0)System.out.println(v3f_hubArmPlace);
+
+	
+	}
+
+	
+	private float rotateProcess(float startTime, float curTime, float rotationDeg, float duration, float accelTime){	
+		float animSmoothTime = 0.15f;
+		curTime -= animSmoothTime * 0.9f; // Kick the animation in a little bit sooner.
+		duration += animSmoothTime * 2.1f; // Negate kickin animation and extend the animation.
+		if(startTime > curTime) return 0;
+		if(curTime > startTime + curTime + animSmoothTime * 2.0f) return (float)Math.toRadians(rotationDeg);
+		
+		float rotVal;
+		float animTime = curTime - startTime;
+	    //System.out.println(rotationDeg * Tools.switchRampC2(duration, 1, accelTime, animTime));
+		return rotVal = (float)Math.toRadians(rotationDeg * Tools.switchRampC2(duration, 1.0f, accelTime, animTime));
+		
+	}
+	
+	private float rockProcess(float startTime, float curTime, float rockDeg, float duration, float accelTime, float freq){
+		if(startTime > curTime) return 0;
+		if(curTime > startTime + curTime) return 0;
+		float rotVal;
+		float intensity = 0;
+		float animTime = curTime - startTime;
+		intensity += (float)Tools.switchRampC2(duration/2.0f, 1.0f, accelTime/2.0f, animTime);
+		if(animTime > duration/2.0f) intensity += (float)Tools.switchRampC2(duration/2.0f, -1.0f, accelTime/2.0f, animTime-duration/2.0f);
+		
+		rotVal = (intensity) * (float)Math.toRadians(rockDeg/2.0f)* (float)Math.sin(freq * animTime);
+		//System.out.println(Math.toDegrees(rotVal));
+		return rotVal;
+	
+	
+	}
+	
+	private float transformProcess(float startTime, float curTime, float dist, float duration, float accelTime){	
+		float animSmoothTime = 0.15f;
+		curTime -= animSmoothTime; // Kick the animation in a little bit sooner.
+		duration += animSmoothTime * 2.0f; // Negate kickin animation and extend the animation.
+		if(startTime > curTime) return 0;
+		if(curTime > startTime + curTime + animSmoothTime) return dist;
+		
+		float rotVal;
+		float animTime = curTime - startTime;
+	    //System.out.println(rotationDeg * Tools.switchRampC2(duration, 1, accelTime, animTime));
+		return rotVal = dist * (float)Tools.switchRampC2(duration, 1.0f, accelTime, animTime);
+		
+	}
+	
+	private float constrainAndScale(float in, float inMax, float inMin, float outMax, float outMin){
+		if(in > inMax) in = inMax;
+		if(in < inMin) in = inMin;
+		return (((in - inMin) * (outMax - outMin)) / (inMax - inMin)) + outMin;
+	
+	}
+	
+	private void processSFXOneShot(float startTime, float curTime, StaticSound sfx){
+		if(startTime > curTime) return;
+		if(curTime > startTime + 0.5f) return;
+		
+		sfx.play();
+	}
+	
+	private void processSFXLoop(float startTime, float curTime, StaticSound sfx){
+		if(startTime > curTime) return;
+		if(curTime > startTime + 0.5f) return;
+		
+		sfx.playLoop();
+	}
+	
+	private void processSFXStop(float startTime, float curTime, StaticSound sfx){
+		if(startTime > curTime) return;
+		if(curTime > startTime + 0.5f) return;
+		
+		sfx.stop();
+	}
+	
+	
+	
+	
+}
+
+

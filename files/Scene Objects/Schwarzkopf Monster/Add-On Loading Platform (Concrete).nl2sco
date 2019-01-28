@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Object/addOn_PlatformConcrete.dae"/>
+    <description>Adds a concrete platform. Use the same 3D Coordinates as the Monster ride.</description>
+    <preview>Resources/ICONS/ICON_AddOnPlatformConcrete.png</preview>
+    <usercolor>
+      <label>Concrete</label>
+      <defaultcolor r="0.819608" g="0.815686" b="0.72549"/>
+    </usercolor>
+    <usercolor>
+      <label>Safety Line</label>
+      <defaultcolor r="0.929412" g="0.764706" b="0.00784314"/>
+    </usercolor>
+    <materialpath name="concrete0">Materials/E_Color0 No Reflection.nl2mat</materialpath>
+    <materialpath name="concrete1">Materials/E_Color1 No Reflection.nl2mat</materialpath>
+  </sceneobject>
+</root>

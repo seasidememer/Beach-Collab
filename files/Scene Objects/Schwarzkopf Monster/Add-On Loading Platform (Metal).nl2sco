@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Object/addOn_PlatformMetal.dae"/>
+    <description>Adds a metal platform. Use the same 3D Coordinates as the Monster ride.</description>
+    <preview>Resources/ICONS/ICON_AddOnPlatformMetal.png</preview>
+    <usercolor>
+      <label>Platform</label>
+      <defaultcolor r="0" g="0.819608" b="0.654902"/>
+    </usercolor>
+    <materialpath name="E_Color0">Materials/E_Color0.nl2mat</materialpath>
+  </sceneobject>
+</root>

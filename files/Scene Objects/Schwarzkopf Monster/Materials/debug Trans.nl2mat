@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <blend srcfactor="srcalpha" dstfactor="oneminussrcalpha"/>
+      <custommaterial>
+        <diffuse r="1" g="0.654902" b="0.113725"/>
+        <ambient r="1" g="0.654902" b="0.113725"/>
+        <specular r="1" g="1" b="1"/>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <alphagen mode="const" a="0.7"/>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <materialtexture/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <option noshadowcast="true"/>
+    <option noshadowreceive="true"/>
+  </material>
+</root>

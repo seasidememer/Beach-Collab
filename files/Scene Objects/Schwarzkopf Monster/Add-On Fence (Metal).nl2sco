@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Object/addOn_fenceMetal.dae">
+      <clip mesh="group_1" distance="150"/>
+      <clip mesh="group_2" distance="150"/>
+      <clip mesh="group_3" distance="150"/>
+      <clip mesh="group_4" distance="50"/>
+      <clip mesh="group_5" distance="150"/>
+      <clip mesh="group_6" distance="50"/>
+      <clip mesh="group_7" distance="150"/>
+      <clip mesh="group_8" distance="150"/>
+    </model>
+    <description>Adds a metal fence around the ride. Use the same 3D Coordinates as the Monster ride.</description>
+    <preview>Resources/ICONS/ICON_AddOnFenceMetal.png</preview>
+    <usercolor>
+      <label>Posts</label>
+      <defaultcolor r="0.168627" g="0.168627" b="0.168627"/>
+    </usercolor>
+    <usercolor>
+      <label>Rails</label>
+      <defaultcolor r="0.168627" g="0.168627" b="0.168627"/>
+    </usercolor>
+    <usercolor>
+      <label>Fence</label>
+      <defaultcolor r="0.168627" g="0.168627" b="0.168627"/>
+    </usercolor>
+    <materialpath name="E_Color0">Materials/E_Color0.nl2mat</materialpath>
+    <materialpath name="E_Color1">Materials/E_Color1.nl2mat</materialpath>
+    <materialpath name="E_Color3">Materials/E_Color2.nl2mat</materialpath>
+  </sceneobject>
+</root>

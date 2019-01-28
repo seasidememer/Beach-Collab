@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Object/addOn_PumpkinOrb.dae"/>
+    <description>Adds a decorative Pumpkin to the ride&apos;s center. Use the same 3D Coordinates as the Monster ride.</description>
+    <preview>Resources/ICONS/ICON_AddOnOrbPlant.png</preview>
+    <usercolor>
+      <label>Pumpkin</label>
+      <defaultcolor r="1" g="0.588235" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Face</label>
+      <defaultcolor r="1" g="0.968628" b="0.129412"/>
+    </usercolor>
+    <usercolor>
+      <label>Stump</label>
+      <defaultcolor r="0.427451" g="0.552941" b="0.333333"/>
+    </usercolor>
+    <script>
+      <classpath>Resources</classpath>
+      <class>rideAnimation</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="E_Color0Light">Materials/E_Color0 Pumpkin Light.nl2mat</materialpath>
+    <materialpath name="material">Materials/E_Color0.nl2mat</materialpath>
+    <materialpath name="noRenderFace">Materials/No Render Face.nl2mat</materialpath>
+    <materialpath name="stump">Materials/E_Color2 No Reflection.nl2mat</materialpath>
+  </sceneobject>
+</root>
