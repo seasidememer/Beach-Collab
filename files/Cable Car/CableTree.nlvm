@@ -1,4 +1,5 @@
 import com.nolimitscoaster.*;
+import nlvm.math3d.*;
 
 public class CableTree {
 	
@@ -11,6 +12,30 @@ public class CableTree {
 		sco = _sco;
 		rightCable = sco.getElementForName("CableRight");
 		leftCable = sco.getElementForName("CableLeft");
+		
+	}
+	
+	public float getDistance(CableTree ct) {
+		
+		Vector3f aPos = sco.getTranslation();
+		Vector3f bPos = ct.sco.getTranslation();
+		
+		float x = aPos.x - bPos.x;
+		float y = aPos.y - bPos.y;
+		float z = aPos.z - bPos.z;
+		
+		return (float) Math.sqrt((x*x) + (y*y) + (z*z));
+		
+	}
+	
+	public float getAngle(CableTree ct) {
+		
+		Vector3f aPos = sco.getTranslation();
+		Vector3f bPos = ct.sco.getTranslation();
+		
+		float y = aPos.y - bPos.y;
+		
+		return (float) Math.atan2(y, getDistance(ct));
 		
 	}
 	

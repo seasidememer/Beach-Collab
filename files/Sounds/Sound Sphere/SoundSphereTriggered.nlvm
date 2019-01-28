@@ -1,0 +1,38 @@
+public class SoundSphereTriggered extends SoundSphere{
+	public String triggerName;
+
+	protected void setupFlags(){
+		flags = 0;
+	}
+
+	protected final void onSoundLoaded(){
+		Manager.registerSound(this);
+	}
+
+	private static int findLastCharacterOccurance(
+		String string, char character
+	){
+		for(int i = string.length() - 1; i >= 0; --i){
+			if(string.charAt(i) == character){
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	protected final String getResourceIdFromScoName(String name){
+		int nameSplitPosition = findLastCharacterOccurance(name, '/');
+		String resourceId = name.substring(0, nameSplitPosition);
+		triggerName = name.substring(nameSplitPosition + 1);
+		return resourceId;
+	}
+
+	public void start(){
+		sound.play();
+	}
+
+	//do not use shared flag when this is used!
+	public final void stop(){
+		sound.stopFaded(0.5f);
+	}
+}

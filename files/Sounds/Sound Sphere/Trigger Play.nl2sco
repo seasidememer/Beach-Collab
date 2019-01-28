@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="play.dae"/>
+    <description>Play Trigger for video playback. Place near a coaster track to set the trigger.</description>
+    <preview>preview_play.jpg</preview>
+    <param hiderot="true"/>
+    <usercolor>
+      <label>Color</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>Trigger</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="icon">icon.nl2mat</materialpath>
+  </sceneobject>
+</root>

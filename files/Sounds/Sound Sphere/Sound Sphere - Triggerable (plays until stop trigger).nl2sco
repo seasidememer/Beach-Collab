@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="sphere.dae">
+      <clip mesh="rings" distance="60"/>
+    </model>
+    <description>Add the trigger name to the sound name by separting it with a forward slash: &apos;mySound/myTrigger&apos; (wihtout quotes).</description>
+    <preview>preview.jpg</preview>
+    <usercolor>
+      <label>Color</label>
+      <defaultcolor r="0.0666667" g="0.2" b="1"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>SoundSphereTriggeredLooping</class>
+      <sharedvm>true</sharedvm>
+      <resource id="train steam">sounds/train steam.wav</resource>	  
+    </script>
+    <materialpath name="arrows">arrows.nl2mat</materialpath>
+    <materialpath name="ring1">ring1.nl2mat</materialpath>
+    <materialpath name="ring2">ring2.nl2mat</materialpath>
+    <materialpath name="symbol">symbol.nl2mat</materialpath>
+  </sceneobject>
+</root>

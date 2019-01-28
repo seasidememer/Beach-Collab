@@ -1,0 +1,68 @@
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+import nlvm.util.Vector;
+
+public class Trigger extends Script implements TrackTriggerListener{
+	String name;
+	private TrackTrigger trigger;
+	private int lastSoundIndex = -1;
+	private Vector assignedSounds = new Vector();
+
+	private final SceneObject getScoFromParentEntity(){
+		SceneObject sco = sim.getSceneObjectForEntityId(getParentEntityId());
+		if(sco == null){
+			System.err.println("could not find scenery object");
+			System.out.println("this script has to be a NL2SCO script");
+			System.exit(0);
+		}
+		return sco;
+	}
+
+	private final TrackPos getNearestTrackInRange(
+		float range, Vector3f pos
+	){
+		TrackPos tp = sim.findNearestCoasterTrack(pos, range);
+		if(tp == null){
+			System.err.println(
+				"could not find coaster track within "
+				+ range
+				+ "m range from scene object positon"
+			);
+			System.out.println(
+				"the senery object has to be placed next to a coaster track"
+			);
+			System.exit(0);
+		}
+		return tp;
+	}
+
+	protected void triggerAction(SoundSphereTriggered sound){
+		sound.start();
+	}
+
+	public final void addSound(SoundSphereTriggered sound){
+		if(!assignedSounds.contains(sound)){
+			assignedSounds.addElement(sound);
+			lastSoundIndex = assignedSounds.size() - 1;
+		}
+	}
+
+	public final bool onInit(){
+		SceneObject sco = getScoFromParentEntity();
+		name = sco.getName();
+		Vector3f pos = sco.getTranslation();
+		TrackPos tp = getNearestTrackInRange(5, pos);
+		trigger = TrackTrigger.createTrackTriggerAtOffset(tp, 0);
+		trigger.addTrackTriggerListener(this);
+		Manager.registerTrigger(this);
+		return false;
+	}
+
+	public final void onTrainEntering(TrackTrigger trigger, Train train){
+		for(int i = lastSoundIndex;	i >= 0; --i){
+			triggerAction((SoundSphereTriggered) assignedSounds.elementAt(i));
+		}
+	}
+
+	public final void onTrainLeaving(TrackTrigger trigger, Train train){}
+}

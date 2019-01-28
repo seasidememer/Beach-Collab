@@ -1,0 +1,33 @@
+import nlvm.util.Vector;
+
+public final class Manager{
+	private static Vector sounds = new Vector();
+	private static Vector triggers = new Vector();
+
+	private final static void addMatchingSoundToTrigger(Trigger trigger){
+		SoundSphereTriggered currentSound;
+		for(int i = sounds.size() - 1; i >= 0; --i){
+			currentSound = (SoundSphereTriggered) sounds.elementAt(i);
+			if(currentSound.triggerName.equals(trigger.name)){
+				trigger.addSound(currentSound);
+			}
+		}
+	}
+
+	private final static void assignSoundsToTriggers(){
+		for(int i = triggers.size() - 1; i >= 0; --i){
+			addMatchingSoundToTrigger((Trigger) triggers.elementAt(i));
+		}
+	}
+
+	public final static void registerSound(SoundSphereTriggered sound){
+		sounds.addElement(sound);
+		assignSoundsToTriggers();
+	}
+
+	public final static void registerTrigger(Trigger trigger){
+		triggers.addElement(trigger);
+		assignSoundsToTriggers();
+	}
+
+}

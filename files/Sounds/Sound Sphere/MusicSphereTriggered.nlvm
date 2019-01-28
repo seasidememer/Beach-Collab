@@ -1,0 +1,6 @@
+public class MusicSphereTriggered extends SoundSphereTriggered{
+	
+	protected final void setupFlags(){
+		flags = com.nolimitscoaster.StaticSound.FLAG_MUSIC;
+	}
+}

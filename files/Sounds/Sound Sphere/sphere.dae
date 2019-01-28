@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <author>Blender User</author>
+      <authoring_tool>Blender 2.78.0 commit date:2017-02-24, commit time:14:33, hash:e92f235283</authoring_tool>
+    </contributor>
+    <created>2017-08-30T17:37:30</created>
+    <modified>2017-08-30T17:37:30</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_images/>
+  <library_effects>
+    <effect id="arrows-effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color sid="emission">0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color sid="ambient">0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <color sid="diffuse">0.64 0.64 0.64 1</color>
+            </diffuse>
+            <specular>
+              <color sid="specular">0.5 0.5 0.5 1</color>
+            </specular>
+            <shininess>
+              <float sid="shininess">50</float>
+            </shininess>
+            <index_of_refraction>
+              <float sid="index_of_refraction">1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+    <effect id="ring2-effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color sid="emission">0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color sid="ambient">0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <color sid="diffuse">0.64 0.64 0.64 1</color>
+            </diffuse>
+            <specular>
+              <color sid="specular">0.5 0.5 0.5 1</color>
+            </specular>
+            <shininess>
+              <float sid="shininess">50</float>
+            </shininess>
+            <index_of_refraction>
+              <float sid="index_of_refraction">1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+    <effect id="ring1-effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color sid="emission">0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color sid="ambient">0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <color sid="diffuse">0.64 0.64 0.64 1</color>
+            </diffuse>
+            <specular>
+              <color sid="specular">0.5 0.5 0.5 1</color>
+            </specular>
+            <shininess>
+              <float sid="shininess">50</float>
+            </shininess>
+            <index_of_refraction>
+              <float sid="index_of_refraction">1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+    <effect id="symbol-effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color sid="emission">0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color sid="ambient">0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <color sid="diffuse">0.64 0.64 0.64 1</color>
+            </diffuse>
+            <specular>
+              <color sid="specular">0.5 0.5 0.5 1</color>
+            </specular>
+            <shininess>
+              <float sid="shininess">50</float>
+            </shininess>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 0</color>
+            </transparent>
+            <index_of_refraction>
+              <float sid="index_of_refraction">1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_materials>
+    <material id="arrows-material" name="arrows">
+      <instance_effect url="#arrows-effect"/>
+    </material>
+    <material id="ring2-material" name="ring2">
+      <instance_effect url="#ring2-effect"/>
+    </material>
+    <material id="ring1-material" name="ring1">
+      <instance_effect url="#ring1-effect"/>
+    </material>
+    <material id="symbol-material" name="symbol">
+      <instance_effect url="#symbol-effect"/>
+    </material>
+  </library_materials>
+  <library_geometries>
+    <geometry id="rings-mesh" name="rings">
+      <mesh>
+        <source id="rings-mesh-positions">
+          <float_array id="rings-mesh-positions-array" count="384">-0.9898883 -0.00760442 0 -0.551245 -0.05198872 0 -0.9898883 0.008442401 0 -0.551245 0.04613012 0 -0.7962729 -0.05198872 0 -0.7962729 0.04613012 0 -0.9695986 -0.01560455 0 -0.9695986 0.01707458 0 -0.7962729 -0.07707256 0 -0.7962729 0.06946468 0 0.00760442 -0.9898883 0 0.05198872 -0.551245 0 -0.008442401 -0.9898883 0 -0.04613012 -0.551245 0 0.05198878 -0.7962729 0 -0.04613012 -0.7962729 0 0.01560461 -0.9695986 0 -0.01707458 -0.9695986 0 0.07707262 -0.7962729 0 -0.06946468 -0.7962729 0 0.9898883 0.007604479 0 0.551245 0.05198878 0 0.9898883 -0.008442342 0 0.551245 -0.04613006 0 0.7962729 0.05198878 0 0.7962729 -0.04613006 0 0.9695986 0.01560461 0 0.9695986 -0.01707452 0 0.7962729 0.07707267 0 0.7962729 -0.06946462 0 -0.007604539 0.9898883 0 -0.05198878 0.551245 0 0.008442282 0.9898883 0 0.04613006 0.551245 0 -0.05198884 0.7962729 0 0.04613 0.7962729 0 -0.01560467 0.9695986 0 0.01707446 0.9695986 0 -0.07707267 0.7962729 0 0.06946462 0.7962729 0 -0.9898883 -0.00760442 0 -0.551245 -0.05198872 0 -0.9898883 0.008442401 0 -0.551245 0.04613012 0 -0.7962729 -0.05198872 0 -0.7962729 0.04613012 0 -0.9695986 -0.01560455 0 -0.9695986 0.01707458 0 -0.7962729 -0.07707256 0 -0.7962729 0.06946468 0 0.00760442 -0.9898883 0 0.05198872 -0.551245 0 -0.008442401 -0.9898883 0 -0.04613012 -0.551245 0 0.05198878 -0.7962729 0 -0.04613012 -0.7962729 0 0.01560461 -0.9695986 0 -0.01707458 -0.9695986 0 0.07707262 -0.7962729 0 -0.06946468 -0.7962729 0 0.9898883 0.007604479 0 0.551245 0.05198878 0 0.9898883 -0.008442342 0 0.551245 -0.04613006 0 0.7962729 0.05198878 0 0.7962729 -0.04613006 0 0.9695986 0.01560461 0 0.9695986 -0.01707452 0 0.7962729 0.07707267 0 0.7962729 -0.06946462 0 -0.007604539 0.9898883 0 -0.05198878 0.551245 0 0.008442282 0.9898883 0 0.04613006 0.551245 0 -0.05198884 0.7962729 0 0.04613 0.7962729 0 -0.01560467 0.9695986 0 0.01707446 0.9695986 0 -0.07707267 0.7962729 0 0.06946462 0.7962729 0 0.5142036 -0.02899289 0 0.4453132 -0.02899289 0.2571017 0.4453132 0.03081369 0.2571017 0.5142036 0.03081369 0 0.2571018 -0.02899289 0.4453133 0.2571018 0.03081363 0.4453133 0 -0.02899295 0.5142033 0 0.03081363 0.5142033 -0.2571017 -0.02899295 0.4453133 -0.2571017 0.03081363 0.4453133 -0.4453131 -0.02899295 0.2571018 -0.4453131 0.03081363 0.2571018 -0.5142035 -0.02899295 1.25433e-7 -0.5142035 0.03081363 1.25433e-7 -0.4453136 -0.02899295 -0.2571015 -0.4453136 0.03081363 -0.2571015 -0.257102 -0.02899295 -0.4453133 -0.257102 0.03081363 -0.4453133 -3.33431e-7 -0.02899295 -0.5142037 -3.37946e-7 0.03081363 -0.5142037 0.2571012 -0.02899289 -0.4453134 0.2571012 0.03081363 -0.4453134 0.4453131 -0.02899289 -0.257102 0.4453131 0.03081369 -0.257102 0 0.5006756 -0.03194308 0.2503378 0.4335976 -0.03194308 0.2503378 0.4335976 0.03170603 0 0.5006756 0.03170603 0.4335978 0.2503377 -0.03194308 0.4335978 0.2503377 0.03170603 0.5006753 0 -0.03194308 0.5006753 0 0.03170603 0.4335978 -0.2503378 -0.03194308 0.4335978 -0.2503378 0.03170603 0.2503378 -0.4335976 -0.03194308 0.2503378 -0.4335976 0.03170603 0 -0.5006755 -0.03194308 0 -0.5006755 0.03170603 -0.2503376 -0.433598 -0.03194308 -0.2503376 -0.433598 0.03170603 -0.4335978 -0.250338 -0.03194308 -0.4335978 -0.250338 0.03170603 -0.5006757 -2.8899e-7 -0.03194308 -0.5006757 -2.8899e-7 0.03170603 -0.4335978 0.2503373 -0.03194308 -0.4335978 0.2503373 0.03170603 -0.250338 0.4335976 -0.03194308 -0.250338 0.4335976 0.03170603</float_array>
+          <technique_common>
+            <accessor source="#rings-mesh-positions-array" count="128" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="rings-mesh-normals">
+          <float_array id="rings-mesh-normals-array" count="105">0 0 1 0 0 -1 0.9659258 0 0.2588195 0.8660254 0 0.5 0.7071071 0 0.7071065 0.2588183 0 0.9659261 0 0 1 -0.2588182 0 0.9659261 -0.7071072 0 0.7071065 -0.8660254 0 0.5000001 -1 0 8.44607e-7 -1 0 8.44607e-7 -0.9659262 0 -0.258818 -0.7071073 0 -0.7071064 -0.2588196 0 -0.9659257 0.2588195 0 -0.9659258 0.4999997 0 -0.8660256 0.7071061 0 -0.7071076 0.9659257 0 -0.2588196 0.2588196 0.9659258 0 0.5000001 0.8660254 0 0.7071065 0.7071071 0 0.9659262 0.2588178 0 1 0 0 0.9659261 -0.2588179 0 0.7071064 -0.7071071 0 0.5 -0.8660255 0 7.07113e-7 -1 0 -0.2588182 -0.9659261 0 -0.7071063 -0.7071073 0 -0.9659257 -0.2588195 0 -0.9659258 0.2588196 0 -0.8660256 0.4999997 0 -0.7071076 0.7071059 0 -0.2588195 0.9659258 0</float_array>
+          <technique_common>
+            <accessor source="#rings-mesh-normals-array" count="35" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="rings-mesh-map-0">
+          <float_array id="rings-mesh-map-0-array" count="448">0.4597024 0.271276 0.991187 0.2712759 0.9911871 0.6969311 0.4597024 0.6969311 0.03973627 0.4638198 0.4597024 0.271276 0.4597024 0.6969311 0.03973627 0.5334359 0.4597024 0.271276 0.03973627 0.4638198 0.0837419 0.3916712 0.4597024 0.1624577 0.03973627 0.5334359 0.4597024 0.6969311 0.4597024 0.7981606 0.08374232 0.6083267 0.4597024 0.271276 0.991187 0.2712759 0.9911871 0.6969311 0.4597024 0.6969311 0.03973627 0.4638198 0.4597024 0.271276 0.4597024 0.6969311 0.03973627 0.5334359 0.4597024 0.271276 0.03973627 0.4638198 0.0837419 0.3916712 0.4597024 0.1624577 0.03973627 0.5334359 0.4597024 0.6969311 0.4597024 0.7981606 0.08374232 0.6083267 0.4597024 0.271276 0.991187 0.2712759 0.9911871 0.6969311 0.4597024 0.6969311 0.03973627 0.4638198 0.4597024 0.271276 0.4597024 0.6969311 0.03973627 0.5334359 0.4597024 0.271276 0.03973627 0.4638198 0.0837419 0.3916712 0.4597024 0.1624577 0.03973627 0.5334359 0.4597024 0.6969311 0.4597024 0.7981606 0.08374232 0.6083267 0.4597024 0.271276 0.991187 0.2712759 0.9911871 0.6969311 0.4597024 0.6969311 0.03973627 0.4638198 0.4597024 0.271276 0.4597024 0.6969311 0.03973627 0.5334359 0.4597024 0.271276 0.03973627 0.4638198 0.0837419 0.3916712 0.4597024 0.1624577 0.03973627 0.5334359 0.4597024 0.6969311 0.4597024 0.7981606 0.08374232 0.6083267 0.4597024 0.271276 0.4597024 0.6969311 0.9911871 0.6969311 0.991187 0.2712759 0.03973627 0.4638198 0.03973627 0.5334359 0.4597024 0.6969311 0.4597024 0.271276 0.4597024 0.271276 0.4597024 0.1624577 0.0837419 0.3916712 0.03973627 0.4638198 0.03973627 0.5334359 0.08374232 0.6083267 0.4597024 0.7981606 0.4597024 0.6969311 0.4597024 0.271276 0.4597024 0.6969311 0.9911871 0.6969311 0.991187 0.2712759 0.03973627 0.4638198 0.03973627 0.5334359 0.4597024 0.6969311 0.4597024 0.271276 0.4597024 0.271276 0.4597024 0.1624577 0.0837419 0.3916712 0.03973627 0.4638198 0.03973627 0.5334359 0.08374232 0.6083267 0.4597024 0.7981606 0.4597024 0.6969311 0.4597024 0.271276 0.4597024 0.6969311 0.9911871 0.6969311 0.991187 0.2712759 0.03973627 0.4638198 0.03973627 0.5334359 0.4597024 0.6969311 0.4597024 0.271276 0.4597024 0.271276 0.4597024 0.1624577 0.0837419 0.3916712 0.03973627 0.4638198 0.03973627 0.5334359 0.08374232 0.6083267 0.4597024 0.7981606 0.4597024 0.6969311 0.4597024 0.271276 0.4597024 0.6969311 0.9911871 0.6969311 0.991187 0.2712759 0.03973627 0.4638198 0.03973627 0.5334359 0.4597024 0.6969311 0.4597024 0.271276 0.4597024 0.271276 0.4597024 0.1624577 0.0837419 0.3916712 0.03973627 0.4638198 0.03973627 0.5334359 0.08374232 0.6083267 0.4597024 0.7981606 0.4597024 0.6969311 3.996891 0.3193181 3.996891 0.5453655 3.663844 0.5453659 3.663844 0.3193184 3.663844 0.3193184 3.663844 0.5453659 3.330796 0.5453664 3.330796 0.3193189 3.330796 0.3193189 3.330796 0.5453664 2.997748 0.5453673 2.997748 0.3193197 2.997748 0.3193197 2.997748 0.5453673 2.6647 0.5453683 2.6647 0.3193207 2.6647 0.3193207 2.6647 0.5453683 2.331652 0.5453695 2.331652 0.3193218 2.331652 0.3193218 2.331652 0.5453695 1.998604 0.5453705 1.998604 0.3193228 1.998604 0.3193228 1.998604 0.5453705 1.665556 0.5453716 1.665556 0.3193239 1.665556 0.3193239 1.665556 0.5453716 1.332507 0.5453723 1.332507 0.3193247 1.332507 0.3193247 1.332507 0.5453723 0.9994597 0.5453732 0.9994596 0.3193256 0.9994596 0.3193256 0.9994597 0.5453732 0.6664118 0.5453738 0.6664116 0.3193264 0.6664116 0.3193264 0.6664118 0.5453738 0.3333639 0.5453754 0.3333638 0.319328 0.3333638 0.319328 0.3333639 0.5453754 3.15926e-4 0.5453771 3.15756e-4 0.3193297 3.996891 0.3081675 3.996891 0.5487384 3.663844 0.5487388 3.663844 0.3081679 3.663844 0.3081679 3.663844 0.5487388 3.330797 0.5487395 3.330797 0.3081684 3.330797 0.3081684 3.330797 0.5487395 2.997748 0.5487402 2.997748 0.3081691 2.997748 0.3081691 2.997748 0.5487402 2.664701 0.5487415 2.664701 0.3081702 2.664701 0.3081702 2.664701 0.5487415 2.331652 0.5487424 2.331652 0.3081712 2.331652 0.3081712 2.331652 0.5487424 1.998604 0.5487434 1.998604 0.3081722 1.998604 0.3081722 1.998604 0.5487434 1.665556 0.5487445 1.665556 0.3081734 1.665556 0.3081734 1.665556 0.5487445 1.332507 0.548745 1.332507 0.3081741 1.332507 0.3081741 1.332507 0.548745 0.9994597 0.5487461 0.9994595 0.308175 0.9994595 0.308175 0.9994597 0.5487461 0.6664117 0.5487467 0.6664116 0.3081759 0.6664116 0.3081759 0.6664117 0.5487467 0.3333638 0.5487481 0.3333638 0.3081774 0.3333638 0.3081774 0.3333638 0.5487481 3.15929e-4 0.5487501 3.15747e-4 0.3081791</float_array>
+          <technique_common>
+            <accessor source="#rings-mesh-map-0-array" count="224" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="rings-mesh-vertices">
+          <input semantic="POSITION" source="#rings-mesh-positions"/>
+        </vertices>
+        <polylist material="arrows-material" count="32">
+          <input semantic="VERTEX" source="#rings-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#rings-mesh-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#rings-mesh-map-0" offset="2" set="0"/>
+          <vcount>4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 </vcount>
+          <p>4 0 0 1 0 1 3 0 2 5 0 3 0 0 4 4 0 5 5 0 6 2 0 7 4 0 8 0 0 9 6 0 10 8 0 11 2 0 12 5 0 13 9 0 14 7 0 15 14 0 16 11 0 17 13 0 18 15 0 19 10 0 20 14 0 21 15 0 22 12 0 23 14 0 24 10 0 25 16 0 26 18 0 27 12 0 28 15 0 29 19 0 30 17 0 31 24 0 32 21 0 33 23 0 34 25 0 35 20 0 36 24 0 37 25 0 38 22 0 39 24 0 40 20 0 41 26 0 42 28 0 43 22 0 44 25 0 45 29 0 46 27 0 47 34 0 48 31 0 49 33 0 50 35 0 51 30 0 52 34 0 53 35 0 54 32 0 55 34 0 56 30 0 57 36 0 58 38 0 59 32 0 60 35 0 61 39 0 62 37 0 63 44 1 64 45 1 65 43 1 66 41 1 67 40 1 68 42 1 69 45 1 70 44 1 71 44 1 72 48 1 73 46 1 74 40 1 75 42 1 76 47 1 77 49 1 78 45 1 79 54 1 80 55 1 81 53 1 82 51 1 83 50 1 84 52 1 85 55 1 86 54 1 87 54 1 88 58 1 89 56 1 90 50 1 91 52 1 92 57 1 93 59 1 94 55 1 95 64 1 96 65 1 97 63 1 98 61 1 99 60 1 100 62 1 101 65 1 102 64 1 103 64 1 104 68 1 105 66 1 106 60 1 107 62 1 108 67 1 109 69 1 110 65 1 111 74 1 112 75 1 113 73 1 114 71 1 115 70 1 116 72 1 117 75 1 118 74 1 119 74 1 120 78 1 121 76 1 122 70 1 123 72 1 124 77 1 125 79 1 126 75 1 127</p>
+        </polylist>
+        <polylist material="ring2-material" count="12">
+          <input semantic="VERTEX" source="#rings-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#rings-mesh-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#rings-mesh-map-0" offset="2" set="0"/>
+          <vcount>4 4 4 4 4 4 4 4 4 4 4 4 </vcount>
+          <p>80 2 128 83 2 129 82 3 130 81 3 131 81 3 132 82 3 133 85 4 134 84 4 135 84 5 136 85 5 137 87 6 138 86 6 139 86 6 140 87 6 141 89 7 142 88 7 143 88 8 144 89 8 145 91 9 146 90 9 147 90 9 148 91 9 149 93 10 150 92 11 151 92 11 152 93 10 153 95 12 154 94 12 155 94 13 156 95 13 157 97 13 158 96 13 159 96 14 160 97 14 161 99 14 162 98 14 163 98 15 164 99 15 165 101 16 166 100 16 167 100 16 168 101 16 169 103 17 170 102 17 171 102 18 172 103 18 173 83 18 174 80 18 175</p>
+        </polylist>
+        <polylist material="ring1-material" count="12">
+          <input semantic="VERTEX" source="#rings-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#rings-mesh-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#rings-mesh-map-0" offset="2" set="0"/>
+          <vcount>4 4 4 4 4 4 4 4 4 4 4 4 </vcount>
+          <p>104 19 176 107 19 177 106 20 178 105 20 179 105 20 180 106 20 181 109 21 182 108 21 183 108 22 184 109 22 185 111 23 186 110 23 187 110 23 188 111 23 189 113 24 190 112 24 191 112 25 192 113 25 193 115 26 194 114 26 195 114 26 196 115 26 197 117 27 198 116 27 199 116 27 200 117 27 201 119 28 202 118 28 203 118 29 204 119 29 205 121 29 206 120 29 207 120 30 208 121 30 209 123 30 210 122 30 211 122 31 212 123 31 213 125 32 214 124 32 215 124 32 216 125 32 217 127 33 218 126 33 219 126 34 220 127 34 221 107 34 222 104 34 223</p>
+        </polylist>
+      </mesh>
+    </geometry>
+    <geometry id="Plane-mesh" name="Plane">
+      <mesh>
+        <source id="Plane-mesh-positions">
+          <float_array id="Plane-mesh-positions-array" count="12">-0.1348643 -0.1348643 0 0.1348643 -0.1348643 0 -0.1348643 0.1348643 0 0.1348643 0.1348643 0</float_array>
+          <technique_common>
+            <accessor source="#Plane-mesh-positions-array" count="4" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Plane-mesh-normals">
+          <float_array id="Plane-mesh-normals-array" count="3">0 0 1</float_array>
+          <technique_common>
+            <accessor source="#Plane-mesh-normals-array" count="1" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Plane-mesh-map-0">
+          <float_array id="Plane-mesh-map-0-array" count="8">1.00021e-4 1.00062e-4 0.9998999 9.998e-5 0.9998999 0.9998999 9.998e-5 0.9998999</float_array>
+          <technique_common>
+            <accessor source="#Plane-mesh-map-0-array" count="4" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Plane-mesh-vertices">
+          <input semantic="POSITION" source="#Plane-mesh-positions"/>
+        </vertices>
+        <polylist material="symbol-material" count="1">
+          <input semantic="VERTEX" source="#Plane-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Plane-mesh-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#Plane-mesh-map-0" offset="2" set="0"/>
+          <vcount>4 </vcount>
+          <p>0 0 0 1 0 1 3 0 2 2 0 3</p>
+        </polylist>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="rings" name="rings" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#rings-mesh" name="rings">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="arrows-material" target="#arrows-material"/>
+              <instance_material symbol="ring2-material" target="#ring2-material"/>
+              <instance_material symbol="ring1-material" target="#ring1-material"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+      <node id="symbol" name="symbol" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#Plane-mesh" name="symbol">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="symbol-material" target="#symbol-material"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>
