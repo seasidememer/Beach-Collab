@@ -39,7 +39,7 @@
     <materialpath name="Bolt_Head_6">Textures/Bolt Head.nl2mat</materialpath>
     <materialpath name="Detail_">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
     <materialpath name="LSM_Plate">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
-    <materialpath name="Rail_Friction_Strip">Textures/Friction Strip Texture.nl2mat</materialpath>
+    <materialpath name="Rail_Friction_Strip">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
     <materialpath name="Sensor_Yellow">intern:data/materials/metal/Metal A User3.nl2mat</materialpath>
     <materialpath name="Sensr_Light">Textures/Sensor Green Light.nl2mat</materialpath>
     <materialpath name="Shiny_Metal">intern:data/materials/Metal Floor 2.nl2mat</materialpath>

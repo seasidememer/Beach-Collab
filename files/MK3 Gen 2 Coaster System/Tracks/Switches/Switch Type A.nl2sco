@@ -24,7 +24,7 @@
     <materialpath name="Bolt_Head">Textures/Bolt Head.nl2mat</materialpath>
     <materialpath name="Detail_">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
     <materialpath name="LSM_Plate1">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
-    <materialpath name="Rail_Friction_Strip">Textures/Friction Strip Texture.nl2mat</materialpath>
+    <materialpath name="Rail_Friction_Strip">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
     <materialpath name="Supports_">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
     <materialpath name="Track_Colour">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
     <materialpath name="__Shiny">intern:data/materials/Chrome.nl2mat</materialpath>
