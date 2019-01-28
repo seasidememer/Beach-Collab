@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="TEXTURES/indiandate.dae"/>
+    <description>Large round crown</description>
+    <preview>TEXTURES/indiandate/dateicon.jpg</preview>
+    <param randomroty="true"/>
+    <param randomrotvariationy="180"/>
+    <param randomscalex="true"/>
+    <param randomscalevariationx="0.2"/>
+    <param randomscaley="true"/>
+    <param randomscalevariationy="0.2"/>
+    <param randomscalez="true"/>
+    <param randomscalevariationz="0.2"/>
+    <param lockonterrain="true"/>
+    <materialpath name="Color_004">TEXTURES/IndianDate_trunk.nl2mat</materialpath>
+    <materialpath name="date5">TEXTURES/IndianDate.nl2mat</materialpath>
+  </sceneobject>
+</root>

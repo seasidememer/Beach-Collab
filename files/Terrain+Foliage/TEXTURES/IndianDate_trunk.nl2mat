@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <deformvertices>
+      <deformverticesplant frequency="0.09" dx="0.02" dy="0.02"/>
+    </deformvertices>
+    <renderpass>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <map>indiandate/Color_004.jpg</map>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

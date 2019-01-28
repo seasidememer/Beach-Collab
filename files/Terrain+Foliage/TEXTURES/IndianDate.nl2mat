@@ -2,14 +2,13 @@
 <root>
   <material>
     <deformvertices>
-      <deformverticesplant frequency="0.05" dx="0.1" dy="0.1"/>
+      <deformverticesplant frequency="0.09" dx="0.02" dy="0.02"/>
     </deformvertices>
     <renderpass>
       <alphatest function="ge128"/>
-      <premultiplyalpha/>
-      <rgbgen mode="constlighting"/>
+      <rgbgen mode="lighting"/>
       <texunit>
-        <materialtexture/>
+        <map>indiandate/date5.png</map>
         <tcgen mode="base"/>
       </texunit>
     </renderpass>
