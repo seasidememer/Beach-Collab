@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Object/MonsterRide.dae">
+      <clip mesh="detail_S" distance="76.2"/>
+      <clip mesh="detail_XS" distance="22.86"/>
+    </model>
+    <description>Monster Flat Ride!</description>
+    <preview>Resources/ICONS/ICON_Monster.png</preview>
+    <param hiderot="true"/>
+    <param allowrot="false"/>
+    <param allowscale="false"/>
+    <usercolor>
+      <label>Arms</label>
+      <defaultcolor r="0.32549" g="0.27451" b="0.345098"/>
+    </usercolor>
+    <usercolor>
+      <label>Center</label>
+      <defaultcolor r="0.266667" g="0.133333" b="0.364706"/>
+    </usercolor>
+    <usercolor>
+      <label>Arm Accent</label>
+      <defaultcolor r="1" g="0.847059" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Cars</label>
+      <defaultcolor r="0.847059" g="0" b="1"/>
+    </usercolor>
+    <script>
+      <classpath>Resources</classpath>
+      <class>rideAnimation</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="E_Color0">Materials/E_Color0.nl2mat</materialpath>
+    <materialpath name="E_Color1">Materials/E_Color1.nl2mat</materialpath>
+    <materialpath name="E_Color3">Materials/E_Color2.nl2mat</materialpath>
+    <materialpath name="E_Color4">Materials/E_Color3.nl2mat</materialpath>
+    <materialpath name="__Piston">Materials/Simple Mat.nl2mat</materialpath>
+    <materialpath name="chrome">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="glass">Materials/No Render Face.nl2mat</materialpath>
+    <materialpath name="liftMech">Materials/Simple Mat.nl2mat</materialpath>
+    <materialpath name="noRender">Materials/Autosprite.nl2mat</materialpath>
+    <materialpath name="noRenderFace">Materials/No Render Face.nl2mat</materialpath>
+    <materialpath name="superReflect">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="whiteLight">Materials/Lights.nl2mat</materialpath>
+  </sceneobject>
+</root>

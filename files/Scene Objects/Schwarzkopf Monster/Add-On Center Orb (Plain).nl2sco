@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Object/addOn_PlainOrb.dae"/>
+    <description>Adds an orb to the ride&apos;s center. Use the same 3D Coordinates as the Monster ride.</description>
+    <preview>Resources/ICONS/ICON_AddOnOrbPlain.png</preview>
+    <usercolor>
+      <label>Base</label>
+      <defaultcolor r="1" g="0.847059" b="0"/>
+    </usercolor>
+    <script>
+      <classpath>Resources</classpath>
+      <class>rideAnimation</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="E_Color0">Materials/E_Color0.nl2mat</materialpath>
+    <materialpath name="glass">Materials/No Render Face.nl2mat</materialpath>
+    <materialpath name="noRenderFace">Materials/No Render Face.nl2mat</materialpath>
+    <materialpath name="superReflect">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="whiteLight">Materials/Lights.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Object/addOn_PlatformWood.dae"/>
+    <description>Adds a wooden platform. Use the same 3D Coordinates as the Monster ride.</description>
+    <preview>Resources/ICONS/ICON_AddOnPlatformWood.png</preview>
+    <usercolor>
+      <label>Platform</label>
+      <defaultcolor r="0.666667" g="0.521569" b="0.376471"/>
+    </usercolor>
+    <usercolor>
+      <label>Safety Line</label>
+      <defaultcolor r="1" g="0.745098" b="0.301961"/>
+    </usercolor>
+    <materialpath name="woodPlanks">Materials/E_Color0 Wood.nl2mat</materialpath>
+    <materialpath name="woodPlanks2">Materials/E_Color1 Wood.nl2mat</materialpath>
+  </sceneobject>
+</root>

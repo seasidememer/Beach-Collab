@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Object/addOn_fenceWood.dae">
+      <clip distance="85"/>
+    </model>
+    <description>Adds a wooden fence around the ride. Use the same 3D Coordinates as the Monster ride.</description>
+    <preview>Resources/ICONS/ICON_AddOnFenceWood.png</preview>
+    <usercolor>
+      <label>Posts</label>
+      <defaultcolor r="0.72549" g="0.556863" b="0.333333"/>
+    </usercolor>
+    <usercolor>
+      <label>Rails</label>
+      <defaultcolor r="0.72549" g="0.556863" b="0.333333"/>
+    </usercolor>
+    <usercolor>
+      <label>Crosses</label>
+      <defaultcolor r="1" g="0.952941" b="0.909804"/>
+    </usercolor>
+    <materialpath name="wood0">Materials/E_Color0 No Reflection.nl2mat</materialpath>
+    <materialpath name="wood1">Materials/E_Color1 No Reflection.nl2mat</materialpath>
+    <materialpath name="wood2">Materials/E_Color2 No Reflection.nl2mat</materialpath>
+  </sceneobject>
+</root>

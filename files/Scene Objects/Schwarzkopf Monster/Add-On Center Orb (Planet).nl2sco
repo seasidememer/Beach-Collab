@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Object/addOn_SpaceOrb.dae"/>
+    <description>Adds a decorative planet to the ride&apos;s center. Use the same 3D Coordinates as the Monster ride.</description>
+    <preview>Resources/ICONS/ICON_AddOnOrbPlanet.png</preview>
+    <param allowscale="false"/>
+    <usercolor>
+      <label>Color 1</label>
+      <defaultcolor r="1" g="0.866667" b="0.54902"/>
+    </usercolor>
+    <usercolor>
+      <label>Color 2</label>
+      <defaultcolor r="1" g="0.745098" b="0.301961"/>
+    </usercolor>
+    <usercolor>
+      <label>Color 3</label>
+      <defaultcolor r="1" g="0.588235" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Color 4</label>
+      <defaultcolor r="0.615686" g="0.352941" b="0.0666667"/>
+    </usercolor>
+    <script>
+      <classpath>Resources</classpath>
+      <class>rideAnimation</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="E_Color0">Materials/E_Color0.nl2mat</materialpath>
+    <materialpath name="E_Color0Light">Materials/E_Color0 Light.nl2mat</materialpath>
+    <materialpath name="E_Color1">Materials/E_Color1.nl2mat</materialpath>
+    <materialpath name="E_Color1Light">Materials/E_Color1 Light.nl2mat</materialpath>
+    <materialpath name="E_Color3">Materials/E_Color2.nl2mat</materialpath>
+    <materialpath name="E_Color3Light">Materials/E_Color2 Light.nl2mat</materialpath>
+    <materialpath name="E_Color4">Materials/E_Color3.nl2mat</materialpath>
+    <materialpath name="E_Color4Light">Materials/E_Color3 Light.nl2mat</materialpath>
+    <materialpath name="chrome">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="noRenderFace">Materials/No Render Face.nl2mat</materialpath>
+  </sceneobject>
+</root>

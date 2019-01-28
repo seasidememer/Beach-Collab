@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>result = mul(tex0, entity1);</shadercore>
+      <custommaterial>
+        <diffuse r="1" g="1" b="1"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="1" g="1" b="1"/>
+        <shininess exponent="26.7463"/>
+      </custommaterial>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <materialtexture/>
+      </texunit>
+      <texunit>
+        <materialtexture/>
+        <bump mode="heightgloss" heightscale="2.2"/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <footstepsounds>
+      <footstepsound>intern:data/sounds/walk/wood1.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/wood2.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/wood3.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/wood4.wav</footstepsound>
+    </footstepsounds>
+  </material>
+</root>
