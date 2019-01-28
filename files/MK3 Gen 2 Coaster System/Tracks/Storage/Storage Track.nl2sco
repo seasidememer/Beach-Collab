@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Storage Track.dae">
+      <clip mesh="Component_5" distance="30"/>
+      <clip mesh="SketchUp" distance="30"/>
+      <clip mesh="wheel0_" distance="30"/>
+    </model>
+    <usercolor>
+      <label>Metal</label>
+      <defaultcolor r="0.792157" g="0.792157" b="0.792157"/>
+    </usercolor>
+    <usercolor>
+      <label>Support</label>
+      <defaultcolor r="0.239216" g="0.239216" b="0.239216"/>
+    </usercolor>
+    <usercolor>
+      <label>Detail</label>
+      <defaultcolor r="0.0784314" g="0.0784314" b="0.0784314"/>
+    </usercolor>
+    <materialpath name="Detail_">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
+    <materialpath name="Rail_Friction_Strip">Textures/Friction Strip Texture.nl2mat</materialpath>
+    <materialpath name="Shiny_Metal">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="Supports">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="Tire2">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
+    <materialpath name="Track_Colour">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+  </sceneobject>
+</root>
