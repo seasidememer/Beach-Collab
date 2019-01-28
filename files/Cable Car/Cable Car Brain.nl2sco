@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="CableCarBrain.dae"/>
+    <script>
+      <classpath></classpath>
+      <class>CableCar</class>
+      <sharedvm>true</sharedvm>
+    </script>
+  </sceneobject>
+</root>

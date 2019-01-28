@@ -1,0 +1,56 @@
+import com.nolimitscoaster.*;
+
+public class CableCar extends Script{
+	
+	private SceneObject sco;
+	private String name;
+	private CableTree[] cableTrees = new CableTree[30];
+	private int cableTreeCount = 0;
+	
+	public bool onInit(){
+		
+		sco = sim.getSceneObjectForEntityId(getParentEntityId());
+		
+		name = sco.getName();
+		
+		// Check if a name was given
+		if (name.equals("")) {
+			
+			System.err.println("No name attached to Cable Car Brain!");
+			
+			return false;
+			
+		}
+		
+		// Get Cable Trees
+		while (cableTreeCount < 30) {
+			
+			SceneObject temp = sim.getSceneObject(name + cableTreeCount);
+			
+			if (temp == null) {
+				
+				break;
+				
+			} else {
+				
+				System.out.println("Cable Tree " + cableTreeCount + " found!");
+				cableTrees[cableTreeCount] = new CableTree (temp);
+				cableTreeCount++;
+				
+			}
+			
+		}
+		
+		
+	
+		return true;
+		
+	}
+	
+	public void onNextFrame(float tick) {
+		
+		
+		
+	}
+	
+}

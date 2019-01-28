@@ -1,0 +1,17 @@
+import com.nolimitscoaster.*;
+
+public class CableTree {
+	
+	public SceneObject sco;
+	public SceneObjectElement rightCable;
+	public SceneObjectElement leftCable;
+	
+	public CableTree (SceneObject _sco) {
+		
+		sco = _sco;
+		rightCable = sco.getElementForName("CableRight");
+		leftCable = sco.getElementForName("CableLeft");
+		
+	}
+	
+}
