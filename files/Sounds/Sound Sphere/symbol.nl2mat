@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <deformvertices>
+      <deformverticesautosprite/>
+    </deformvertices>
+    <renderpass>
+      <shadercore>Result = mul(tex0, entity0);</shadercore>
+      <transparency mode="cutout"/>
+      <alphatest function="ge128"/>
+      <custommaterial>
+        <diffuse r="1" g="1" b="1"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="1" g="1" b="1"/>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <texunit>
+        <map>speaker.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <option norender="true"/>
+    <option nonsolid="true"/>
+    <option noshadowcast="true"/>
+    <option noshadowreceive="true"/>
+  </material>
+</root>

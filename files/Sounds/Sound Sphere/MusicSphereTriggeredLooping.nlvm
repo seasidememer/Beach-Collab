@@ -1,0 +1,6 @@
+public class MusicSphereTriggeredLooping extends SoundSphereTriggeredLooping{
+	
+	protected final void setupFlags(){
+		flags = com.nolimitscoaster.StaticSound.FLAG_MUSIC;
+	}
+}

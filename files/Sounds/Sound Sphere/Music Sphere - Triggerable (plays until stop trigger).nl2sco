@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="sphere.dae">
+      <clip mesh="rings" distance="60"/>
+    </model>
+    <description>The same as the Sound Sphere but the sounds are treated as music and therefore are affected by the general music volume settings.</description>
+    <preview>preview.jpg</preview>
+    <usercolor>
+      <label>Color</label>
+      <defaultcolor r="1" g="0.0705882" b="0.0705882"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>MusicSphereTriggeredLooping</class>
+      <sharedvm>true</sharedvm>
+      <resource id="IMATunes - Edgy">music/IMAtunes - edgy (loop).ogg</resource>
+      <resource id="license">music/IMPORTANT LICENSE INFORMATION.txt</resource>
+    </script>
+    <materialpath name="arrows">arrows.nl2mat</materialpath>
+    <materialpath name="ring1">ring1.nl2mat</materialpath>
+    <materialpath name="ring2">ring2.nl2mat</materialpath>
+    <materialpath name="symbol">symbol.nl2mat</materialpath>
+  </sceneobject>
+</root>

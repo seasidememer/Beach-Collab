@@ -1,0 +1,98 @@
+import com.nolimitscoaster.SceneObject;
+import com.nolimitscoaster.StaticSound;
+import nlvm.math3d.Vector3f;
+
+public class SoundSphere extends com.nolimitscoaster.Script{
+	protected int flags = 0;
+	protected StaticSound sound;
+
+	private SceneObject getScoFromParentEntity(){
+		SceneObject sco = sim.getSceneObjectForEntityId(getParentEntityId());
+		if(sco == null){
+			System.err.println("could not find scenery object");
+			System.out.println("this script has to be a NL2SCO script");
+			System.exit(0);
+		}
+		return sco;
+	}
+
+	//do not use shared flag when sound is triggered
+	protected void setupFlags(){
+		flags = StaticSound.FLAG_SHARED;
+	}
+
+	private static float getRangeFromScoScale(SceneObject sco){
+		Vector3f scale = new Vector3f(0, 0, 0);
+		sco.getScale(scale);
+		return scale.x;
+	}
+
+	private static Vector3f getScoRotationVector(SceneObject sco){
+		Vector3f rotation = new Vector3f(0, 0, 0);
+		sco.getRotation(rotation);
+		return rotation;
+	}
+
+	private static float getFalloffFromRotationVector(Vector3f rotation){
+		return 10*rotation.y + 1.f;
+	}
+
+	private static float getGainFromRotationVector(Vector3f rotation){
+		return rotation.z / (float) Math.PI + 1.f;
+	}
+
+	private StaticSound createSoundFromResource(
+		String resourceId
+	){
+		StaticSound sound = StaticSound.loadFromResourceId(resourceId, flags);
+		if(sound == null){
+			System.err.println("Could not load sound!");
+			System.out.println(
+				"No resource id with the name '"
+				+ resourceId
+				+ "' is defined or sound file could not be loaded."
+			);
+			System.throwRuntimeException("Resource not found");
+		}
+		return sound;
+	}
+
+	private static void setupSoundParameters(
+		StaticSound sound,
+		Vector3f position, float gain, float range, float falloff
+	){
+		sound.setEnvironmentMode(StaticSound.E_ENVMODE_LOCAL);
+		sound.setPosition(position);
+		sound.setGain(gain);
+		sound.setDistanceParameters(range, falloff);
+		sound.setDopplerMode(false);
+	}
+
+	protected void onSoundLoaded(){
+		sound.playLoop();
+	}
+
+	protected String getResourceIdFromScoName(String name){
+		return name;
+	}
+
+	public final bool onInit(){
+		setupFlags();
+		SceneObject sco = getScoFromParentEntity();
+		sco.getElementAt(0).setVisible(false);
+		sound = createSoundFromResource(
+			getResourceIdFromScoName(sco.getName())
+		);
+		Vector3f scoRotation = getScoRotationVector(sco);
+		setupSoundParameters(
+			sound,
+			sco.getTranslation(),
+			getGainFromRotationVector(scoRotation),
+			getRangeFromScoScale(sco),
+			getFalloffFromRotationVector(scoRotation)
+		);
+		onSoundLoaded();
+
+		return false;
+	}
+}

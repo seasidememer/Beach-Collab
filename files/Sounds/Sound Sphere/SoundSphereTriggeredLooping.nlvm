@@ -1,0 +1,5 @@
+public class SoundSphereTriggeredLooping extends SoundSphereTriggered{
+	public void start(){
+		sound.playLoop();
+	}
+}

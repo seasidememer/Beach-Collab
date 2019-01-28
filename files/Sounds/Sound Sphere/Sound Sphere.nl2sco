@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="sphere.dae">
+      <clip mesh="rings" distance="60"/>
+    </model>
+    <description>An object (visible in the Editor only) that plays a sound. Enter a sound resource ID in the object&apos;s name field to choose which sound it plays. The resource IDs can be linked to sounds in the script settings in the &quot;Scripts&quot; tab of the NL2SCO Editor, The sound position is controlled by the object location. The basic range is controlled by the scale of the object. The maximum volume is controlled by the z rotation of the object. The falloff steepness is controlled by the y rotation of the object.</description>
+    <preview>preview.jpg</preview>
+    <usercolor>
+      <label>Color</label>
+      <defaultcolor r="0.0666667" g="0.2" b="1"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>SoundSphere</class>
+      <sharedvm>false</sharedvm>
+      <resource id="bush">sounds/bush 1.wav</resource>
+      <resource id="trafo">sounds/trafo 1.wav</resource>
+    </script>
+    <materialpath name="arrows">arrows.nl2mat</materialpath>
+    <materialpath name="ring1">ring1.nl2mat</materialpath>
+    <materialpath name="ring2">ring2.nl2mat</materialpath>
+    <materialpath name="symbol">symbol.nl2mat</materialpath>
+  </sceneobject>
+</root>
