@@ -14,6 +14,7 @@
       <label>Covers</label>
       <defaultcolor r="0" g="0.717647" b="1"/>
     </usercolor>
+    <materialpath name="Aluminum">intern:data/materials/Chrome.nl2mat</materialpath>
     <materialpath name="Detail">Shiny Black.nl2mat</materialpath>
     <materialpath name="Metal_01__fences_and_trim_">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
     <materialpath name="Metal_Shiny">intern:data/materials/Chrome.nl2mat</materialpath>
