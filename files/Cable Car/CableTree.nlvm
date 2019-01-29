@@ -1,7 +1,7 @@
 import com.nolimitscoaster.*;
 import nlvm.math3d.*;
 
-public class CableTree {
+public class CableTree extends Script{
 	
 	public SceneObject sco;
 	public SceneObjectElement rightCable;
@@ -12,6 +12,10 @@ public class CableTree {
 		sco = _sco;
 		rightCable = sco.getElementForName("CableRight");
 		leftCable = sco.getElementForName("CableLeft");
+		
+		TrackPos nearest = sim.findNearestCoasterTrack(sco.getTranslation(),10);
+		
+		sco.setTranslation(nearest.getCenterRailsPos());
 		
 	}
 	
