@@ -15,15 +15,10 @@
       <defaultcolor r="0" g="0.717647" b="1"/>
     </usercolor>
     <materialpath name="Aluminum">intern:data/materials/Chrome.nl2mat</materialpath>
-    <materialpath name="Detail">Shiny Black.nl2mat</materialpath>
-    <materialpath name="Metal_01__fences_and_trim_">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
-    <materialpath name="Metal_Shiny">intern:data/materials/Chrome.nl2mat</materialpath>
     <materialpath name="Metal_Steel_Textured_White">intern:data/materials/Metal Floor.nl2mat</materialpath>
-    <materialpath name="Metal_Supports">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
     <materialpath name="Tarmac3">AS Textures/Tarmac/Tarmac1/Tarmac 1.nl2mat</materialpath>
     <materialpath name="Wood_Deck_1">AS Textures/Wood/Wood Deck 2/Wood Deck 02.nl2mat</materialpath>
     <materialpath name="concrete_floor_02_diff_4k__2_">AS Textures/Concrete/Concrete 01/Concrete 01.nl2mat</materialpath>
-    <materialpath name="covers">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
     <materialpath name="floor_bricks_02_diff_4k">AS Textures/Brick/Brick 02/Brick 02.nl2mat</materialpath>
     <materialpath name="white_plaster_02_diff_4k">AS Textures/Plaster/Plaster Wall/Plaster Wall.nl2mat</materialpath>
   </sceneobject>
