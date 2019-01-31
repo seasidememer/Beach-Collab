@@ -1,0 +1,94 @@
+import com.nolimitscoaster.*;
+
+public class FerrisWheel extends Script {
+
+	private SceneObject sco;	
+	private SceneObjectElement[] gondolas = new SceneObjectElement[16];
+	private float[] gondolaRotation = new float[16];
+	private float[] gondolaWeight = new float[16];
+	private float[] gondolaRotationSpeed = new float[16];
+	private float[] gondolaRotationDesired = new float[16];
+	private SceneObjectElement wheel;
+	
+	private final float g = 9.81f;
+	
+	private float wheelSpeed = 0.2f;
+	private float wheelAcceleration = 0.01f;
+	private float wheelRotation = 0;
+	
+	public bool onInit() {									
+	
+		// Get SceneObject
+		sco = sim.getSceneObjectForEntityId(getParentEntityId());
+		if (sco == null) {
+			System.err.println("ERROR in FerrisWheel.nlvm: This script must be assigned to a scene object.");
+			return false;
+		}
+		
+		// Get SceneObjectElements
+		for (int i = 0; i < gondolas.length; i++) {
+			
+			gondolas[i] = sco.getElementForName("Gondola" + i);
+			if (gondolas[i]  == null) {
+				System.err.println("ERROR in FerrisWheel.nlvm: Gondola " + i + " is Missing!");
+				return false;
+			}
+			gondolaWeight[i] = (float) Math.random() + 2.0f; 
+			
+		}
+		
+		wheel = sco.getElementForName("Wheel");
+		if (wheel  == null) {
+			System.err.println("ERROR in FerrisWheel.nlvm: Wheel is Missing!");
+			return false;
+		}
+		
+		return true;
+	}
+
+	public void onNextFrame(float tick) {
+		
+		wheelRotation += tick * wheelSpeed;
+		
+		for (int i = 0; i < gondolas.length; i++) {
+			
+			gondolaRotationDesired[i] = (float) -Math.atan2(getForce(wheelSpeed, wheelRotation + (float) (Math.PI*2/16)*(i+2) ), g);
+			
+			if (gondolaRotation[i] < gondolaRotationDesired[i]){
+				
+				gondolaRotationSpeed[i] += 1 / gondolaWeight[i] * tick * (float)Math.sin(Math.abs(gondolaRotation[i]-gondolaRotationDesired[i])) * getLength(getForce(wheelSpeed, wheelRotation + (float) (Math.PI*2/16)*(i+2) ), g);
+				
+			}else{
+				
+				gondolaRotationSpeed[i] -= 1 / gondolaWeight[i] * tick * (float)Math.sin(Math.abs(gondolaRotation[i]-gondolaRotationDesired[i])) * getLength(getForce(wheelSpeed, wheelRotation + (float) (Math.PI*2/16)*(i+2) ), g);
+				
+			}
+			
+			if(Math.abs(gondolaRotationSpeed[i]) > 0){
+				
+				gondolaRotationSpeed[i] -= gondolaRotationSpeed[i]/10*tick;
+				
+			}
+			
+			gondolaRotation[i] += gondolaRotationSpeed[i] * tick;
+			
+			gondolas[i].setRotation(-wheelRotation + gondolaRotation[i], 0, 0);
+			
+		}
+		
+		wheel.setRotation(wheelRotation, 0, 0);
+		
+	}
+	
+	public float getLength(float x, float y){
+		
+		return (float) Math.sqrt((x*x) + (y*y));
+		
+	}
+	
+	public float getForce(float speed, float angle) {
+		
+		return (float) Math.cos(angle) * speed * 7.0f;
+		
+	}
+}
