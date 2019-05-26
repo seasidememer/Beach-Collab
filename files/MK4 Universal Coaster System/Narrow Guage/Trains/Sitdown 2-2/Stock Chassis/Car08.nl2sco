@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Standard Trailer Car.dae">
+      <clip mesh="Small_Detail" distance="10"/>
+      <clip mesh="Large_Detail" distance="20"/>
+    </model>
+    <usercolor>
+      <label>Seat and Restraint</label>
+      <defaultcolor r="0.0784314" g="0.0784314" b="0.0784314"/>
+    </usercolor>
+    <usercolor>
+      <label>Seat Back</label>
+      <defaultcolor r="1" g="0.0784314" b="0.0784314"/>
+    </usercolor>
+    <usercolor>
+      <label>Chassis</label>
+      <defaultcolor r="0.0784314" g="0.0784314" b="0.0784314"/>
+    </usercolor>
+    <usercolor>
+      <label>Chassis Detail</label>
+      <defaultcolor r="0.784314" g="0.784314" b="0.784314"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>HarnessThePower</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <script>
+      <classpath></classpath>
+      <class>CC_Train8Car</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <script>
+      <classpath></classpath>
+      <class>Camera</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="Bolt_Head">Materials/Bolt Head.nl2mat</materialpath>
+    <materialpath name="Chassis1">intern:data/materials/metal/Metal A User2.nl2mat</materialpath>
+    <materialpath name="Chassis_Detail">intern:data/materials/metal/Metal A User3.nl2mat</materialpath>
+    <materialpath name="Connection_Green">Materials/Shiny Green.nl2mat</materialpath>
+    <materialpath name="Detail">Materials/Shiny Black.nl2mat</materialpath>
+    <materialpath name="Detail1">Materials/Shiny Black.nl2mat</materialpath>
+    <materialpath name="Floor">Materials/Floor.nl2mat</materialpath>
+    <materialpath name="LED_Green1">Materials/LED Green.nl2mat</materialpath>
+    <materialpath name="Magnet">Materials/Rough Metal.nl2mat</materialpath>
+    <materialpath name="Metal_Panel">intern:data/materials/Metal Floor.nl2mat</materialpath>
+    <materialpath name="Norender_">Materials/No Render.nl2mat</materialpath>
+    <materialpath name="Seat2">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Seat_Back">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="Shiny_Metal">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="Wire_3">Materials/Shiny Black.nl2mat</materialpath>
+    <materialpath name="__Restraint_Pad">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+  </sceneobject>
+</root>

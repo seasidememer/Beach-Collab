@@ -1,0 +1,120 @@
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+public class WheelieGoodScript extends Script {
+
+	SceneObject sco;
+	SceneObjectElement[] wheel;
+	int[] dir;
+	float[] rad;
+	float[] random;
+	
+	float railRad = 0.075f;
+	float gauge = 0.9f;
+	
+	Train train;
+	
+	public bool onInit(){
+
+		 sco = sim.getSceneObjectForEntityId(getParentEntityId());
+	
+		TrackPos trackPos = sim.findNearestCoasterTrack(sco.getTranslation(), 5);
+		if (trackPos == null)
+		{
+			System.err.println("attach_object.nlvm: No track found within range of " + 5 + " meters.");
+			return false;
+		}
+		
+		Coaster coaster = trackPos.getCoaster();
+	
+		train = coaster.findNearestTrain(sco.getTranslation(), 15);
+	
+		int i2 = 0;
+		while(sco.getElementForName("Wheel" + i2) != null){
+		
+			i2++;
+		
+		}  
+		wheel = new SceneObjectElement[i2];
+		dir = new int[i2];
+		rad = new float[i2];
+		random = new float[i2];
+
+		Vector3f posOut = new Vector3f();
+		
+		sco.setTranslation(0,0,0);
+		sco.setRotation(0,0,0);
+		
+		for(int i = 0; i < wheel.length; i++){
+			
+			wheel[i] = sco.getElementForName("Wheel" + (i));	
+			random[i] = (float)Math.random()*6.28f;
+			Tools.matrixToPitchHeadBankPos(wheel[i].getAbsoluteMatrix(),  null, posOut);
+			
+			if(i == 0){
+				
+				gauge = (float)Math.abs(posOut.x);
+				
+			}
+			
+			if(posOut.y > railRad){
+				
+				dir[i] = 0;
+				rad[i] = (float)Math.abs(posOut.y - railRad);
+				
+			}else
+			if(posOut.y < -railRad){
+				
+				dir[i] = 1;
+				rad[i] = (float)Math.abs(posOut.y + railRad);
+				
+			}
+			if(Math.abs(posOut.y) < railRad && Math.abs(posOut.y) > -railRad && posOut.x > 0){
+				
+				dir[i] = 2;
+				rad[i] = (float)Math.abs(posOut.x) - gauge - railRad;
+
+			}else
+			if(Math.abs(posOut.y) < railRad && Math.abs(posOut.y) > -railRad){
+				
+				dir[i] = 3;
+				rad[i] = (float)Math.abs(posOut.x) - gauge - railRad;
+				
+
+				
+			}
+			
+		}
+	
+		return true;
+	
+	}
+
+	float rotation = 0;
+	
+	public void onNextFrame(float tick){
+		
+		rotation += (float)train.getSpeed() * sim.getCurSimulationTickSec();
+		
+		for(int i = 0; i < wheel.length; i++){
+			
+			switch(dir[i]){
+				case 0:
+					wheel[i].setRotation((float)(-rotation/(Math.PI*rad[i]))*2 + random[i],0,0);
+				break;
+				case 1:
+					wheel[i].setRotation((float)(rotation/(Math.PI*rad[i]))*2 + random[i],0,0);
+				break;
+				case 2:
+					wheel[i].setRotation(0,(float)(rotation/(Math.PI*rad[i]))*2 + random[i],0);
+				break;
+				case 3:
+					wheel[i].setRotation(0,(float)(-rotation/(Math.PI*rad[i]))*2 + random[i],0);
+				break;
+				
+			}
+			
+		}
+		
+	}
+
+}

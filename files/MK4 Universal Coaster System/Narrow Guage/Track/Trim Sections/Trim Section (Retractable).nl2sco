@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Trim Section (Retractable).dae">
+      <clip mesh="High_Detail" distance="15"/>
+      <clip mesh="Mid_Detail" distance="40"/>
+      <clip mesh="Fins" distance="40"/>
+    </model>
+    <usercolor>
+      <label>Track</label>
+      <defaultcolor r="0.866667" g="0.866667" b="0.866667"/>
+    </usercolor>
+    <usercolor>
+      <label>Plate</label>
+      <defaultcolor r="0.180392" g="0.180392" b="0.180392"/>
+    </usercolor>
+    <materialpath name="Bolt_Head">Materials/Bolt Head.nl2mat</materialpath>
+    <materialpath name="Detail_">Materials/Wire Black.nl2mat</materialpath>
+    <materialpath name="LSM_Texture">Materials/Copper.nl2mat</materialpath>
+    <materialpath name="Plate_Colour">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="Sensr_Light">Materials/Sensor Green Light.nl2mat</materialpath>
+    <materialpath name="Shiny_Metal">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="Track_Colour">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Wire_2">Materials/Wire Yellow.nl2mat</materialpath>
+    <materialpath name="Wire_3">Materials/Wire Black.nl2mat</materialpath>
+    <materialpath name="material">Materials/Wire Black.nl2mat</materialpath>
+  </sceneobject>
+</root>

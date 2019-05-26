@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>Result = tex0;
+Specular = tex2;</shadercore>
+      <transparency mode="opaque"/>
+      <custommaterial>
+        <diffuse r="0.678431" g="0.678431" b="0.678431"/>
+        <ambient r="0.678431" g="0.678431" b="0.678431"/>
+        <specular r="0" g="0" b="0"/>
+        <shininess exponent="27.5692"/>
+      </custommaterial>
+      <reflection bump="true" affectedbyspecular="true" fresnelconst="0.2" fresnelvar="0.4"/>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <map>copper1_c.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>Copper1_n.png</map>
+        <bump mode="normalgloss"/>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>Copper1_s.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <option nonsolid="true"/>
+  </material>
+</root>

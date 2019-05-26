@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Zerocar.dae"/>
+    <usercolor>
+      <label>Shell Colour</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <usercolor>
+      <label>Chassis Metal</label>
+      <defaultcolor r="0.0784314" g="0.0784314" b="0.0784314"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>CC_Train0Car</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="Metal">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="Primary_Colour">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Shiny_Metal">intern:data/materials/Chrome.nl2mat</materialpath>
+  </sceneobject>
+</root>

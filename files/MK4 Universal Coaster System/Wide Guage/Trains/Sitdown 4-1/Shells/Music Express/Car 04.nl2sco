@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Main Car.dae"/>
+    <usercolor>
+      <label>Shell Colour</label>
+      <defaultcolor r="0" g="0.313726" b="0.45098"/>
+    </usercolor>
+    <usercolor>
+      <label>Speaker</label>
+      <defaultcolor r="0.101961" g="0.101961" b="0.101961"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>CC_Train4Car</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="Bolt_Head">Materials/Bolt Head.nl2mat</materialpath>
+    <materialpath name="Metal">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="Metal_Panel">intern:data/materials/Metal Floor.nl2mat</materialpath>
+    <materialpath name="Neon">Materials/Neon.nl2mat</materialpath>
+    <materialpath name="Primary_Colour">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Shiny_Metal">intern:data/materials/Chrome.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="TrainDeco.dae"/>
+    <usercolor>
+      <label>1</label>
+      <defaultcolor r="0.0784314" g="0.0784314" b="0.0784314"/>
+    </usercolor>
+    <usercolor>
+      <label>2</label>
+      <defaultcolor r="0" g="0.313726" b="0.45098"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>CC_Train0Car</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="Neon_">Neon.nl2mat</materialpath>
+    <materialpath name="_2">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="material">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Storage Transport (Independant).dae"/>
+    <usercolor>
+      <label>Motor</label>
+      <defaultcolor r="0.866667" g="0.866667" b="0.866667"/>
+    </usercolor>
+    <usercolor>
+      <label>Support</label>
+      <defaultcolor r="0.180392" g="0.180392" b="0.180392"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>WheelFixedRadiusFromSection</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="Bolt_Head">Materials/Bolt Head.nl2mat</materialpath>
+    <materialpath name="Detail_">Materials/Wire Black.nl2mat</materialpath>
+    <materialpath name="Shiny_Metal">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="Support">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="Track_Colour">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Wire_3">Materials/Wire Black.nl2mat</materialpath>
+    <materialpath name="material">Materials/Wire Black.nl2mat</materialpath>
+  </sceneobject>
+</root>

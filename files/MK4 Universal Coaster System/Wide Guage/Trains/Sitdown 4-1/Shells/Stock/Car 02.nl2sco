@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Main Car.dae">
+      <clip mesh="Bolt" distance="10"/>
+    </model>
+    <usercolor>
+      <label>Shell Colour</label>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>CC_Train2Car</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="Bolt_Head">Materials/Bolt Head.nl2mat</materialpath>
+    <materialpath name="Metal_Panel">intern:data/materials/Metal Floor.nl2mat</materialpath>
+    <materialpath name="Primary_Colour">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Shiny_Metal">intern:data/materials/Chrome.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,38 @@
+import com.nolimitscoaster.*;
+
+public class AttachToRail extends Script{
+	private static final float TRACK_SEARCH_RADIUS = 3.0f;
+	private static final String UPDATE_KEYWORD = "Transfer Track";
+
+	private SceneObject sco;
+	private TrackPos trackPos;
+
+	public final bool onInit(){
+		sco = sim.getSceneObjectForEntityId(getParentEntityId());
+		if(sco == null){
+			System.throwRuntimeException(
+				"This script has to be attached to a Scene Object!"
+			);
+		}
+
+		trackPos = sim.findNearestCoasterTrack(
+			sco.getTranslation(), TRACK_SEARCH_RADIUS
+		);
+		if(trackPos == null){
+			System.throwRuntimeException(
+				"Could not find a coaster track within a "
+				+ TRACK_SEARCH_RADIUS
+				+ "m range!"
+			);
+		}
+
+		sco.setMatrix(trackPos.getCenterRailsMatrix());
+
+		bool doUpdatePerFrame = sco.getName().equals(UPDATE_KEYWORD);
+		return doUpdatePerFrame;
+	}
+
+	public final void onNextFrame(float tick){
+		sco.setMatrix(trackPos.getCenterRailsMatrix());
+	}
+}

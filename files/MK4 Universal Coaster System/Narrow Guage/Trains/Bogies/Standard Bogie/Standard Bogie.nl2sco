@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="Bogie.dae"/>
+    <usercolor>
+      <label>Bogie</label>
+      <defaultcolor r="0.0784314" g="0.0784314" b="0.0784314"/>
+    </usercolor>
+    <usercolor>
+      <label>Chassis</label>
+      <defaultcolor r="0.0784314" g="0.0784314" b="0.0784314"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>roar</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <script>
+      <classpath></classpath>
+      <class>BogieScript</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <script>
+      <classpath></classpath>
+      <class>WheelieGoodScript</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <materialpath name="Bogie">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+    <materialpath name="Bolt_Head">Bolt Head.nl2mat</materialpath>
+    <materialpath name="Chassis">intern:data/materials/metal/Metal A User1.nl2mat</materialpath>
+    <materialpath name="Rubber">Detail.nl2mat</materialpath>
+    <materialpath name="Shiny_Metal">intern:data/materials/Chrome.nl2mat</materialpath>
+    <materialpath name="Wheel_Tread">Wheel.nl2mat</materialpath>
+  </sceneobject>
+</root>

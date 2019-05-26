@@ -1,0 +1,39 @@
+import com.nolimitscoaster.*;
+public class Camera extends Script {
+
+	SceneObject sco;
+	
+	SceneObjectElement[] cameras = new SceneObjectElement[4];
+	ExternalRideView[] erv = new ExternalRideView[4];
+	
+	public bool onInit(){
+
+		 sco = sim.getSceneObjectForEntityId(getParentEntityId());
+	
+		for(int i = 0; i < cameras.length; i++){
+			
+			cameras[i] = sco.getElementForName("Camera0" + (i+1));
+			
+			
+			erv[i] = sim.createExternalRideView();
+			erv[i].setEnterWarpPoint(cameras[i].getAbsoluteMatrix().getTrans(), 5);
+			erv[i].setLabel("Enter Seat " + i);
+			
+		}
+	
+		return true;
+	
+	}
+	
+	public void onNextFrame(float tick){
+		
+		for(int i = 0; i < cameras.length; i++){
+			
+			erv[i].setCameraMatrix(cameras[i].getAbsoluteMatrix());
+			erv[i].setEnterWarpPoint(cameras[i].getAbsoluteMatrix().getTrans(), 5);
+			
+		}
+		
+	}
+
+}
